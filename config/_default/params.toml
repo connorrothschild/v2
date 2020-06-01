@@ -81,7 +81,7 @@ edit_page = {repo_url = "https://github.com/gcushen/hugo-academic", content_dir 
 ############################
 
 # Enter contact details (optional). To hide a field, clear it to "".
-email = "connor@rice.edu"
+email = "connor@connorrothschild.com"
 phone = "417-569-8406"
 
 # Address
