@@ -1,0 +1,171 @@
+---
+title: 'TidyTuesday: Powerlifting'
+date: "2019-10-08"
+authors: 
+  - admin
+categories: ["R"]
+image:
+  preview_only: true
+tags: ["r", "visualization", "animation", "gganimate", "Tidy Tuesday"]
+summary: "Analyzing sex differences in top lifts at international powerlifting competitions."
+---
+
+
+
+<pre class="r"><code>library(ggplot2)
+library(tidyverse)
+library(ggtext)
+library(gifski)
+library(gganimate)
+library(cr)
+
+set_cr_theme(font = &quot;lato&quot;)</code></pre>
+<div id="load-and-clean-data" class="section level2">
+<h2>Load and Clean Data</h2>
+<p>First, read in the data from <a href="https://openpowerlifting.org/data" class="uri">https://openpowerlifting.org/data</a>:</p>
+<pre class="r"><code># df &lt;- readr::read_csv(&quot;openpowerlifting-2019-09-20.csv&quot;)
+# 
+# df_clean &lt;- df %&gt;% 
+#   janitor::clean_names()
+# 
+# ipf_lifts &lt;- df_clean %&gt;% 
+#   select(name:weight_class_kg, starts_with(&quot;best&quot;), place, date, federation, meet_name)  %&gt;% 
+#   filter(!is.na(date)) %&gt;% 
+#   filter(federation == &quot;IPF&quot;)
+
+ipf_lifts &lt;- readr::read_csv(&quot;data/ipf_lifts.csv&quot;)</code></pre>
+<p>Clean ipf_lifts, and reshape the three lifts into one column:</p>
+<pre class="r"><code>ipf_lifts &lt;- ipf_lifts %&gt;% 
+  mutate(year = lubridate::year(date))
+
+ipf_lifts_reshape &lt;- ipf_lifts %&gt;% 
+  tidyr::pivot_longer(cols = c(&quot;best3squat_kg&quot;, &quot;best3bench_kg&quot;, &quot;best3deadlift_kg&quot;), names_to = &quot;lift&quot;) %&gt;% 
+  select(name, sex, year, lift, value)</code></pre>
+<p>For my visualization, I’m only concerned with the <em>heaviest</em> lifts from each year:</p>
+<pre class="r"><code>ipf_lifts_maxes &lt;- ipf_lifts_reshape %&gt;% 
+  group_by(year, sex, lift) %&gt;% 
+  top_n(1, value) %&gt;% 
+  ungroup %&gt;% 
+  distinct(year, lift, value, .keep_all = TRUE)</code></pre>
+<p>In order to construct a dumbbell plot, we need both male and female observations in the same row.</p>
+<pre class="r"><code>max_pivot &lt;- ipf_lifts_maxes %&gt;% 
+  spread(sex, value)</code></pre>
+<p>Let’s try to construct a dataframe for each sex:</p>
+<pre class="r"><code>male_lifts &lt;- max_pivot %&gt;% 
+  select(-name) %&gt;% 
+  filter(!is.na(M)) %&gt;% 
+  group_by(year, lift) %&gt;% 
+  summarise(male = mean(M))
+
+female_lifts &lt;- max_pivot %&gt;% 
+  select(-name) %&gt;% 
+  filter(!is.na(`F`)) %&gt;% 
+  group_by(year, lift) %&gt;% 
+  summarise(female = mean(`F`))</code></pre>
+<p>And join them:</p>
+<pre class="r"><code>max_lifts &lt;- merge(male_lifts, female_lifts)
+
+max_lifts_final &lt;- max_lifts %&gt;% 
+  group_by(year, lift) %&gt;% 
+  mutate(diff = male - female)</code></pre>
+</div>
+<div id="visualize" class="section level2">
+<h2>Visualize</h2>
+<p>Finally, we can construct the visualization.</p>
+<p>First, a static viz (thanks to hrbrmaster’s <code>ggalt</code> <a href="https://rud.is/b/2016/04/17/ggplot2-exercising-with-ggalt-dumbbells/">package</a>):</p>
+<pre class="r"><code>max_lifts_final %&gt;% 
+  filter(year == 2019) %&gt;% 
+  ggplot() + 
+  ggalt::geom_dumbbell(aes(y = lift,
+                    x = female, xend = male),
+                colour = &quot;grey&quot;, size = 5,
+                colour_x = &quot;#D6604C&quot;, colour_xend = &quot;#395B74&quot;) +
+  labs(y = element_blank(),
+       x = &quot;Top Lift Recorded (kg)&quot;,
+       title =  &quot;How &lt;span style=&#39;color:#D6604C&#39;&gt;Women&lt;/span&gt; and &lt;span style=&#39;color:#395B74&#39;&gt;Men&lt;/span&gt; Differ in Top Lifts&quot;,
+                       subtitle = &quot;In 2019&quot;) +
+  theme(plot.title = element_markdown(lineheight = 1.1, size = 20),
+        plot.subtitle = element_text(size = 15)) +
+  scale_y_discrete(labels = c(&quot;Bench&quot;, &quot;Deadlift&quot;, &quot;Squat&quot;)) +
+  drop_axis(axis = &quot;y&quot;) +
+  geom_text(aes(x = female, y = lift, label = paste(female, &quot;kg&quot;)),
+            color = &quot;#D6604C&quot;, size = 4, vjust = -2) +
+  geom_text(aes(x = male, y = lift, label = paste(male, &quot;kg&quot;)),
+            color = &quot;#395B74&quot;, size = 4, vjust = -2) +
+  geom_rect(aes(xmin=430, xmax=470, ymin=-Inf, ymax=Inf), fill=&quot;grey80&quot;) +
+  geom_text(aes(label=diff, y=lift, x=450), fontface=&quot;bold&quot;, size=4) +
+  geom_text(aes(x=450, y=3, label=&quot;Difference&quot;),
+            color=&quot;grey20&quot;, size=4, vjust=-3, fontface=&quot;bold&quot;)</code></pre>
+<p><img src="/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Finally, we animate, using Thomas Pedersen’s wonderful <a href="https://github.com/thomasp85/gganimate">gganimate package</a>:</p>
+<pre class="r"><code>animation &lt;- max_lifts_final %&gt;% 
+  ggplot() + 
+  ggalt::geom_dumbbell(aes(y = lift,
+                    x = female, xend = male),
+                colour = &quot;grey&quot;, size = 5,
+                colour_x = &quot;#D6604C&quot;, colour_xend = &quot;#395B74&quot;) +
+  labs(y = element_blank(),
+       x = &quot;Top Lift Recorded (kg)&quot;,
+       title =  &quot;How &lt;span style=&#39;color:#D6604C&#39;&gt;Women&lt;/span&gt; and &lt;span style=&#39;color:#395B74&#39;&gt;Men&lt;/span&gt; Differ in Top Lifts&quot;,
+  subtitle=&#39;\nThis plot depicts the difference between the heaviest lifts for each sex at International Powerlifting Federation\nevents over time. \n \n{closest_state}&#39;) +
+  theme(plot.title = element_markdown(lineheight = 1.1, size = 25, margin=margin(0,0,0,0)),
+        plot.subtitle = element_text(size = 15, margin=margin(8,0,-30,0))) +
+  scale_y_discrete(labels = c(&quot;Bench&quot;, &quot;Deadlift&quot;, &quot;Squat&quot;)) +
+  drop_axis(axis = &quot;y&quot;) +
+  geom_text(aes(x = female, y = lift, label = paste(female, &quot;kg&quot;)),
+            color = &quot;#D6604C&quot;, size = 4, vjust = -2) +
+  geom_text(aes(x = male, y = lift, label = paste(male, &quot;kg&quot;)),
+            color = &quot;#395B74&quot;, size = 4, vjust = -2) +
+  transition_states(year, transition_length = 4, state_length = 1) +
+  ease_aes(&#39;cubic-in-out&#39;)
+
+a_gif &lt;- animate(animation, 
+                 fps = 10, 
+                 duration = 25,
+                 width = 800, height = 400, 
+                 renderer = gifski_renderer(&quot;outputs/animation.gif&quot;))
+
+a_gif</code></pre>
+<p><img src="/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-9-1.gif" /><!-- --></p>
+<p>I’d like to include another GIF: a line chart of differences over time</p>
+<pre class="r"><code>animation2 &lt;- max_lifts_final %&gt;% 
+  ungroup %&gt;% 
+  mutate(lift = case_when(lift == &quot;best3bench_kg&quot; ~ &quot;Bench&quot;,
+                          lift == &quot;best3squat_kg&quot; ~ &quot;Squat&quot;,
+                          lift == &quot;best3deadlift_kg&quot; ~ &quot;Deadlift&quot;)) %&gt;% 
+  ggplot(aes(year, diff, group = lift, color = lift)) + 
+  geom_line(show.legend = FALSE) + 
+  geom_segment(aes(xend = 2019.1, yend = diff), linetype = 2, colour = &#39;grey&#39;, show.legend = FALSE) + 
+  geom_point(size = 2, show.legend = FALSE) + 
+  geom_text(aes(x = 2019.1, label = lift, color = &quot;#000000&quot;), hjust = 0, show.legend = FALSE) + 
+  drop_axis(axis = &quot;y&quot;) +
+  transition_reveal(year) +
+  coord_cartesian(clip = &#39;off&#39;) +
+  theme(plot.title = element_text(size = 20)) +
+  labs(title = &#39;Difference over time&#39;,
+       y = &#39;Difference (kg)&#39;,
+       x = element_blank()) + 
+  theme(plot.margin = margin(5.5, 40, 5.5, 5.5))
+
+b_gif &lt;- animate(animation2, 
+                 fps = 10, 
+                 duration = 25,
+        width = 800, height = 200, 
+        renderer = gifski_renderer(&quot;outputs/animation2.gif&quot;))
+
+b_gif</code></pre>
+<p><img src="/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-10-1.gif" /><!-- --></p>
+<p>Next, combine them using <code>magick</code> (thanks to <a href="https://github.com/thomasp85/gganimate/wiki/Animation-Composition">this post</a>):</p>
+<pre class="r"><code>library(magick)
+a_mgif &lt;- image_read(a_gif)
+b_mgif &lt;- image_read(b_gif)
+
+new_gif &lt;- image_append(c(a_mgif[1], b_mgif[1]), stack = TRUE)
+for(i in 2:250){
+  combined &lt;- image_append(c(a_mgif[i], b_mgif[i]), stack = TRUE)
+  new_gif &lt;- c(new_gif, combined)
+}
+
+new_gif</code></pre>
+<p><img src="/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-11-1.gif" /><!-- --></p>
+</div>

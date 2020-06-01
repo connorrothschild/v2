@@ -1,0 +1,436 @@
+---
+title: "STEMigration: Leaving and Entering STEM Fields During College"
+date: "2019-03-11"
+authors: 
+ - admin
+categories: ["R"]
+image:
+  preview_only: true
+tags: ["r", "visualization"]
+summary: "Are traditionally underrepresented groups more likely to migrate into or out of STEM majors?"
+---
+
+
+
+<p>The goal of this project is to explore trends in STEM enrollment for different populations. Specifically, it asks: <strong>Are traditionally underrepresented groups more likely to migrate into or out of STEM majors? What discrepancies are present between different demographic groups?</strong></p>
+<pre class="r"><code>library(readxl)
+library(tidyverse)
+library(tidyr)
+library(knitr)
+library(cr)
+conflicted::conflict_prefer(&quot;filter&quot;, &quot;dplyr&quot;)
+
+set_cr_theme(font = &quot;lato&quot;)</code></pre>
+<div id="the-data" class="section level3">
+<h3>The Data</h3>
+<p>The dataset for this project comes from <a href="https://data.world/womens-history-month/womens-history-month-week-2/workspace/file?agentid=nsf&amp;datasetid=undergraduate-enrollment-in-engineering-programs&amp;filename=tab2-9.xlsx">data.world</a> and contains the enrollment numbers for undergraduates nationwide.</p>
+<pre class="r"><code>undergradenrollment &lt;- read_excel(&quot;data/undergradenrollment.xlsx&quot;)</code></pre>
+<p>I modified that data in Excel to make it more suitable for this project. The head of that data:</p>
+<pre class="r"><code>head(undergradenrollment) %&gt;% kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">year</th>
+<th align="right">undergrads</th>
+<th align="right">female</th>
+<th align="right">male</th>
+<th align="right">white</th>
+<th align="right">asian</th>
+<th align="right">black</th>
+<th align="right">hispanic</th>
+<th align="right">nativeamerican</th>
+<th align="left">pacificislander</th>
+<th align="left">multiracial</th>
+<th align="right">foreignnational</th>
+<th align="right">firstyearundergrads</th>
+<th align="right">firstyearfemale</th>
+<th align="right">firstyearmale</th>
+<th align="right">firstyearwhite</th>
+<th align="right">firstyearasian</th>
+<th align="right">firstyearblack</th>
+<th align="right">firstyearhispanic</th>
+<th align="right">firstyearnativeamerican</th>
+<th align="left">firstyearpacificislander</th>
+<th align="left">firstyearmultiracial</th>
+<th align="right">firstyearforeignnational</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Class of 2006</td>
+<td align="right">405489</td>
+<td align="right">69869</td>
+<td align="right">335620</td>
+<td align="right">277921</td>
+<td align="right">43902</td>
+<td align="right">23414</td>
+<td align="right">36389</td>
+<td align="right">2598</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">21265</td>
+<td align="right">100228</td>
+<td align="right">17047</td>
+<td align="right">86787</td>
+<td align="right">72471</td>
+<td align="right">10421</td>
+<td align="right">7619</td>
+<td align="right">8403</td>
+<td align="right">642</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">4278</td>
+</tr>
+<tr class="even">
+<td align="left">Class of 2007</td>
+<td align="right">431910</td>
+<td align="right">74258</td>
+<td align="right">357652</td>
+<td align="right">295358</td>
+<td align="right">47059</td>
+<td align="right">24074</td>
+<td align="right">39448</td>
+<td align="right">2523</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">23448</td>
+<td align="right">110558</td>
+<td align="right">16896</td>
+<td align="right">86465</td>
+<td align="right">72547</td>
+<td align="right">10145</td>
+<td align="right">7374</td>
+<td align="right">8268</td>
+<td align="right">696</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">4331</td>
+</tr>
+<tr class="odd">
+<td align="left">Class of 2008</td>
+<td align="right">442952</td>
+<td align="right">77671</td>
+<td align="right">365281</td>
+<td align="right">301483</td>
+<td align="right">47738</td>
+<td align="right">24771</td>
+<td align="right">41919</td>
+<td align="right">2629</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">24412</td>
+<td align="right">111006</td>
+<td align="right">16238</td>
+<td align="right">84173</td>
+<td align="right">70732</td>
+<td align="right">9281</td>
+<td align="right">7212</td>
+<td align="right">8338</td>
+<td align="right">623</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">4225</td>
+</tr>
+<tr class="even">
+<td align="left">Class of 2009</td>
+<td align="right">468139</td>
+<td align="right">83988</td>
+<td align="right">384151</td>
+<td align="right">315240</td>
+<td align="right">50293</td>
+<td align="right">25189</td>
+<td align="right">47219</td>
+<td align="right">2850</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">27348</td>
+<td align="right">114704</td>
+<td align="right">16751</td>
+<td align="right">83477</td>
+<td align="right">69369</td>
+<td align="right">9796</td>
+<td align="right">7112</td>
+<td align="right">8773</td>
+<td align="right">715</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">4463</td>
+</tr>
+<tr class="odd">
+<td align="left">Class of 2010</td>
+<td align="right">488435</td>
+<td align="right">88063</td>
+<td align="right">400372</td>
+<td align="right">321558</td>
+<td align="right">51057</td>
+<td align="right">25996</td>
+<td align="right">50051</td>
+<td align="right">2665</td>
+<td align="left">737</td>
+<td align="left">5961</td>
+<td align="right">30410</td>
+<td align="right">119144</td>
+<td align="right">18617</td>
+<td align="right">91941</td>
+<td align="right">76071</td>
+<td align="right">11200</td>
+<td align="right">7224</td>
+<td align="right">9452</td>
+<td align="right">729</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">5882</td>
+</tr>
+<tr class="even">
+<td align="left">Class of 2011</td>
+<td align="right">511306</td>
+<td align="right">93633</td>
+<td align="right">417673</td>
+<td align="right">329348</td>
+<td align="right">54403</td>
+<td align="right">26989</td>
+<td align="right">54245</td>
+<td align="right">2554</td>
+<td align="left">1093</td>
+<td align="left">8819</td>
+<td align="right">33855</td>
+<td align="right">121766</td>
+<td align="right">19342</td>
+<td align="right">91664</td>
+<td align="right">75508</td>
+<td align="right">11106</td>
+<td align="right">7338</td>
+<td align="right">10282</td>
+<td align="right">765</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">6007</td>
+</tr>
+</tbody>
+</table>
+<p>The following command collapses the “<strong>undergradenrollment</strong>” file into a few summary statistics:</p>
+<ol style="list-style-type: decimal">
+<li>The proportion of a class that is of a certain demographic (female, Black, Hispanic)</li>
+<li>The change in that proportion between that class’s first year (matriculation) and their final year (graduation)</li>
+</ol>
+<p>It then uses the gather function to make that data easier to analyze.</p>
+<pre class="r"><code>data &lt;- undergradenrollment %&gt;%
+  mutate(propfemale = female/undergrads*100, firstyearpropfemale = firstyearfemale/firstyearundergrads*100) %&gt;% 
+  mutate(femalegrowth = propfemale-firstyearpropfemale) %&gt;% 
+  mutate(prophispanic = hispanic/undergrads*100, firstyearprophispanic = firstyearhispanic/firstyearundergrads*100) %&gt;% 
+  mutate(hispanicgrowth = prophispanic-firstyearprophispanic) %&gt;% 
+  mutate(propblack = black/undergrads*100, firstyearpropblack = firstyearblack/firstyearundergrads*100) %&gt;% 
+  mutate(blackgrowth = propblack-firstyearpropblack) %&gt;% 
+  select(year,femalegrowth,blackgrowth,hispanicgrowth,propfemale,prophispanic,propblack)  %&gt;% 
+  gather(&quot;type&quot;, &quot;growth&quot;, 2:4) %&gt;% 
+  gather(&quot;proportiontype&quot;,&quot;proportion&quot;,2:4)</code></pre>
+<p>The structure of that new dataset:</p>
+<pre class="r"><code>head(data) %&gt;% kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">year</th>
+<th align="left">type</th>
+<th align="right">growth</th>
+<th align="left">proportiontype</th>
+<th align="right">proportion</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Class of 2006</td>
+<td align="left">femalegrowth</td>
+<td align="right">0.2225791</td>
+<td align="left">propfemale</td>
+<td align="right">17.23080</td>
+</tr>
+<tr class="even">
+<td align="left">Class of 2007</td>
+<td align="left">femalegrowth</td>
+<td align="right">1.9104575</td>
+<td align="left">propfemale</td>
+<td align="right">17.19293</td>
+</tr>
+<tr class="odd">
+<td align="left">Class of 2008</td>
+<td align="left">femalegrowth</td>
+<td align="right">2.9068189</td>
+<td align="left">propfemale</td>
+<td align="right">17.53486</td>
+</tr>
+<tr class="even">
+<td align="left">Class of 2009</td>
+<td align="left">femalegrowth</td>
+<td align="right">3.3371497</td>
+<td align="left">propfemale</td>
+<td align="right">17.94083</td>
+</tr>
+<tr class="odd">
+<td align="left">Class of 2010</td>
+<td align="left">femalegrowth</td>
+<td align="right">2.4039957</td>
+<td align="left">propfemale</td>
+<td align="right">18.02963</td>
+</tr>
+<tr class="even">
+<td align="left">Class of 2011</td>
+<td align="left">femalegrowth</td>
+<td align="right">2.4279519</td>
+<td align="left">propfemale</td>
+<td align="right">18.31252</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>summary(data) %&gt;% kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="center">year</th>
+<th align="center">type</th>
+<th align="center">growth</th>
+<th align="left">proportiontype</th>
+<th align="center">proportion</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td align="center">Length:72</td>
+<td align="center">Length:72</td>
+<td align="center">Min. :-1.8274</td>
+<td align="left">Length:72</td>
+<td align="center">Min. : 5.014</td>
+</tr>
+<tr class="even">
+<td></td>
+<td align="center">Class :character</td>
+<td align="center">Class :character</td>
+<td align="center">1st Qu.:-0.7427</td>
+<td align="left">Class :character</td>
+<td align="center">1st Qu.: 5.588</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td align="center">Mode :character</td>
+<td align="center">Mode :character</td>
+<td align="center">Median : 1.7827</td>
+<td align="left">Mode :character</td>
+<td align="center">Median :10.167</td>
+</tr>
+<tr class="even">
+<td></td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">Mean : 1.0458</td>
+<td align="left">NA</td>
+<td align="center">Mean :11.150</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">3rd Qu.: 2.3560</td>
+<td align="left">NA</td>
+<td align="center">3rd Qu.:17.307</td>
+</tr>
+<tr class="even">
+<td></td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">Max. : 3.3371</td>
+<td align="left">NA</td>
+<td align="center">Max. :19.205</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="plots-and-analysis" class="section level3">
+<h3>Plots and Analysis</h3>
+<p>I am first curious how enrollment has changed for each group in my analysis. The following plots enrollment for different underrepresented groups as a proportion of overall enrollment in STEM majors at the undergraduate level.</p>
+<pre class="r"><code>ggplot(data=data, mapping = aes(x=year,y=proportion, colour=proportiontype, group=proportiontype)) +
+  geom_point() +
+  geom_line() +
+  ggtitle(&quot;Demographic Proportion of Overall Enrollment in STEM Majors&quot;, subtitle=&quot;Over time&quot;) +
+  xlab(&quot;Class&quot;) +
+  ylab(&quot;Percent of Overall Class&quot;) +
+  theme_minimal() +
+  scale_color_discrete(name=&quot;Demographic&quot;,
+                      breaks=c(&quot;propblack&quot;,&quot;propfemale&quot;,&quot;prophispanic&quot;),
+                      label=c(&quot;Black&quot;,&quot;Female&quot;,&quot;Hispanic&quot;)) +
+  theme(axis.text.x = element_text(angle = 90))</code></pre>
+<p><img src="/post/stem-igration/index_files/figure-html/plot2-1.png" width="672" /></p>
+<p>Of the traditionally underrepresented groups, women fare the best in STEM. But even at their peak, they only held 19% of seats in STEM classrooms.</p>
+<p>Next, I am curious how these shifts vary from one graduation class to another. In other words, <strong>which classes experience the greatest shifts in representation throughout their time in university?</strong></p>
+<p>I explore this by mutating the data to include a new variable: <em>growth</em>.
+This variable (which may be more accurately be named “change”) examines the difference between the underrepresented proportion of STEM enrollment at the <strong>time of graduation</strong> and the <strong>time of matriculation</strong>.
+If women were 19% of their class’s STEM majors at time of matriculation in 2015 and 17% of their class’s STEM majors at time of graduation, <em>growth</em> would be 2% (19%-17%).</p>
+<p>We can explore these changes by graduation year:</p>
+<pre class="r"><code>data %&gt;% distinct(year,type,.keep_all=TRUE) %&gt;% 
+ggplot(aes(fill=type, y=growth, x=year)) + 
+  geom_bar(position=&quot;dodge&quot;, stat=&quot;identity&quot;) +
+  xlab(&quot;Class&quot;) +
+  ylab(&quot;Percent Change&quot;) +
+  theme_minimal() +
+  ggtitle(&quot;Percent Change in Proportion of Overall STEM Class&quot;, subtitle=&quot;Between time of matriculation and time of graduation&quot;) +
+  scale_fill_discrete(name=&quot;Demographic&quot;,
+                      label=c(&quot;Black&quot;,&quot;Female&quot;,&quot;Hispanic&quot;)) +
+  theme(axis.text.x = element_text(angle = 90))</code></pre>
+<p><img src="/post/stem-igration/index_files/figure-html/plot3-1.png" width="672" /></p>
+<p>It seems as if women experience the greatest growth in STEM enrollment during their time as undergraduates, while Black students tend to migrate <em>out</em> of STEM majors.</p>
+<p>We can break that down group-by-group.</p>
+<pre class="r"><code>data %&gt;% distinct(year,type,.keep_all=TRUE) %&gt;% 
+  filter(type==&quot;blackgrowth&quot;) %&gt;% 
+  ggplot(mapping=aes(x=year,y=growth)) +
+  geom_col(aes(fill=growth)) + 
+  scale_fill_gradient() +
+  ylab(&quot;Percent Attrition&quot;) +
+  xlab(&quot;Class&quot;) +
+  ggtitle(&quot;Percent Change in Black STEM Undergrads&quot;, subtitle = &quot;Between time of matriculation and time of graduation&quot;) +
+  labs(fill=&quot;Attrition&quot;) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90))</code></pre>
+<p><img src="/post/stem-igration/index_files/figure-html/plot4-1.png" width="672" /></p>
+<pre class="r"><code>data %&gt;% distinct(year,type,.keep_all=TRUE) %&gt;% 
+  filter(type==&quot;femalegrowth&quot;) %&gt;% 
+  ggplot(mapping=aes(x=year,y=growth)) +
+  geom_col(aes(fill=growth)) +
+  scale_fill_gradient() +
+  ylab(&quot;Percent Growth&quot;) +
+  xlab(&quot;Class&quot;) +
+  ggtitle(&quot;Percent Change in Female STEM Undergrads&quot;, subtitle = &quot;Between time of matriculation and time of graduation&quot;) +
+  labs(fill=&quot;Growth&quot;) +
+  theme(axis.text.x = element_text(angle = 90))</code></pre>
+<p><img src="/post/stem-igration/index_files/figure-html/plot5-1.png" width="672" /></p>
+<pre class="r"><code>data %&gt;% distinct(year,type,.keep_all=TRUE) %&gt;% 
+  filter(type==&quot;hispanicgrowth&quot;) %&gt;% 
+  ggplot(mapping=aes(x=year,y=growth)) +
+  geom_col(aes(fill=growth)) +
+  scale_fill_gradient() +
+  ylab(&quot;Percent Growth&quot;) +
+  xlab(&quot;Class&quot;) +
+  ggtitle(&quot;Percent Change in Hispanic STEM Undergrads&quot;, subtitle = &quot;Between time of matriculation and time of graduation&quot;) +
+  labs(fill=&quot;Growth&quot;) +
+  theme(axis.text.x = element_text(angle = 90))</code></pre>
+<p><img src="/post/stem-igration/index_files/figure-html/plot-1.png" width="672" /></p>
+<p>Here are the previous graphs, faceted:</p>
+<pre class="r"><code>labels &lt;- c(blackgrowth = &quot;Black&quot;, femalegrowth = &quot;Female&quot;, hispanicgrowth=&quot;Hispanic&quot;) 
+data %&gt;% distinct(year,type,.keep_all=TRUE) %&gt;% 
+  ggplot(mapping=aes(x=year,y=growth)) +
+  geom_col(aes(fill=growth)) +
+  ylab(&quot;Percent Change&quot;) +
+  xlab(&quot;Class&quot;) +
+  ggtitle(&quot;Percent Change in Proportion of STEM Undergrads&quot;, subtitle = &quot;Between time of matriculation and time of graduation&quot;) +
+  labs(fill=&quot;Percent\nChange&quot;) +
+  facet_grid(. ~ type, labeller=labeller(type = labels)) +
+  scale_x_discrete(labels = c(&quot;Class of 2006&quot; = &quot;2006&quot;, &quot;Class of 2007&quot; = &quot;2007&quot;, &quot;Class of 2008&quot; = &quot;2008&quot;, &quot;Class of 2009&quot; = &quot;2009&quot;, &quot;Class of 2010&quot; = &quot;2010&quot;, &quot;Class of 2011&quot; = &quot;2011&quot;, &quot;Class of 2012&quot; = &quot;2012&quot;, &quot;Class of 2013&quot; = &quot;2013&quot;)) +
+  theme(axis.text.x = element_text(angle = 90))</code></pre>
+<p><img src="/post/stem-igration/index_files/figure-html/plot6-1.png" width="672" /></p>
+</div>
+<div id="summaries-and-takeaways" class="section level3">
+<h3>Summaries and Takeaways</h3>
+<p>The decision to migrate into or out of STEM majors is both an individual choice and one shaped by institutional factors. In the face of demographic discrepancies, universities may or may not make changes to make STEM fields more accessible to underrepresented groups.</p>
+<p>The data paint a neutral picture of trends in STEM. This analysis may suggest something about individual choices; it may also suggest that universities are not doing enough to make STEM majors accessible to Black students. However, it is promising that women and Hispanic students are able to, and often choose to, migrate into STEM majors.</p>
+<p>There does not seem to be a temporal dynamic to these decisions. Although some classes (the Class of 2009) were more than others likely to migrate into STEM majors, no trend makes itself apparent year-by-year.</p>
+<p>This analysis may suggest that more can be done to bring women and racial minorities into STEM, or it may simply present the product of individual decisions on the part of underrepresented groups.</p>
+</div>

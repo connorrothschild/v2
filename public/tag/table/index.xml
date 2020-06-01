@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>table | Connor Rothschild</title>
+    <link>/tag/table/</link>
+      <atom:link href="/tag/table/index.xml" rel="self" type="application/rss+xml" />
+    <description>table</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Mon, 18 May 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/img/static/img/avatar.jpg</url>
+      <title>table</title>
+      <link>/tag/table/</link>
+    </image>
+    
+    <item>
+      <title>Recreating a Table by The Economist Using Reactable</title>
+      <link>/post/economist-table-replication-using-reactable/</link>
+      <pubDate>Mon, 18 May 2020 00:00:00 +0000</pubDate>
+      <guid>/post/economist-table-replication-using-reactable/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/core-js/shim.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/react/react.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/react/react-dom.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/reactwidget/react-tools.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/reactable-binding/reactable.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;&lt;em&gt;The Economist&lt;/em&gt; recently released a series of country-level &lt;a href=&#34;https://twitter.com/J_CD_T/status/1261625814854045696&#34;&gt;datasets&lt;/a&gt; on ‘excess mortality’, a term used to &lt;a href=&#34;https://www.economist.com/graphic-detail/2020/04/16/tracking-covid-19-excess-deaths-across-countries&#34;&gt;describe&lt;/a&gt; ‘the gap between the total number of people who died from any cause, and the historical average for the same place and time of year.’ In simpler terms, the measure captures how many deaths &lt;em&gt;are&lt;/em&gt; happening that &lt;em&gt;shouldn’t be&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;In the (free!) articles accompanying that data, I came across the following table:&lt;/p&gt;
+&lt;div style=&#34;text-align:center&#34;&gt;
+&lt;p&gt;&lt;img width = 100% src = img/econ-table.png&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;I thought the table was clean and sent a clear message. The addition of inline barcharts is not intrusive but still helps the reader takeaway insights about the data. It’s a rather pretty table. Having recently &lt;a href=&#34;https://twitter.com/dataandme/status/1196552930167599106&#34;&gt;come across&lt;/a&gt; Greg Lin’s package &lt;a href=&#34;https://glin.github.io/reactable/index.html&#34;&gt;&lt;code&gt;reactable&lt;/code&gt;&lt;/a&gt;, I thought this could be a good opportunity to try my hand at recreating the above.&lt;/p&gt;
+&lt;p&gt;(Coincidentally, while I was working on this project, Malcolm Barrett released a similar &lt;a href=&#34;https://malco.io/2020/05/16/replicating-an-nyt-table-of-swedish-covid-deaths-with-gt/&#34;&gt;blog post&lt;/a&gt; documenting his recreation of a NYT table using &lt;code&gt;gt&lt;/code&gt;. Check it out!)&lt;/p&gt;
+&lt;div id=&#34;loading-packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Loading packages&lt;/h2&gt;
+&lt;p&gt;Our process uses standard packages: &lt;code&gt;reactable&lt;/code&gt; (obviously), &lt;code&gt;htmltools&lt;/code&gt; as its buddy, &lt;code&gt;lubridate&lt;/code&gt; for days and times, &lt;code&gt;hrbrthemes&lt;/code&gt; for &lt;em&gt;The Economist’s&lt;/em&gt; font, and &lt;code&gt;tidyverse&lt;/code&gt; for general purpose data wrangling.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(reactable)
+library(htmltools)
+library(lubridate)
+library(hrbrthemes)
+library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;gather-the-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Gather the data&lt;/h2&gt;
+&lt;p&gt;You can definitely skip this step if you’re not interested in the data collection and cleaning process.&lt;/p&gt;
+&lt;p&gt;Unfortunately, one of the more time-consuming steps of this project was getting the data in the same format &lt;em&gt;The Economist&lt;/em&gt; used in their article. The data they released comes in the form of a series of &lt;a href=&#34;https://github.com/TheEconomist/covid-19-excess-deaths-tracker/tree/master/output-data/excess-deaths&#34;&gt;country-level CSVs&lt;/a&gt;; although helpful for country-level analysis, this meant that we have to modify the data into a joined format in order to create a table.&lt;/p&gt;
+&lt;p&gt;Let’s begin by creating a function which reads in &lt;strong&gt;each individual CSV&lt;/strong&gt;, selects relevant columns, and stores that specific dataframe in the global environment.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;create_dataframe &amp;lt;- function(country) {
+  ## for URL (below)
+  country &amp;lt;- str_replace(country, &amp;quot; &amp;quot;, &amp;quot;_&amp;quot;)
+  
+  ## read in CSV, given country parameter
+  data &amp;lt;-
+    readr::read_csv(
+      paste0(
+        &amp;#39;https://raw.githubusercontent.com/TheEconomist/covid-19-excess-deaths-tracker/master/output-data/excess-deaths/&amp;#39;, country, &amp;#39;_excess_deaths.csv&amp;#39;
+      )
+    )
+  
+  ## select relevant columns
+  data &amp;lt;- data %&amp;gt;%
+    select(
+      country,
+      region,
+      start_date,
+      end_date,
+      population,
+      total_deaths,
+      covid_deaths,
+      expected_deaths,
+      excess_deaths,
+      non_covid_deaths
+    )
+  
+  assign(country, rbind(data), envir = .GlobalEnv)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With that function created, we then want to loop it with each country &lt;em&gt;The Economist&lt;/em&gt; has included.&lt;/p&gt;
+&lt;p&gt;To do so, we grab their list of sources from GitHub and pull each country into a list:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;country_names &amp;lt;-
+  readr::read_csv(
+    &amp;#39;https://raw.githubusercontent.com/TheEconomist/covid-19-excess-deaths-tracker/master/source-data/list_of_sources.csv&amp;#39;
+  ) %&amp;gt;%
+  select(country) %&amp;gt;%
+  distinct() %&amp;gt;%
+  mutate(country = stringr::str_to_lower(country)) %&amp;gt;%
+  filter(country != &amp;#39;all&amp;#39;) %&amp;gt;%
+  pull()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then, we loop!&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;for (country in country_names) {
+  create_dataframe(country)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, we have a list of dataframes, with each containing one country’s data on excess mortality.&lt;/p&gt;
+&lt;p&gt;Finally, we merge each of these new dataframes into one master dataset. Here, we are defining in &lt;code&gt;dfs&lt;/code&gt; a list of all objects in the global environment that are of the structure data frame. Then, we &lt;code&gt;rbind&lt;/code&gt; them all together!&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dfs = sapply(.GlobalEnv, is.data.frame)
+
+data &amp;lt;- do.call(rbind, mget(names(dfs)[dfs]))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But unfortunately, that’s not all. We need to filter our data to only include the places that are in &lt;em&gt;The Economist’s&lt;/em&gt; table. To make matters more difficult, the table’s identifying row is titled ‘Region/Country’, and includes data from two &lt;em&gt;separate&lt;/em&gt; rows in the CSVs.&lt;/p&gt;
+&lt;p&gt;Let’s begin by manually defining and filtering according to the countries and regions that &lt;em&gt;The Economist&lt;/em&gt; includes. (This selection does not seem to have an order to it; as such, it has to be manual).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;good_countries &amp;lt;-
+  c(&amp;quot;Britain&amp;quot;,
+    &amp;quot;Spain&amp;quot;,
+    &amp;quot;Italy&amp;quot;,
+    &amp;quot;France&amp;quot;,
+    &amp;quot;Netherlands&amp;quot;,
+    &amp;quot;Belgium&amp;quot;,
+    &amp;quot;Sweden&amp;quot;,
+    &amp;quot;Austria&amp;quot;)
+
+good_regions &amp;lt;- c(&amp;quot;New York City&amp;quot;, &amp;quot;Istanbul&amp;quot;, &amp;quot;Jakarta&amp;quot;)
+
+data_filtered_countries &amp;lt;- data %&amp;gt;%
+  filter(country %in% good_countries) %&amp;gt;%
+  filter(country == region)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Because the table only has one row for country/region, and groups them accordingly, we can go ahead and replace the &lt;code&gt;country&lt;/code&gt; variable in the &lt;code&gt;data_filtered_regions&lt;/code&gt; dataframe with &lt;code&gt;region&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_filtered_regions &amp;lt;- data %&amp;gt;%
+  filter(region %in% good_regions) %&amp;gt;%
+  # replace for the sake of the table
+  mutate(country = region)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And merge:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_filtered &amp;lt;-
+  rbind(data_filtered_countries, data_filtered_regions)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next, we notice that the table title says ‘Excess mortality &lt;em&gt;since region/country’s first 50 covid deaths&lt;/em&gt;.’ This means we need to exclude counts of excess deaths &lt;em&gt;before&lt;/em&gt; a region had 50 COVID deaths.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_filtered &amp;lt;- data_filtered %&amp;gt;%
+  group_by(country) %&amp;gt;%
+  mutate(csum = cumsum(covid_deaths))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;At this point (after only selecting our relevant columns), our data looks like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_filtered %&amp;gt;% 
+  select(country, start_date, end_date, covid_deaths, excess_deaths, covid_deaths, csum) %&amp;gt;% 
+  reactable()&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;htmlwidget-1&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-1&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;Belgium&#34;,&#34;Belgium&#34;,&#34;Belgium&#34;,&#34;Belgium&#34;,&#34;Belgium&#34;,&#34;Belgium&#34;,&#34;Belgium&#34;,&#34;Belgium&#34;,&#34;Belgium&#34;,&#34;Austria&#34;,&#34;Austria&#34;,&#34;Austria&#34;,&#34;Austria&#34;,&#34;Austria&#34;,&#34;Austria&#34;,&#34;Austria&#34;,&#34;Austria&#34;,&#34;Austria&#34;,&#34;Austria&#34;,&#34;Jakarta&#34;,&#34;Jakarta&#34;,&#34;Jakarta&#34;,&#34;Jakarta&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;],&#34;start_date&#34;:[&#34;2020-01-04&#34;,&#34;2020-01-11&#34;,&#34;2020-01-18&#34;,&#34;2020-01-25&#34;,&#34;2020-02-01&#34;,&#34;2020-02-08&#34;,&#34;2020-02-15&#34;,&#34;2020-02-22&#34;,&#34;2020-02-29&#34;,&#34;2020-03-07&#34;,&#34;2020-03-14&#34;,&#34;2020-03-21&#34;,&#34;2020-03-28&#34;,&#34;2020-04-04&#34;,&#34;2020-04-11&#34;,&#34;2020-04-18&#34;,&#34;2020-04-25&#34;,&#34;2020-05-02&#34;,&#34;2020-01-01&#34;,&#34;2020-01-08&#34;,&#34;2020-01-15&#34;,&#34;2020-01-22&#34;,&#34;2020-01-29&#34;,&#34;2020-02-05&#34;,&#34;2020-02-12&#34;,&#34;2020-02-19&#34;,&#34;2020-02-26&#34;,&#34;2020-03-04&#34;,&#34;2020-03-11&#34;,&#34;2020-03-18&#34;,&#34;2020-03-25&#34;,&#34;2020-04-01&#34;,&#34;2020-04-08&#34;,&#34;2020-04-15&#34;,&#34;2020-04-22&#34;,&#34;2020-04-29&#34;,&#34;2020-01-01&#34;,&#34;2020-01-08&#34;,&#34;2020-01-15&#34;,&#34;2020-01-22&#34;,&#34;2020-01-29&#34;,&#34;2020-02-05&#34;,&#34;2020-02-12&#34;,&#34;2020-02-19&#34;,&#34;2020-02-26&#34;,&#34;2020-03-04&#34;,&#34;2020-03-11&#34;,&#34;2020-03-18&#34;,&#34;2020-03-25&#34;,&#34;2020-04-01&#34;,&#34;2020-04-08&#34;,&#34;2020-04-15&#34;,&#34;2020-04-22&#34;,&#34;2020-01-06&#34;,&#34;2020-01-13&#34;,&#34;2020-01-20&#34;,&#34;2020-01-27&#34;,&#34;2020-02-03&#34;,&#34;2020-02-10&#34;,&#34;2020-02-17&#34;,&#34;2020-02-24&#34;,&#34;2020-03-02&#34;,&#34;2020-03-09&#34;,&#34;2020-03-16&#34;,&#34;2020-03-23&#34;,&#34;2020-03-30&#34;,&#34;2020-04-06&#34;,&#34;2020-04-13&#34;,&#34;2020-04-20&#34;,&#34;2020-04-27&#34;,&#34;2020-05-04&#34;,&#34;2020-01-01&#34;,&#34;2020-01-08&#34;,&#34;2020-01-15&#34;,&#34;2020-01-22&#34;,&#34;2020-01-29&#34;,&#34;2020-02-05&#34;,&#34;2020-02-12&#34;,&#34;2020-02-19&#34;,&#34;2020-02-26&#34;,&#34;2020-03-04&#34;,&#34;2020-03-11&#34;,&#34;2020-03-18&#34;,&#34;2020-03-25&#34;,&#34;2020-01-01&#34;,&#34;2020-01-08&#34;,&#34;2020-01-15&#34;,&#34;2020-01-22&#34;,&#34;2020-01-29&#34;,&#34;2020-02-05&#34;,&#34;2020-02-12&#34;,&#34;2020-02-19&#34;,&#34;2020-02-26&#34;,&#34;2020-03-04&#34;,&#34;2020-03-11&#34;,&#34;2020-03-18&#34;,&#34;2020-03-25&#34;,&#34;2020-04-01&#34;,&#34;2020-04-08&#34;,&#34;2020-04-15&#34;,&#34;2020-04-22&#34;,&#34;2020-02-24&#34;,&#34;2020-03-02&#34;,&#34;2020-03-09&#34;,&#34;2020-03-16&#34;,&#34;2020-03-23&#34;,&#34;2020-03-30&#34;,&#34;2020-04-06&#34;,&#34;2020-04-13&#34;,&#34;2020-04-20&#34;,&#34;2020-01-27&#34;,&#34;2020-02-03&#34;,&#34;2020-02-10&#34;,&#34;2020-02-17&#34;,&#34;2020-02-24&#34;,&#34;2020-03-02&#34;,&#34;2020-03-09&#34;,&#34;2020-03-16&#34;,&#34;2020-03-23&#34;,&#34;2020-03-30&#34;,&#34;2020-01-01&#34;,&#34;2020-02-01&#34;,&#34;2020-03-01&#34;,&#34;2020-04-01&#34;,&#34;2019-12-29&#34;,&#34;2020-01-05&#34;,&#34;2020-01-12&#34;,&#34;2020-01-19&#34;,&#34;2020-01-26&#34;,&#34;2020-02-02&#34;,&#34;2020-02-09&#34;,&#34;2020-02-16&#34;,&#34;2020-02-23&#34;,&#34;2020-03-01&#34;,&#34;2020-03-08&#34;,&#34;2020-03-15&#34;,&#34;2020-03-22&#34;,&#34;2020-03-29&#34;,&#34;2020-04-05&#34;,&#34;2020-04-12&#34;,&#34;2020-04-19&#34;,&#34;2020-01-01&#34;,&#34;2020-01-08&#34;,&#34;2020-01-15&#34;,&#34;2020-01-22&#34;,&#34;2020-01-29&#34;,&#34;2020-02-05&#34;,&#34;2020-02-12&#34;,&#34;2020-02-19&#34;,&#34;2020-02-26&#34;,&#34;2020-03-04&#34;,&#34;2020-03-11&#34;,&#34;2020-03-18&#34;,&#34;2020-03-25&#34;,&#34;2020-04-01&#34;,&#34;2020-04-08&#34;,&#34;2020-04-15&#34;,&#34;2020-04-22&#34;,&#34;2020-04-29&#34;,&#34;2020-05-06&#34;],&#34;end_date&#34;:[&#34;2020-01-10&#34;,&#34;2020-01-17&#34;,&#34;2020-01-24&#34;,&#34;2020-01-31&#34;,&#34;2020-02-07&#34;,&#34;2020-02-14&#34;,&#34;2020-02-21&#34;,&#34;2020-02-28&#34;,&#34;2020-03-06&#34;,&#34;2020-03-13&#34;,&#34;2020-03-20&#34;,&#34;2020-03-27&#34;,&#34;2020-04-03&#34;,&#34;2020-04-10&#34;,&#34;2020-04-17&#34;,&#34;2020-04-24&#34;,&#34;2020-05-01&#34;,&#34;2020-05-08&#34;,&#34;2020-01-07&#34;,&#34;2020-01-14&#34;,&#34;2020-01-21&#34;,&#34;2020-01-28&#34;,&#34;2020-02-04&#34;,&#34;2020-02-11&#34;,&#34;2020-02-18&#34;,&#34;2020-02-25&#34;,&#34;2020-03-03&#34;,&#34;2020-03-10&#34;,&#34;2020-03-17&#34;,&#34;2020-03-24&#34;,&#34;2020-03-31&#34;,&#34;2020-04-07&#34;,&#34;2020-04-14&#34;,&#34;2020-04-21&#34;,&#34;2020-04-28&#34;,&#34;2020-05-05&#34;,&#34;2020-01-07&#34;,&#34;2020-01-14&#34;,&#34;2020-01-21&#34;,&#34;2020-01-28&#34;,&#34;2020-02-04&#34;,&#34;2020-02-11&#34;,&#34;2020-02-18&#34;,&#34;2020-02-25&#34;,&#34;2020-03-03&#34;,&#34;2020-03-10&#34;,&#34;2020-03-17&#34;,&#34;2020-03-24&#34;,&#34;2020-03-31&#34;,&#34;2020-04-07&#34;,&#34;2020-04-14&#34;,&#34;2020-04-21&#34;,&#34;2020-04-28&#34;,&#34;2020-01-12&#34;,&#34;2020-01-19&#34;,&#34;2020-01-26&#34;,&#34;2020-02-02&#34;,&#34;2020-02-09&#34;,&#34;2020-02-16&#34;,&#34;2020-02-23&#34;,&#34;2020-03-01&#34;,&#34;2020-03-08&#34;,&#34;2020-03-15&#34;,&#34;2020-03-22&#34;,&#34;2020-03-29&#34;,&#34;2020-04-05&#34;,&#34;2020-04-12&#34;,&#34;2020-04-19&#34;,&#34;2020-04-26&#34;,&#34;2020-05-03&#34;,&#34;2020-05-10&#34;,&#34;2020-01-07&#34;,&#34;2020-01-14&#34;,&#34;2020-01-21&#34;,&#34;2020-01-28&#34;,&#34;2020-02-04&#34;,&#34;2020-02-11&#34;,&#34;2020-02-18&#34;,&#34;2020-02-25&#34;,&#34;2020-03-03&#34;,&#34;2020-03-10&#34;,&#34;2020-03-17&#34;,&#34;2020-03-24&#34;,&#34;2020-03-31&#34;,&#34;2020-01-07&#34;,&#34;2020-01-14&#34;,&#34;2020-01-21&#34;,&#34;2020-01-28&#34;,&#34;2020-02-04&#34;,&#34;2020-02-11&#34;,&#34;2020-02-18&#34;,&#34;2020-02-25&#34;,&#34;2020-03-03&#34;,&#34;2020-03-10&#34;,&#34;2020-03-17&#34;,&#34;2020-03-24&#34;,&#34;2020-03-31&#34;,&#34;2020-04-07&#34;,&#34;2020-04-14&#34;,&#34;2020-04-21&#34;,&#34;2020-04-28&#34;,&#34;2020-03-01&#34;,&#34;2020-03-08&#34;,&#34;2020-03-15&#34;,&#34;2020-03-22&#34;,&#34;2020-03-29&#34;,&#34;2020-04-05&#34;,&#34;2020-04-12&#34;,&#34;2020-04-19&#34;,&#34;2020-04-26&#34;,&#34;2020-02-02&#34;,&#34;2020-02-09&#34;,&#34;2020-02-16&#34;,&#34;2020-02-23&#34;,&#34;2020-03-01&#34;,&#34;2020-03-08&#34;,&#34;2020-03-15&#34;,&#34;2020-03-22&#34;,&#34;2020-03-29&#34;,&#34;2020-04-05&#34;,&#34;2020-01-31&#34;,&#34;2020-02-29&#34;,&#34;2020-03-31&#34;,&#34;2020-04-30&#34;,&#34;2020-01-04&#34;,&#34;2020-01-11&#34;,&#34;2020-01-18&#34;,&#34;2020-01-25&#34;,&#34;2020-02-01&#34;,&#34;2020-02-08&#34;,&#34;2020-02-15&#34;,&#34;2020-02-22&#34;,&#34;2020-02-29&#34;,&#34;2020-03-07&#34;,&#34;2020-03-14&#34;,&#34;2020-03-21&#34;,&#34;2020-03-28&#34;,&#34;2020-04-04&#34;,&#34;2020-04-11&#34;,&#34;2020-04-18&#34;,&#34;2020-04-25&#34;,&#34;2020-01-07&#34;,&#34;2020-01-14&#34;,&#34;2020-01-21&#34;,&#34;2020-01-28&#34;,&#34;2020-02-04&#34;,&#34;2020-02-11&#34;,&#34;2020-02-18&#34;,&#34;2020-02-25&#34;,&#34;2020-03-03&#34;,&#34;2020-03-10&#34;,&#34;2020-03-17&#34;,&#34;2020-03-24&#34;,&#34;2020-03-31&#34;,&#34;2020-04-07&#34;,&#34;2020-04-14&#34;,&#34;2020-04-21&#34;,&#34;2020-04-28&#34;,&#34;2020-05-05&#34;,&#34;2020-05-12&#34;],&#34;covid_deaths&#34;:[0,0,0,0,0,0,0,0,0,5,114,610,3812,6899,9509,9024,6684,4429,0,0,0,0,0,0,0,0,0,35,461,2211,5026,5486,4372,3691,2540,1797,0,0,0,0,0,0,0,0,0,0,8,73,251,532,668,629,550,0,0,0,0,0,0,0,0,3,17,159,592,995,971,947,791,581,384,0,0,0,0,0,0,0,10,69,552,1857,4238,5462,0,0,0,0,0,0,1,0,3,29,142,925,2423,6805,5401,5067,2864,0,0,0,18,180,745,1550,2125,1717,0,0,0,0,0,0,1,15,70,118,0,0,84,297,0,0,0,0,0,0,0,0,0,0,4,176,1198,3754,5218,4125,2720,0,0,0,0,0,0,0,0,0,0,0,22,85,255.5,339,428,366.5,264,187],&#34;excess_deaths&#34;:[84,-325.6,-1090,-794.6,-942.200000000001,-923,-717.4,-345.799999999999,-724,-187.799999999999,-207,1112.8,7122.2,8979.2,12731.4,12358.2,8457.6,3840.6,-621.25,-41,177.5,282.25,286,-560.5,-728.5,-704,-601.5,-408.5,675,4198.75,8323.25,7937.5,5389,2947.75,1134,546,-109.6,-76,-165.2,-119.6,-114,-128.8,-106,-239,-212.8,-95.5999999999999,-102.4,79.8,258.2,615.6,819.6,675.6,484.2,9,-167.6,-247.8,-163.8,-117.4,-114.6,-385.4,-232.2,-236.4,-108,459.6,1380.4,2107.8,2047.6,1409,1085,612.4,294,-1525.8,-1509,-1294.6,-716.799999999999,-1119,-837,-758.799999999999,-499.4,-224.4,1738.8,5271,8758.8,8487,-563,-623,-766,-787.200000000001,-699,-1008.8,-961.4,-1343.6,-792.4,-308.200000000001,954.200000000001,2401.4,5644.2,7266.2,5523.2,3247.4,1061.8,-108,-122,-81,267,934,1789,2065,1489,853,132,-138,-48,-61,-34,0,8,252,123,207,585.5,-28.5,1375.5,1409.5,-182.2,-84,-22.2,-11,14.4000000000001,-40.2,-7.20000000000005,-49,-1,5,32,339.2,1694.6,4998,6573.6,4550.8,2572,-67.6666666666667,-23.6666666666667,16.3333333333333,26.3333333333333,-20.6666666666667,8.33333333333326,15.3333333333333,-84.3333333333333,-55.3333333333333,-57.3333333333333,88,283,444.333333333333,818.333333333333,782,629.333333333333,481.333333333333,374,287.333333333333],&#34;csum&#34;:[0,0,0,0,0,0,0,0,0,5,119,729,4541,11440,20949,29973,36657,41086,0,0,0,0,0,0,0,0,0,35,496,2707,7733,13219,17591,21282,23822,25619,0,0,0,0,0,0,0,0,0,0,8,81,332,864,1532,2161,2711,0,0,0,0,0,0,0,0,3,20,179,771,1766,2737,3684,4475,5056,5440,0,0,0,0,0,0,0,10,79,631,2488,6726,12188,0,0,0,0,0,0,1,1,4,33,175,1100,3523,10328,15729,20796,23660,0,0,0,18,198,943,2493,4618,6335,0,0,0,0,0,0,1,16,86,204,0,0,84,381,0,0,0,0,0,0,0,0,0,0,4,180,1378,5132,10350,14475,17195,0,0,0,0,0,0,0,0,0,0,0,22,107,362.5,701.5,1129.5,1496,1760,1947]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;country&#34;,&#34;type&#34;:&#34;character&#34;},{&#34;accessor&#34;:&#34;start_date&#34;,&#34;name&#34;:&#34;start_date&#34;,&#34;type&#34;:&#34;Date&#34;},{&#34;accessor&#34;:&#34;end_date&#34;,&#34;name&#34;:&#34;end_date&#34;,&#34;type&#34;:&#34;Date&#34;},{&#34;accessor&#34;:&#34;covid_deaths&#34;,&#34;name&#34;:&#34;covid_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;},{&#34;accessor&#34;:&#34;excess_deaths&#34;,&#34;name&#34;:&#34;excess_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;},{&#34;accessor&#34;:&#34;csum&#34;,&#34;name&#34;:&#34;csum&#34;,&#34;type&#34;:&#34;numeric&#34;}],&#34;defaultPageSize&#34;:10,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;dataKey&#34;:&#34;5845fe168655e5f6a72e9b9f636d6082&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;p&gt;We need to group each country according to its total deaths related to COVID-19, and excess deaths. Then, using those two numbers, we calculate the percentage of excess deaths attributable to COVID-19. This can be used as a metric for underreporting of COVID-19 cases in a country.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_for_table &amp;lt;- data_filtered %&amp;gt;%
+  filter(excess_deaths &amp;gt; 0) %&amp;gt;%
+  group_by(country) %&amp;gt;%
+  summarise(
+    excess_deaths = round(sum(excess_deaths)),
+    covid_deaths = round(sum(covid_deaths)),
+    perc = covid_deaths / excess_deaths
+  ) %&amp;gt;%
+  select(country, covid_deaths, excess_deaths, perc)
+
+reactable(data_for_table, pagination = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;htmlwidget-2&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-2&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Austria&#34;,&#34;Belgium&#34;,&#34;Britain&#34;,&#34;France&#34;,&#34;Istanbul&#34;,&#34;Italy&#34;,&#34;Jakarta&#34;,&#34;Netherlands&#34;,&#34;New York City&#34;,&#34;Spain&#34;,&#34;Sweden&#34;],&#34;covid_deaths&#34;:[204,6335,40967,23627,1947,12109,381,5420,17195,25584,2703],&#34;excess_deaths&#34;:[722,7397,54686,26098,4254,24256,3370,9405,20780,31897,2933],&#34;perc&#34;:[0.282548476454294,0.856428281735839,0.749131404747102,0.90531841520423,0.457686882933709,0.499216688654354,0.113056379821958,0.576289207868155,0.827478344562079,0.802081700473399,0.921581997954313]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;country&#34;,&#34;type&#34;:&#34;character&#34;},{&#34;accessor&#34;:&#34;covid_deaths&#34;,&#34;name&#34;:&#34;covid_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;},{&#34;accessor&#34;:&#34;excess_deaths&#34;,&#34;name&#34;:&#34;excess_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;},{&#34;accessor&#34;:&#34;perc&#34;,&#34;name&#34;:&#34;perc&#34;,&#34;type&#34;:&#34;numeric&#34;}],&#34;defaultPageSize&#34;:11,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;dataKey&#34;:&#34;249cb3ef37824d809949c55e67461087&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;p&gt;The only thing missing at this point is the date range. In order to find and display the dates, we need to find the &lt;em&gt;first date after a given country/region hit 50 COVID-19 cases&lt;/em&gt; and the &lt;em&gt;last date in the data&lt;/em&gt; for that country/region.&lt;/p&gt;
+&lt;p&gt;How do we do this? First, we’ll create a &lt;a href=&#34;https://stackoverflow.com/questions/40039903/r-add-th-rd-and-nd-to-dates&#34;&gt;function&lt;/a&gt; called &lt;code&gt;append_date_suffix&lt;/code&gt; which, according to a given day, appends the appropriate suffix.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;append_date_suffix &amp;lt;- function(dates) {
+  suff &amp;lt;- case_when(
+    dates %in% c(11, 12, 13) ~ &amp;quot;th&amp;quot;,
+    dates %% 10 == 1 ~ &amp;#39;st&amp;#39;,
+    dates %% 10 == 2 ~ &amp;#39;nd&amp;#39;,
+    dates %% 10 == 3 ~ &amp;#39;rd&amp;#39;,
+    TRUE ~ &amp;quot;th&amp;quot;
+  )
+  paste0(dates, suff)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We’ll then group by the &lt;code&gt;country&lt;/code&gt; variable and find the min and max date (with the minimum only appearing after a country has seen 50 COVID deaths). Then, we do a lot of formatting of individual days and months, and append them all together with dashes in &lt;em&gt;The Economist’s&lt;/em&gt; style. Sorry, there’s a lot going on here.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dates_data &amp;lt;-
+  data_filtered %&amp;gt;%
+  # only looking at date ranges starting post-50 deaths
+  filter(csum &amp;gt; 50) %&amp;gt;%
+  group_by(country) %&amp;gt;%
+  summarise(start_date = min(start_date),
+            end_date = max(end_date)) %&amp;gt;%
+  mutate(
+    clean_start_day = format(start_date, &amp;quot;%d&amp;quot;),
+    clean_start_day = append_date_suffix(as.numeric(clean_start_day)),
+    clean_start_month = format(start_date, &amp;quot;%b&amp;quot;),
+    clean_end_day = format(end_date, &amp;quot;%d&amp;quot;),
+    clean_end_day = append_date_suffix(as.numeric(clean_end_day)),
+    clean_end_month = format(end_date, &amp;quot;%b&amp;quot;)
+  ) %&amp;gt;%
+  mutate(
+    clean_range = paste0(
+      clean_start_month,&amp;quot; &amp;quot;, ## Mar
+      clean_start_day, &amp;quot;-&amp;quot;, ## 6-
+      clean_end_month, &amp;quot; &amp;quot;, ## May
+      clean_end_day ## 18
+    )
+  ) %&amp;gt;%
+  select(country, clean_range)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This creates date ranges that look like this:&lt;/p&gt;
+&lt;div id=&#34;htmlwidget-3&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-3&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Austria&#34;,&#34;Belgium&#34;,&#34;Britain&#34;,&#34;France&#34;,&#34;Istanbul&#34;,&#34;Italy&#34;,&#34;Jakarta&#34;,&#34;Netherlands&#34;,&#34;New York City&#34;,&#34;Spain&#34;,&#34;Sweden&#34;],&#34;clean_range&#34;:[&#34;Mar 23rd-Apr 5th&#34;,&#34;Mar 23rd-Apr 26th&#34;,&#34;Mar 14th-May 8th&#34;,&#34;Mar 11th-Apr 28th&#34;,&#34;Mar 25th-May 12th&#34;,&#34;Feb 26th-Mar 31st&#34;,&#34;Mar 1st-Apr 30th&#34;,&#34;Mar 16th-May 10th&#34;,&#34;Mar 15th-Apr 25th&#34;,&#34;Mar 11th-May 5th&#34;,&#34;Mar 18th-Apr 28th&#34;]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;country&#34;,&#34;type&#34;:&#34;character&#34;},{&#34;accessor&#34;:&#34;clean_range&#34;,&#34;name&#34;:&#34;clean_range&#34;,&#34;type&#34;:&#34;character&#34;}],&#34;defaultPageSize&#34;:11,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;dataKey&#34;:&#34;944cb010b09fbd5dbf1363c55bf203a7&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;p&gt;Join these dates with our existing data…&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_for_table &amp;lt;- data_filtered %&amp;gt;%
+  filter(excess_deaths &amp;gt; 0) %&amp;gt;%
+  group_by(country) %&amp;gt;%
+  summarise(
+    excess_deaths = round(sum(excess_deaths)),
+    covid_deaths = round(sum(covid_deaths)),
+    perc = covid_deaths / excess_deaths
+  ) %&amp;gt;%
+  left_join(dates_data, by = &amp;#39;country&amp;#39;) %&amp;gt;%
+  select(country, clean_range, covid_deaths, excess_deaths, perc)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and we get our finalized dataset:&lt;/p&gt;
+&lt;div id=&#34;htmlwidget-4&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-4&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Austria&#34;,&#34;Belgium&#34;,&#34;Britain&#34;,&#34;France&#34;,&#34;Istanbul&#34;,&#34;Italy&#34;,&#34;Jakarta&#34;,&#34;Netherlands&#34;,&#34;New York City&#34;,&#34;Spain&#34;,&#34;Sweden&#34;],&#34;clean_range&#34;:[&#34;Mar 23rd-Apr 5th&#34;,&#34;Mar 23rd-Apr 26th&#34;,&#34;Mar 14th-May 8th&#34;,&#34;Mar 11th-Apr 28th&#34;,&#34;Mar 25th-May 12th&#34;,&#34;Feb 26th-Mar 31st&#34;,&#34;Mar 1st-Apr 30th&#34;,&#34;Mar 16th-May 10th&#34;,&#34;Mar 15th-Apr 25th&#34;,&#34;Mar 11th-May 5th&#34;,&#34;Mar 18th-Apr 28th&#34;],&#34;covid_deaths&#34;:[204,6335,40967,23627,1947,12109,381,5420,17195,25584,2703],&#34;excess_deaths&#34;:[722,7397,54686,26098,4254,24256,3370,9405,20780,31897,2933],&#34;perc&#34;:[0.282548476454294,0.856428281735839,0.749131404747102,0.90531841520423,0.457686882933709,0.499216688654354,0.113056379821958,0.576289207868155,0.827478344562079,0.802081700473399,0.921581997954313]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;country&#34;,&#34;type&#34;:&#34;character&#34;},{&#34;accessor&#34;:&#34;clean_range&#34;,&#34;name&#34;:&#34;clean_range&#34;,&#34;type&#34;:&#34;character&#34;},{&#34;accessor&#34;:&#34;covid_deaths&#34;,&#34;name&#34;:&#34;covid_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;},{&#34;accessor&#34;:&#34;excess_deaths&#34;,&#34;name&#34;:&#34;excess_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;},{&#34;accessor&#34;:&#34;perc&#34;,&#34;name&#34;:&#34;perc&#34;,&#34;type&#34;:&#34;numeric&#34;}],&#34;defaultPageSize&#34;:11,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;dataKey&#34;:&#34;87a9a93568ca457a61d4bc6661464513&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;/div&gt;
+&lt;div id=&#34;creating-the-table&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Creating the table&lt;/h2&gt;
+&lt;p&gt;Finally, we’re ready to take that dataset and create our table. We can begin by defining some parameters that make the table easier to use and more aesthetically pleasing. Here, we sort according to excess deaths (but don’t include an arrow), make it compact, and show all results on one page.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;reactable(
+  data_for_table,
+  defaultSortOrder = &amp;#39;desc&amp;#39;,
+  defaultSorted = &amp;#39;excess_deaths&amp;#39;,
+  showSortIcon = FALSE,
+  compact = TRUE,
+  pagination = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;htmlwidget-5&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-5&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Austria&#34;,&#34;Belgium&#34;,&#34;Britain&#34;,&#34;France&#34;,&#34;Istanbul&#34;,&#34;Italy&#34;,&#34;Jakarta&#34;,&#34;Netherlands&#34;,&#34;New York City&#34;,&#34;Spain&#34;,&#34;Sweden&#34;],&#34;clean_range&#34;:[&#34;Mar 23rd-Apr 5th&#34;,&#34;Mar 23rd-Apr 26th&#34;,&#34;Mar 14th-May 8th&#34;,&#34;Mar 11th-Apr 28th&#34;,&#34;Mar 25th-May 12th&#34;,&#34;Feb 26th-Mar 31st&#34;,&#34;Mar 1st-Apr 30th&#34;,&#34;Mar 16th-May 10th&#34;,&#34;Mar 15th-Apr 25th&#34;,&#34;Mar 11th-May 5th&#34;,&#34;Mar 18th-Apr 28th&#34;],&#34;covid_deaths&#34;:[204,6335,40967,23627,1947,12109,381,5420,17195,25584,2703],&#34;excess_deaths&#34;:[722,7397,54686,26098,4254,24256,3370,9405,20780,31897,2933],&#34;perc&#34;:[0.282548476454294,0.856428281735839,0.749131404747102,0.90531841520423,0.457686882933709,0.499216688654354,0.113056379821958,0.576289207868155,0.827478344562079,0.802081700473399,0.921581997954313]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;country&#34;,&#34;type&#34;:&#34;character&#34;},{&#34;accessor&#34;:&#34;clean_range&#34;,&#34;name&#34;:&#34;clean_range&#34;,&#34;type&#34;:&#34;character&#34;},{&#34;accessor&#34;:&#34;covid_deaths&#34;,&#34;name&#34;:&#34;covid_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;},{&#34;accessor&#34;:&#34;excess_deaths&#34;,&#34;name&#34;:&#34;excess_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;},{&#34;accessor&#34;:&#34;perc&#34;,&#34;name&#34;:&#34;perc&#34;,&#34;type&#34;:&#34;numeric&#34;}],&#34;defaultSortDesc&#34;:true,&#34;defaultSorted&#34;:[{&#34;id&#34;:&#34;excess_deaths&#34;,&#34;desc&#34;:true}],&#34;defaultPageSize&#34;:11,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;compact&#34;:true,&#34;showSortIcon&#34;:false,&#34;dataKey&#34;:&#34;87a9a93568ca457a61d4bc6661464513&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;div id=&#34;style-headers&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Style headers&lt;/h3&gt;
+&lt;p&gt;Next, let’s make the column headers stylistically similar to &lt;em&gt;The Economist&lt;/em&gt;. We do so with reactable’s &lt;code&gt;defaultColDef&lt;/code&gt;, where we define a &lt;code&gt;colDef&lt;/code&gt; with styles for the header and regular cells. Here, we can include CSS (which you can find by inspecting the table at hand). Throughout this post, you’ll notice my constant references to &lt;code&gt;font_es&lt;/code&gt;. This is from &lt;a href=&#34;https://github.com/hrbrmstr/hrbrthemes&#34;&gt;Bob Rudis’s &lt;code&gt;hrbrthemes&lt;/code&gt;&lt;/a&gt;. It contains the font name for Economist Sans Condensed, which is the font that &lt;em&gt;The Economist&lt;/em&gt; uses!&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;reactable(
+  data_for_table,
+  defaultSortOrder = &amp;#39;desc&amp;#39;,
+  defaultSorted = &amp;#39;excess_deaths&amp;#39;,
+  showSortIcon = FALSE,
+  compact = TRUE,
+  pagination = FALSE,
+  ######## NEW ########
+  defaultColDef = colDef(
+    ### define header styling
+    headerStyle = list(
+      textAlign = &amp;quot;left&amp;quot;,
+      fontSize = &amp;quot;11px&amp;quot;,
+      lineHeight = &amp;quot;14px&amp;quot;,
+      textTransform = &amp;quot;uppercase&amp;quot;,
+      color = &amp;quot;#0c0c0c&amp;quot;,
+      fontWeight = &amp;quot;500&amp;quot;,
+      borderBottom = &amp;quot;2px solid #e9edf0&amp;quot;,
+      paddingBottom = &amp;quot;3px&amp;quot;,
+      verticalAlign = &amp;quot;bottom&amp;quot;,
+      fontFamily = font_es
+    ),
+    ### define default column styling
+    style = list(
+      fontFamily = font_es,
+      fontSize = &amp;quot;14px&amp;quot;,
+      verticalAlign = &amp;quot;center&amp;quot;,
+      align = &amp;quot;left&amp;quot;
+    )
+  )
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;htmlwidget-6&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-6&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Austria&#34;,&#34;Belgium&#34;,&#34;Britain&#34;,&#34;France&#34;,&#34;Istanbul&#34;,&#34;Italy&#34;,&#34;Jakarta&#34;,&#34;Netherlands&#34;,&#34;New York City&#34;,&#34;Spain&#34;,&#34;Sweden&#34;],&#34;clean_range&#34;:[&#34;Mar 23rd-Apr 5th&#34;,&#34;Mar 23rd-Apr 26th&#34;,&#34;Mar 14th-May 8th&#34;,&#34;Mar 11th-Apr 28th&#34;,&#34;Mar 25th-May 12th&#34;,&#34;Feb 26th-Mar 31st&#34;,&#34;Mar 1st-Apr 30th&#34;,&#34;Mar 16th-May 10th&#34;,&#34;Mar 15th-Apr 25th&#34;,&#34;Mar 11th-May 5th&#34;,&#34;Mar 18th-Apr 28th&#34;],&#34;covid_deaths&#34;:[204,6335,40967,23627,1947,12109,381,5420,17195,25584,2703],&#34;excess_deaths&#34;:[722,7397,54686,26098,4254,24256,3370,9405,20780,31897,2933],&#34;perc&#34;:[0.282548476454294,0.856428281735839,0.749131404747102,0.90531841520423,0.457686882933709,0.499216688654354,0.113056379821958,0.576289207868155,0.827478344562079,0.802081700473399,0.921581997954313]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;country&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;clean_range&#34;,&#34;name&#34;:&#34;clean_range&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;covid_deaths&#34;,&#34;name&#34;:&#34;covid_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;excess_deaths&#34;,&#34;name&#34;:&#34;excess_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;perc&#34;,&#34;name&#34;:&#34;perc&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}}],&#34;defaultSortDesc&#34;:true,&#34;defaultSorted&#34;:[{&#34;id&#34;:&#34;excess_deaths&#34;,&#34;desc&#34;:true}],&#34;defaultPageSize&#34;:11,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;compact&#34;:true,&#34;showSortIcon&#34;:false,&#34;dataKey&#34;:&#34;8ad8706dfbeacfc7871563a2bd901bf3&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;/div&gt;
+&lt;div id=&#34;format-columns&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Format columns&lt;/h3&gt;
+&lt;p&gt;Now, we can start to format the specific columns appropriately. The three easiest columns are &lt;strong&gt;Region/Country&lt;/strong&gt;, &lt;strong&gt;Time Period&lt;/strong&gt;, &lt;strong&gt;COVID-19 as % of Total&lt;/strong&gt;. In each of these columns, we create a &lt;code&gt;colDef&lt;/code&gt; which defines the column name, as well as some styling.&lt;/p&gt;
+&lt;p&gt;You’ll notice the addition of &lt;code&gt;JS&lt;/code&gt; in our percent column. This allows us to include JavaScript in our columns and column headers. I use it to do something simple, like a line break. You can use JS for plenty of more complex purposes, &lt;a href=&#34;https://glin.github.io/reactable/articles/examples.html&#34;&gt;some of which are documented here&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;reactable(
+  data_for_table,
+  defaultSortOrder = &amp;#39;desc&amp;#39;,
+  defaultSorted = &amp;#39;excess_deaths&amp;#39;,
+  showSortIcon = FALSE,
+  compact = TRUE,
+  pagination = FALSE,
+  defaultColDef = colDef(
+    headerStyle = list(
+      textAlign = &amp;quot;left&amp;quot;,
+      fontSize = &amp;quot;11px&amp;quot;,
+      lineHeight = &amp;quot;14px&amp;quot;,
+      textTransform = &amp;quot;uppercase&amp;quot;,
+      color = &amp;quot;#0c0c0c&amp;quot;,
+      fontWeight = &amp;quot;500&amp;quot;,
+      borderBottom = &amp;quot;2px solid #e9edf0&amp;quot;,
+      paddingBottom = &amp;quot;3px&amp;quot;,
+      verticalAlign = &amp;quot;bottom&amp;quot;,
+      fontFamily = font_es
+    ),
+    style = list(
+      fontFamily = font_es,
+      fontSize = &amp;quot;14px&amp;quot;,
+      verticalAlign = &amp;quot;center&amp;quot;,
+      align = &amp;quot;left&amp;quot;
+    )
+  ),
+  ####### NEW #######
+  columns = list(
+    country = colDef(
+      name = &amp;quot;Region / Country&amp;quot;,
+      style = list(fontFamily = font_es,
+                   fontWeight = &amp;quot;400&amp;quot;)
+    ),
+    perc = colDef(
+      html = TRUE,
+      header = JS(&amp;quot;
+      function(colInfo) {
+        return &amp;#39;COVID-19 as&amp;lt;br&amp;gt;% of total&amp;#39;
+      }&amp;quot;),
+      name = &amp;quot;COVID-19 as % of Total&amp;quot;,
+      align = &amp;quot;right&amp;quot;,
+      maxWidth = 100,
+      format = colFormat(percent = TRUE, digits = 0),
+      style = list(fontFamily =  font_es_bold),
+      headerStyle = list(
+        fontSize = &amp;quot;11px&amp;quot;,
+        lineHeight = &amp;quot;14px&amp;quot;,
+        textTransform = &amp;quot;uppercase&amp;quot;,
+        color = &amp;quot;#0c0c0c&amp;quot;,
+        fontWeight = &amp;quot;500&amp;quot;,
+        borderBottom = &amp;quot;2px solid #e9edf0&amp;quot;,
+        paddingBottom = &amp;quot;3px&amp;quot;,
+        verticalAlign = &amp;quot;bottom&amp;quot;,
+        fontFamily = font_es,
+        textAlign = &amp;quot;right&amp;quot;
+      )
+    ),
+    clean_range = colDef(
+      name = &amp;quot;Time Period&amp;quot;,
+      style = list(
+        color = &amp;#39;#3f5661&amp;#39;,
+        fontSize = &amp;#39;12px&amp;#39;,
+        fontFamily = font_es
+      )
+    )
+  )
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;htmlwidget-7&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-7&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Austria&#34;,&#34;Belgium&#34;,&#34;Britain&#34;,&#34;France&#34;,&#34;Istanbul&#34;,&#34;Italy&#34;,&#34;Jakarta&#34;,&#34;Netherlands&#34;,&#34;New York City&#34;,&#34;Spain&#34;,&#34;Sweden&#34;],&#34;clean_range&#34;:[&#34;Mar 23rd-Apr 5th&#34;,&#34;Mar 23rd-Apr 26th&#34;,&#34;Mar 14th-May 8th&#34;,&#34;Mar 11th-Apr 28th&#34;,&#34;Mar 25th-May 12th&#34;,&#34;Feb 26th-Mar 31st&#34;,&#34;Mar 1st-Apr 30th&#34;,&#34;Mar 16th-May 10th&#34;,&#34;Mar 15th-Apr 25th&#34;,&#34;Mar 11th-May 5th&#34;,&#34;Mar 18th-Apr 28th&#34;],&#34;covid_deaths&#34;:[204,6335,40967,23627,1947,12109,381,5420,17195,25584,2703],&#34;excess_deaths&#34;:[722,7397,54686,26098,4254,24256,3370,9405,20780,31897,2933],&#34;perc&#34;:[0.282548476454294,0.856428281735839,0.749131404747102,0.90531841520423,0.457686882933709,0.499216688654354,0.113056379821958,0.576289207868155,0.827478344562079,0.802081700473399,0.921581997954313]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;Region / Country&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontWeight&#34;:&#34;400&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;clean_range&#34;,&#34;name&#34;:&#34;Time Period&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;color&#34;:&#34;#3f5661&#34;,&#34;fontSize&#34;:&#34;12px&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;covid_deaths&#34;,&#34;name&#34;:&#34;covid_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;excess_deaths&#34;,&#34;name&#34;:&#34;excess_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;perc&#34;,&#34;name&#34;:&#34;COVID-19 as % of Total&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndBol&#34;},&#34;headerStyle&#34;:{&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;textAlign&#34;:&#34;right&#34;},&#34;format&#34;:{&#34;cell&#34;:{&#34;digits&#34;:0,&#34;percent&#34;:true},&#34;aggregated&#34;:{&#34;digits&#34;:0,&#34;percent&#34;:true}},&#34;header&#34;:&#34;\n      function(colInfo) {\n        return &#39;COVID-19 as&lt;br&gt;% of total&#39;\n      }&#34;,&#34;html&#34;:true,&#34;maxWidth&#34;:100,&#34;align&#34;:&#34;right&#34;}],&#34;defaultSortDesc&#34;:true,&#34;defaultSorted&#34;:[{&#34;id&#34;:&#34;excess_deaths&#34;,&#34;desc&#34;:true}],&#34;defaultPageSize&#34;:11,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;compact&#34;:true,&#34;showSortIcon&#34;:false,&#34;dataKey&#34;:&#34;a9245ac4442c2fd989f596473fa410d5&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[&#34;tag.attribs.columns.4.header&#34;],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;/div&gt;
+&lt;div id=&#34;add-the-barcharts&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Add the barcharts&lt;/h3&gt;
+&lt;p&gt;We can now create the ‘deaths’ columns, which include barcharts.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;reactable&lt;/code&gt; makes the addition of barcharts to tables quite easy, thanks to its integration of JavaScript. Here, I pull from one &lt;a href=&#34;https://glin.github.io/reactable/articles/twitter-followers/twitter-followers.html&#34;&gt;example&lt;/a&gt; on &lt;code&gt;reactable&lt;/code&gt;’s website, and use the following code:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;reactable(
+  data_for_table,
+  defaultSortOrder = &amp;#39;desc&amp;#39;,
+  defaultSorted = &amp;#39;excess_deaths&amp;#39;,
+  showSortIcon = FALSE,
+  compact = TRUE,
+  pagination = FALSE,
+  defaultColDef = colDef(
+    headerStyle = list(
+      textAlign = &amp;quot;left&amp;quot;,
+      fontSize = &amp;quot;11px&amp;quot;,
+      lineHeight = &amp;quot;14px&amp;quot;,
+      textTransform = &amp;quot;uppercase&amp;quot;,
+      color = &amp;quot;#0c0c0c&amp;quot;,
+      fontWeight = &amp;quot;500&amp;quot;,
+      borderBottom = &amp;quot;2px solid #e9edf0&amp;quot;,
+      paddingBottom = &amp;quot;3px&amp;quot;,
+      verticalAlign = &amp;quot;bottom&amp;quot;,
+      fontFamily = font_es
+    ),
+    style = list(
+      fontFamily = font_es,
+      fontSize = &amp;quot;14px&amp;quot;,
+      verticalAlign = &amp;quot;center&amp;quot;,
+      align = &amp;quot;left&amp;quot;
+    )
+  ),
+  columns = list(
+    country = colDef(
+      name = &amp;quot;Region / Country&amp;quot;,
+      style = list(fontFamily = font_es,
+                   fontWeight = &amp;quot;400&amp;quot;)
+    ),
+    perc = colDef(
+      html = TRUE,
+      header = JS(&amp;quot;
+      function(colInfo) {
+        return &amp;#39;COVID-19 as&amp;lt;br&amp;gt;% of total&amp;#39;
+      }&amp;quot;),
+      name = &amp;quot;COVID-19 as % of Total&amp;quot;,
+      align = &amp;quot;right&amp;quot;,
+      maxWidth = 100,
+      format = colFormat(percent = TRUE, digits = 0),
+      style = list(fontFamily =  font_es_bold),
+      headerStyle = list(
+        fontSize = &amp;quot;11px&amp;quot;,
+        lineHeight = &amp;quot;14px&amp;quot;,
+        textTransform = &amp;quot;uppercase&amp;quot;,
+        color = &amp;quot;#0c0c0c&amp;quot;,
+        fontWeight = &amp;quot;500&amp;quot;,
+        borderBottom = &amp;quot;2px solid #e9edf0&amp;quot;,
+        paddingBottom = &amp;quot;3px&amp;quot;,
+        verticalAlign = &amp;quot;bottom&amp;quot;,
+        fontFamily = font_es,
+        textAlign = &amp;quot;right&amp;quot;
+      )
+    ),
+    clean_range = colDef(
+      name = &amp;quot;Time Period&amp;quot;,
+      style = list(
+        color = &amp;#39;#3f5661&amp;#39;,
+        fontSize = &amp;#39;12px&amp;#39;,
+        fontFamily = font_es
+      )
+    ),
+    ###### NEW ######
+    covid_deaths = colDef(
+      name = &amp;quot;COVID-19 Deaths&amp;quot;,
+      cell = function(value) {
+        width &amp;lt;- paste0(value * 100 / max(data_for_table$covid_deaths), &amp;quot;%&amp;quot;)
+        value &amp;lt;- format(value, big.mark = &amp;quot;,&amp;quot;)
+        value &amp;lt;- format(value, width = 10, justify = &amp;quot;right&amp;quot;)
+        bar &amp;lt;- div(
+          class = &amp;quot;bar-chart&amp;quot;,
+          style = list(marginRight = &amp;quot;6px&amp;quot;),
+          div(
+            class = &amp;quot;bar&amp;quot;,
+            style = list(width = width, backgroundColor = &amp;quot;#F15A3F&amp;quot;)
+          )
+        )
+        div(class = &amp;quot;bar-cell&amp;quot;, span(class = &amp;quot;number&amp;quot;, value), bar)
+      }
+    ),
+    excess_deaths = colDef(
+      name = &amp;quot;Total Excess Deaths&amp;quot;,
+      cell = function(value) {
+        width &amp;lt;-
+          paste0(value * 100 / max(data_for_table$excess_deaths), &amp;quot;%&amp;quot;)
+        value &amp;lt;- format(value, big.mark = &amp;quot;,&amp;quot;)
+        value &amp;lt;- format(value, width = 10, justify = &amp;quot;right&amp;quot;)
+        bar &amp;lt;- div(
+          class = &amp;quot;bar-chart&amp;quot;,
+          style = list(marginRight = &amp;quot;6px&amp;quot;),
+          div(
+            class = &amp;quot;bar&amp;quot;,
+            style = list(width = width, backgroundColor = &amp;quot;#3F5661&amp;quot;)
+          )
+        )
+        div(class = &amp;quot;bar-cell&amp;quot;, span(class = &amp;quot;number&amp;quot;, value), bar)
+      }
+    )
+  )
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s break that down step-by-step, with a focus on &lt;code&gt;covid_deaths&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;First, we need to define some CSS. &lt;code&gt;reactable&lt;/code&gt; allows you to easily include CSS is RMarkdown documents, in chunks defined as &lt;code&gt;css&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;css&#34;&gt;&lt;code&gt;.bar-cell {
+  display: flex;
+  align-items: center;
+}
+
+.number {
+  font-size: 13.5px;
+  white-space: pre;
+}
+
+.bar-chart {
+  flex-grow: 1;
+  margin-left: 6px;
+  height: 22px;
+}
+
+.bar {
+  height: 100%;
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;style type=&#34;text/css&#34;&gt;
+.bar-cell {
+  display: flex;
+  align-items: center;
+}
+
+.number {
+  font-size: 13.5px;
+  white-space: pre;
+}
+
+.bar-chart {
+  flex-grow: 1;
+  margin-left: 6px;
+  height: 22px;
+}
+
+.bar {
+  height: 100%;
+}
+&lt;/style&gt;
+&lt;p&gt;Now, let’s look at how we define &lt;code&gt;covid_deaths&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;  covid_deaths = colDef(
+    ### define the name
+    name = &amp;quot;COVID-19 Deaths&amp;quot;,
+    ### create a &amp;#39;cell&amp;#39; function
+    cell = function(value) {
+      ### define the bar width according to the specified value
+      width &amp;lt;- paste0(value * 100 / max(data_for_table$covid_deaths), &amp;quot;%&amp;quot;)
+      ### add a comma to the label
+      value &amp;lt;- format(value, big.mark = &amp;quot;,&amp;quot;)
+      ### justify and provide padding with width
+      value &amp;lt;- format(value, width = 10, justify = &amp;quot;right&amp;quot;)
+      ### create the barchart div
+      bar &amp;lt;- div(
+        ### with a class of &amp;#39;bar-chart&amp;#39;
+        class = &amp;quot;bar-chart&amp;quot;,
+        ### give the bar a margin
+        style = list(marginRight = &amp;quot;6px&amp;quot;),
+        ### create the *actual* bar, with the red economist color
+        div(
+          class = &amp;quot;bar&amp;quot;,
+          style = list(width = width, backgroundColor = &amp;quot;#F15A3F&amp;quot;)
+        )
+      )
+      ### bring it all together, with the &amp;#39;value&amp;#39; (number) preceding the bar itself
+      div(class = &amp;quot;bar-cell&amp;quot;, span(class = &amp;quot;number&amp;quot;, value), bar)
+    }
+  )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This creates a table that looks like this:&lt;/p&gt;
+&lt;div id=&#34;htmlwidget-8&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-8&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Austria&#34;,&#34;Belgium&#34;,&#34;Britain&#34;,&#34;France&#34;,&#34;Istanbul&#34;,&#34;Italy&#34;,&#34;Jakarta&#34;,&#34;Netherlands&#34;,&#34;New York City&#34;,&#34;Spain&#34;,&#34;Sweden&#34;],&#34;clean_range&#34;:[&#34;Mar 23rd-Apr 5th&#34;,&#34;Mar 23rd-Apr 26th&#34;,&#34;Mar 14th-May 8th&#34;,&#34;Mar 11th-Apr 28th&#34;,&#34;Mar 25th-May 12th&#34;,&#34;Feb 26th-Mar 31st&#34;,&#34;Mar 1st-Apr 30th&#34;,&#34;Mar 16th-May 10th&#34;,&#34;Mar 15th-Apr 25th&#34;,&#34;Mar 11th-May 5th&#34;,&#34;Mar 18th-Apr 28th&#34;],&#34;covid_deaths&#34;:[204,6335,40967,23627,1947,12109,381,5420,17195,25584,2703],&#34;excess_deaths&#34;:[722,7397,54686,26098,4254,24256,3370,9405,20780,31897,2933],&#34;perc&#34;:[0.282548476454294,0.856428281735839,0.749131404747102,0.90531841520423,0.457686882933709,0.499216688654354,0.113056379821958,0.576289207868155,0.827478344562079,0.802081700473399,0.921581997954313]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;Region / Country&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontWeight&#34;:&#34;400&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;clean_range&#34;,&#34;name&#34;:&#34;Time Period&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;color&#34;:&#34;#3f5661&#34;,&#34;fontSize&#34;:&#34;12px&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;covid_deaths&#34;,&#34;name&#34;:&#34;COVID-19 Deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;cell&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;       204&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;0.49796177411087%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     6,335&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;15.4636658774135%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    40,967&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;100%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    23,627&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;57.6732492005761%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     1,947&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;4.75260575585227%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    12,109&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;29.5579368760222%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;       381&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;0.930016842824713%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     5,420&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;13.230160861181%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    17,195&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;41.972807381551%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    25,584&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;62.4502648473161%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     2,703&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;6.59799350696902%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]}]},{&#34;accessor&#34;:&#34;excess_deaths&#34;,&#34;name&#34;:&#34;Total Excess Deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;cell&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;       722&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;1.32026478440552%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     7,397&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;13.5263138646089%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    54,686&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;100%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    26,098&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;47.7233661266138%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     4,254&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;7.77895622279925%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    24,256&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;44.3550451669532%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     3,370&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;6.16245474161577%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     9,405&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;17.1981860073876%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    20,780&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;37.9987565373222%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    31,897&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;58.327542698314%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     2,933&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;5.36334710894927%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]}]},{&#34;accessor&#34;:&#34;perc&#34;,&#34;name&#34;:&#34;COVID-19 as % of Total&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndBol&#34;},&#34;headerStyle&#34;:{&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;textAlign&#34;:&#34;right&#34;},&#34;format&#34;:{&#34;cell&#34;:{&#34;digits&#34;:0,&#34;percent&#34;:true},&#34;aggregated&#34;:{&#34;digits&#34;:0,&#34;percent&#34;:true}},&#34;header&#34;:&#34;\n      function(colInfo) {\n        return &#39;COVID-19 as&lt;br&gt;% of total&#39;\n      }&#34;,&#34;html&#34;:true,&#34;maxWidth&#34;:100,&#34;align&#34;:&#34;right&#34;}],&#34;defaultSortDesc&#34;:true,&#34;defaultSorted&#34;:[{&#34;id&#34;:&#34;excess_deaths&#34;,&#34;desc&#34;:true}],&#34;defaultPageSize&#34;:11,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;compact&#34;:true,&#34;showSortIcon&#34;:false,&#34;dataKey&#34;:&#34;7fed8502c33f575f68606f21c78d769a&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[&#34;tag.attribs.columns.4.header&#34;],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;/div&gt;
+&lt;div id=&#34;add-a-title&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Add a title&lt;/h3&gt;
+&lt;p&gt;Finally, we can add the table title and subtitle. We do so by storing the above table in our environment. (This is the final table code!)&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;table &amp;lt;- reactable(
+  data_for_table,
+  defaultSortOrder = &amp;#39;desc&amp;#39;,
+  defaultSorted = &amp;#39;excess_deaths&amp;#39;,
+  showSortIcon = FALSE,
+  compact = TRUE,
+  pagination = FALSE,
+  defaultColDef = colDef(
+    headerStyle = list(
+      textAlign = &amp;quot;left&amp;quot;,
+      fontSize = &amp;quot;11px&amp;quot;,
+      lineHeight = &amp;quot;14px&amp;quot;,
+      textTransform = &amp;quot;uppercase&amp;quot;,
+      color = &amp;quot;#0c0c0c&amp;quot;,
+      fontWeight = &amp;quot;500&amp;quot;,
+      borderBottom = &amp;quot;2px solid #e9edf0&amp;quot;,
+      paddingBottom = &amp;quot;3px&amp;quot;,
+      verticalAlign = &amp;quot;bottom&amp;quot;,
+      fontFamily = font_es
+    ),
+    style = list(
+      fontFamily = font_es,
+      fontSize = &amp;quot;14px&amp;quot;,
+      verticalAlign = &amp;quot;center&amp;quot;,
+      align = &amp;quot;left&amp;quot;
+    )
+  ),
+  
+  columns = list(
+    country = colDef(
+      name = &amp;quot;Region / Country&amp;quot;,
+      style = list(fontFamily = font_es,
+                   fontWeight = &amp;quot;400&amp;quot;)
+    ),
+    covid_deaths = colDef(
+      name = &amp;quot;COVID-19 Deaths&amp;quot;,
+      # align = &amp;quot;left&amp;quot;,
+      cell = function(value) {
+        width &amp;lt;- paste0(value * 100 / max(data_for_table$covid_deaths), &amp;quot;%&amp;quot;)
+        value &amp;lt;- format(value, big.mark = &amp;quot;,&amp;quot;)
+        # value &amp;lt;- str_pad(value, 6, pad = &amp;quot;&amp;quot;)
+        value &amp;lt;- format(value, width = 10, justify = &amp;quot;right&amp;quot;)
+        bar &amp;lt;- div(
+          class = &amp;quot;bar-chart&amp;quot;,
+          style = list(marginRight = &amp;quot;6px&amp;quot;),
+          div(
+            class = &amp;quot;bar&amp;quot;,
+            style = list(width = width, backgroundColor = &amp;quot;#F15A3F&amp;quot;)
+          )
+        )
+        div(class = &amp;quot;bar-cell&amp;quot;, span(class = &amp;quot;number&amp;quot;, value), bar)
+      }
+    ),
+    excess_deaths = colDef(
+      name = &amp;quot;Total Excess Deaths&amp;quot;,
+      # align = &amp;quot;left&amp;quot;,
+      cell = function(value) {
+        width &amp;lt;-
+          paste0(value * 100 / max(data_for_table$excess_deaths), &amp;quot;%&amp;quot;)
+        value &amp;lt;- format(value, big.mark = &amp;quot;,&amp;quot;)
+        value &amp;lt;- format(value, width = 10, justify = &amp;quot;right&amp;quot;)
+        bar &amp;lt;- div(
+          class = &amp;quot;bar-chart&amp;quot;,
+          style = list(marginRight = &amp;quot;6px&amp;quot;),
+          div(
+            class = &amp;quot;bar&amp;quot;,
+            style = list(width = width, backgroundColor = &amp;quot;#3F5661&amp;quot;)
+          )
+        )
+        div(class = &amp;quot;bar-cell&amp;quot;, span(class = &amp;quot;number&amp;quot;, value), bar)
+      }
+    ),
+    perc = colDef(
+      html = TRUE,
+      header = JS(&amp;quot;
+      function(colInfo) {
+        return &amp;#39;COVID-19 as&amp;lt;br&amp;gt;% of total&amp;#39;
+      }&amp;quot;),
+      name = &amp;quot;COVID-19 as % of Total&amp;quot;,
+      align = &amp;quot;right&amp;quot;,
+      maxWidth = 100,
+      format = colFormat(percent = TRUE, digits = 0),
+      style = list(fontFamily =  font_es_bold),
+      headerStyle = list(
+        fontSize = &amp;quot;11px&amp;quot;,
+        lineHeight = &amp;quot;14px&amp;quot;,
+        textTransform = &amp;quot;uppercase&amp;quot;,
+        color = &amp;quot;#0c0c0c&amp;quot;,
+        fontWeight = &amp;quot;500&amp;quot;,
+        borderBottom = &amp;quot;2px solid #e9edf0&amp;quot;,
+        paddingBottom = &amp;quot;3px&amp;quot;,
+        verticalAlign = &amp;quot;bottom&amp;quot;,
+        fontFamily = font_es,
+        textAlign = &amp;quot;right&amp;quot;
+      )
+    ),
+    clean_range = colDef(
+      name = &amp;quot;Time Period&amp;quot;,
+      style = list(
+        color = &amp;#39;#3f5661&amp;#39;,
+        fontSize = &amp;#39;12px&amp;#39;,
+        fontFamily = font_es
+      )
+    )
+  ),
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, we can include a title and subtitle above the table. We use some &lt;code&gt;htmltools&lt;/code&gt; functions to create divs, headers, and paragraphs.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;div(
+    div(
+      h2(&amp;quot;Excess mortality since region/country’s first 50 covid deaths&amp;quot;),
+      p(
+        ### create the &amp;#39;Updated on ...&amp;#39; and make it dynamic
+        paste0(
+          &amp;quot;Updated on &amp;quot;, format(Sys.Date(), &amp;quot;%B &amp;quot;),
+          append_date_suffix(as.numeric(format(Sys.Date(), &amp;quot;%d&amp;quot;))), &amp;quot; &amp;quot;,
+          strftime(Sys.time(), format = &amp;quot;%H:%M&amp;quot;), &amp;quot; UCT&amp;quot;
+        )
+      ),
+    ),
+    table)&lt;/code&gt;&lt;/pre&gt;
+&lt;div&gt;
+&lt;div&gt;
+&lt;h2&gt;Excess mortality since region/country’s first 50 covid deaths&lt;/h2&gt;
+&lt;p&gt;Updated on May 24th 12:25 UCT&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;htmlwidget-9&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-9&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Austria&#34;,&#34;Belgium&#34;,&#34;Britain&#34;,&#34;France&#34;,&#34;Istanbul&#34;,&#34;Italy&#34;,&#34;Jakarta&#34;,&#34;Netherlands&#34;,&#34;New York City&#34;,&#34;Spain&#34;,&#34;Sweden&#34;],&#34;clean_range&#34;:[&#34;Mar 23rd-Apr 5th&#34;,&#34;Mar 23rd-Apr 26th&#34;,&#34;Mar 14th-May 8th&#34;,&#34;Mar 11th-Apr 28th&#34;,&#34;Mar 25th-May 12th&#34;,&#34;Feb 26th-Mar 31st&#34;,&#34;Mar 1st-Apr 30th&#34;,&#34;Mar 16th-May 10th&#34;,&#34;Mar 15th-Apr 25th&#34;,&#34;Mar 11th-May 5th&#34;,&#34;Mar 18th-Apr 28th&#34;],&#34;covid_deaths&#34;:[204,6335,40967,23627,1947,12109,381,5420,17195,25584,2703],&#34;excess_deaths&#34;:[722,7397,54686,26098,4254,24256,3370,9405,20780,31897,2933],&#34;perc&#34;:[0.282548476454294,0.856428281735839,0.749131404747102,0.90531841520423,0.457686882933709,0.499216688654354,0.113056379821958,0.576289207868155,0.827478344562079,0.802081700473399,0.921581997954313]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;Region / Country&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontWeight&#34;:&#34;400&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;clean_range&#34;,&#34;name&#34;:&#34;Time Period&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;color&#34;:&#34;#3f5661&#34;,&#34;fontSize&#34;:&#34;12px&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;covid_deaths&#34;,&#34;name&#34;:&#34;COVID-19 Deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;cell&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;       204&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;0.49796177411087%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     6,335&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;15.4636658774135%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    40,967&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;100%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    23,627&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;57.6732492005761%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     1,947&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;4.75260575585227%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    12,109&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;29.5579368760222%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;       381&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;0.930016842824713%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     5,420&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;13.230160861181%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    17,195&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;41.972807381551%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    25,584&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;62.4502648473161%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     2,703&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;6.59799350696902%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]}]},{&#34;accessor&#34;:&#34;excess_deaths&#34;,&#34;name&#34;:&#34;Total Excess Deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;cell&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;       722&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;1.32026478440552%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     7,397&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;13.5263138646089%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    54,686&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;100%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    26,098&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;47.7233661266138%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     4,254&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;7.77895622279925%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    24,256&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;44.3550451669532%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     3,370&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;6.16245474161577%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     9,405&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;17.1981860073876%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    20,780&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;37.9987565373222%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    31,897&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;58.327542698314%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     2,933&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;5.36334710894927%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]}]},{&#34;accessor&#34;:&#34;perc&#34;,&#34;name&#34;:&#34;COVID-19 as % of Total&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndBol&#34;},&#34;headerStyle&#34;:{&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;textAlign&#34;:&#34;right&#34;},&#34;format&#34;:{&#34;cell&#34;:{&#34;digits&#34;:0,&#34;percent&#34;:true},&#34;aggregated&#34;:{&#34;digits&#34;:0,&#34;percent&#34;:true}},&#34;header&#34;:&#34;\n      function(colInfo) {\n        return &#39;COVID-19 as&lt;br&gt;% of total&#39;\n      }&#34;,&#34;html&#34;:true,&#34;maxWidth&#34;:100,&#34;align&#34;:&#34;right&#34;}],&#34;defaultSortDesc&#34;:true,&#34;defaultSorted&#34;:[{&#34;id&#34;:&#34;excess_deaths&#34;,&#34;desc&#34;:true}],&#34;defaultPageSize&#34;:11,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;compact&#34;:true,&#34;showSortIcon&#34;:false,&#34;dataKey&#34;:&#34;7fed8502c33f575f68606f21c78d769a&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[&#34;tag.attribs.columns.4.header&#34;],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;/div&gt;
+&lt;p&gt;Yikes! Those font sizes don’t quite line up with &lt;em&gt;The Economist&lt;/em&gt;’s. Let’s add classes to our divs to match their style.&lt;/p&gt;
+&lt;pre class=&#34;css&#34;&gt;&lt;code&gt;.table {
+  margin: 0 auto;
+  width: 675px;
+}
+
+.tableTitle {
+  margin: 6px 0;
+  font-size: 16px;
+  font-family: &amp;#39;Econ Sans Cnd&amp;#39;
+}
+
+.tableTitle h2 {
+  font-size: 16px;
+  font-weight: bold;
+  font-family: &amp;#39;Econ Sans Cnd&amp;#39;
+}
+
+.tableTitle p {
+  font-size: 14px;
+  font-weight: 500;
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;style type=&#34;text/css&#34;&gt;
+.table {
+  margin: 0 auto;
+  width: 675px;
+}
+
+.tableTitle {
+  margin: 6px 0;
+  font-size: 16px;
+  font-family: &#39;Econ Sans Cnd&#39;
+}
+
+.tableTitle h2 {
+  font-size: 16px;
+  font-weight: bold;
+  font-family: &#39;Econ Sans Cnd&#39;
+}
+
+.tableTitle p {
+  font-size: 14px;
+  font-weight: 500;
+}
+&lt;/style&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;div(class = &amp;quot;tableTitle&amp;quot;,
+    div(
+      class = &amp;quot;title&amp;quot;,
+      h2(&amp;quot;Excess mortality since region/country’s first 50 covid deaths&amp;quot;),
+      p(
+        paste0(&amp;quot;Updated on &amp;quot;, format(Sys.Date(),&amp;quot;%B &amp;quot;),
+          append_date_suffix(as.numeric(format(Sys.Date(), &amp;quot;%d&amp;quot;))), &amp;quot; &amp;quot;,
+          strftime(Sys.time(), format = &amp;quot;%H:%M&amp;quot;), &amp;quot; UCT&amp;quot;
+        )
+      ),
+    ),
+    table)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;tableTitle&#34;&gt;
+&lt;div class=&#34;title&#34;&gt;
+&lt;h2&gt;Excess mortality since region/country’s first 50 covid deaths&lt;/h2&gt;
+&lt;p&gt;Updated on May 24th 12:25 UCT&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;htmlwidget-10&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-10&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Austria&#34;,&#34;Belgium&#34;,&#34;Britain&#34;,&#34;France&#34;,&#34;Istanbul&#34;,&#34;Italy&#34;,&#34;Jakarta&#34;,&#34;Netherlands&#34;,&#34;New York City&#34;,&#34;Spain&#34;,&#34;Sweden&#34;],&#34;clean_range&#34;:[&#34;Mar 23rd-Apr 5th&#34;,&#34;Mar 23rd-Apr 26th&#34;,&#34;Mar 14th-May 8th&#34;,&#34;Mar 11th-Apr 28th&#34;,&#34;Mar 25th-May 12th&#34;,&#34;Feb 26th-Mar 31st&#34;,&#34;Mar 1st-Apr 30th&#34;,&#34;Mar 16th-May 10th&#34;,&#34;Mar 15th-Apr 25th&#34;,&#34;Mar 11th-May 5th&#34;,&#34;Mar 18th-Apr 28th&#34;],&#34;covid_deaths&#34;:[204,6335,40967,23627,1947,12109,381,5420,17195,25584,2703],&#34;excess_deaths&#34;:[722,7397,54686,26098,4254,24256,3370,9405,20780,31897,2933],&#34;perc&#34;:[0.282548476454294,0.856428281735839,0.749131404747102,0.90531841520423,0.457686882933709,0.499216688654354,0.113056379821958,0.576289207868155,0.827478344562079,0.802081700473399,0.921581997954313]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;Region / Country&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontWeight&#34;:&#34;400&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;clean_range&#34;,&#34;name&#34;:&#34;Time Period&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;color&#34;:&#34;#3f5661&#34;,&#34;fontSize&#34;:&#34;12px&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;covid_deaths&#34;,&#34;name&#34;:&#34;COVID-19 Deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;cell&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;       204&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;0.49796177411087%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     6,335&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;15.4636658774135%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    40,967&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;100%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    23,627&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;57.6732492005761%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     1,947&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;4.75260575585227%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    12,109&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;29.5579368760222%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;       381&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;0.930016842824713%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     5,420&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;13.230160861181%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    17,195&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;41.972807381551%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    25,584&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;62.4502648473161%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     2,703&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;6.59799350696902%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]}]},{&#34;accessor&#34;:&#34;excess_deaths&#34;,&#34;name&#34;:&#34;Total Excess Deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;cell&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;       722&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;1.32026478440552%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     7,397&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;13.5263138646089%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    54,686&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;100%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    26,098&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;47.7233661266138%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     4,254&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;7.77895622279925%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    24,256&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;44.3550451669532%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     3,370&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;6.16245474161577%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     9,405&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;17.1981860073876%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    20,780&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;37.9987565373222%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    31,897&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;58.327542698314%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     2,933&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;5.36334710894927%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]}]},{&#34;accessor&#34;:&#34;perc&#34;,&#34;name&#34;:&#34;COVID-19 as % of Total&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndBol&#34;},&#34;headerStyle&#34;:{&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;textAlign&#34;:&#34;right&#34;},&#34;format&#34;:{&#34;cell&#34;:{&#34;digits&#34;:0,&#34;percent&#34;:true},&#34;aggregated&#34;:{&#34;digits&#34;:0,&#34;percent&#34;:true}},&#34;header&#34;:&#34;\n      function(colInfo) {\n        return &#39;COVID-19 as&lt;br&gt;% of total&#39;\n      }&#34;,&#34;html&#34;:true,&#34;maxWidth&#34;:100,&#34;align&#34;:&#34;right&#34;}],&#34;defaultSortDesc&#34;:true,&#34;defaultSorted&#34;:[{&#34;id&#34;:&#34;excess_deaths&#34;,&#34;desc&#34;:true}],&#34;defaultPageSize&#34;:11,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;compact&#34;:true,&#34;showSortIcon&#34;:false,&#34;dataKey&#34;:&#34;7fed8502c33f575f68606f21c78d769a&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[&#34;tag.attribs.columns.4.header&#34;],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;/div&gt;
+&lt;p&gt;Let’s compare that to the table we’re attempting to replicate. Note that some of the data has changed in the time between &lt;em&gt;The Economist&lt;/em&gt; published their table and I created mine.&lt;/p&gt;
+&lt;div style=&#34;text-align: center&#34;&gt;
+&lt;p&gt;&lt;img width = 100% src = img/econ-table.png&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

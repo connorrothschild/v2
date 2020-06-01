@@ -1,0 +1,237 @@
+---
+title: "Texas Vaccination Rates (How to Use Rayshader)"
+date: "2019-07-24"
+authors: 
+ - admin
+categories: ["R"]
+image:
+  preview_only: true
+tags: ["r", "visualization", "animation", "rayshader"]
+summary: "A brief exploration of Texas vaccination rates among kindergartners, and an attempt to use rayshader for the first time."
+autosize: true
+---
+
+
+
+<p>A brief exploration of Texas vaccination rates among kindergartners. Also an attempt to use <code>rayshader</code> for the first time.</p>
+<div id="load-packages" class="section level3">
+<h3>Load Packages</h3>
+<pre class="r"><code>library(readxl)
+library(tidyverse)
+library(stringr)
+library(dplyr)
+library(ggplot2)
+library(ggmap)
+library(maps)
+library(mapdata)
+library(scales)
+library(tpltheme)
+library(knitr)
+conflicted::conflict_prefer(&quot;filter&quot;, &quot;dplyr&quot;)
+
+set_tpl_theme(font = &quot;lato&quot;)</code></pre>
+</div>
+<div id="read-in-data" class="section level3">
+<h3>Read in Data</h3>
+<pre class="r"><code>tx_vac &lt;- read_excel(&quot;data/2018-2019 School Vaccination Coverage Levels - Kindergarten (XLS) .xlsx&quot;, skip = 2)
+
+kable(head(tx_vac))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">Facility Number</th>
+<th align="left">School Type</th>
+<th align="left">Facility Name</th>
+<th align="left">Facility Address</th>
+<th align="left">County</th>
+<th align="right">DTP/DTaP/DT/Td</th>
+<th align="right">Hepatitis A</th>
+<th align="right">Hepatitis B</th>
+<th align="right">MMR</th>
+<th align="right">Polio</th>
+<th align="right">Varicella</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">9057816000</td>
+<td align="left">Public ISD</td>
+<td align="left">A W Brown Leadership Academy</td>
+<td align="left">5701 RED BIRD CTR DR, DALLAS, TX, 75237</td>
+<td align="left">Dallas</td>
+<td align="right">0.8317308</td>
+<td align="right">0.9086538</td>
+<td align="right">0.9471154</td>
+<td align="right">0.8509615</td>
+<td align="right">0.8413462</td>
+<td align="right">0.8509615</td>
+</tr>
+<tr class="even">
+<td align="right">9057829000</td>
+<td align="left">Public ISD</td>
+<td align="left">A+ Academy</td>
+<td align="left">8225 BRUTON RD, DALLAS, TX, 75217</td>
+<td align="left">Dallas</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">0.9909091</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+</tr>
+<tr class="odd">
+<td align="right">9109901000</td>
+<td align="left">Public ISD</td>
+<td align="left">Abbott ISD</td>
+<td align="left">P O BOX 226, ABBOTT, TX, 76621</td>
+<td align="left">Hill</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+</tr>
+<tr class="even">
+<td align="right">7101130101</td>
+<td align="left">Private School</td>
+<td align="left">Abercrombie Academy</td>
+<td align="left">17102 Theiss Mail Road, Spring, TX, 77379</td>
+<td align="left">Harris</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">0.7500000</td>
+<td align="right">1.0000000</td>
+<td align="right">0.7500000</td>
+</tr>
+<tr class="odd">
+<td align="right">9095901000</td>
+<td align="left">Public ISD</td>
+<td align="left">Abernathy ISD</td>
+<td align="left">505 7TH ST, ABERNATHY, TX, 79311</td>
+<td align="left">Hale</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+</tr>
+<tr class="even">
+<td align="right">7101220001</td>
+<td align="left">Private School</td>
+<td align="left">Abiding Word Lutheran School</td>
+<td align="left">17123 Red Oak Drive, Houston, TX, 77090</td>
+<td align="left">Harris</td>
+<td align="right">0.7692308</td>
+<td align="right">0.7692308</td>
+<td align="right">0.7692308</td>
+<td align="right">0.7692308</td>
+<td align="right">0.6923077</td>
+<td align="right">0.7692308</td>
+</tr>
+</tbody>
+</table>
+<p>The data contains information on six different vaccines split up by school. The set also contains information on the county of each school, allowing us to aggregate on the county level. By finding the average of the six vaccines listed in this dataset, we can see average vaccination rate by county:</p>
+<pre class="r"><code>grouped &lt;- tx_vac %&gt;% 
+  mutate(avgvac = (`DTP/DTaP/DT/Td`+`Hepatitis A`+`Hepatitis B`+MMR+Polio+Varicella)/6) %&gt;%
+  group_by(County) %&gt;%
+  summarize(avgvac = mean(avgvac, na.rm = TRUE)) %&gt;%
+  mutate(County = tolower(County)) %&gt;%
+  # rename to subregion so that we can later join with ggplot map data
+  rename(&quot;subregion&quot; = County) %&gt;%
+  filter(subregion != &quot;king&quot;)
+
+kable(head(grouped))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">subregion</th>
+<th align="right">avgvac</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">anderson</td>
+<td align="right">0.9676797</td>
+</tr>
+<tr class="even">
+<td align="left">andrews</td>
+<td align="right">0.9715335</td>
+</tr>
+<tr class="odd">
+<td align="left">angelina</td>
+<td align="right">0.9693150</td>
+</tr>
+<tr class="even">
+<td align="left">aransas</td>
+<td align="right">0.9735294</td>
+</tr>
+<tr class="odd">
+<td align="left">archer</td>
+<td align="right">0.9915167</td>
+</tr>
+<tr class="even">
+<td align="left">armstrong</td>
+<td align="right">0.9677419</td>
+</tr>
+</tbody>
+</table>
+<p>Next, we read in the county-level data from <code>ggplot2</code> and merge it with our vaccination data:</p>
+<pre class="r"><code>counties &lt;- map_data(&quot;county&quot;)
+tx_county &lt;- subset(counties, region == &quot;texas&quot;)
+merged &lt;- left_join(tx_county, grouped, by = &quot;subregion&quot;)</code></pre>
+</div>
+<div id="plot" class="section level3">
+<h3>Plot</h3>
+<p>Construct the plot using <code>geom_polygon()</code>, and pay special attention to theme attributes (axes, panels, etc.).</p>
+<p>Unfortunately, <code>theme_nothing()</code> led to some conflicts with <code>rayshader</code>, so I essentially recreated it using <code>theme()</code> attributes.</p>
+<pre class="r"><code>tx &lt;- ggplot(data = merged, mapping = aes(x = long, y = lat, group = group, fill = avgvac*100)) +
+  coord_fixed(1.3) +
+  geom_polygon(color = &quot;black&quot;) +
+  labs(fill = &quot;Vaccination Rate&quot;) +
+  #theme_nothing(legend = TRUE) +
+  theme(legend.title = element_text(),
+        #legend.key.width = unit(.1, &quot;in&quot;),
+        panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_blank(), 
+        axis.text.x = element_blank(), axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        panel.background = element_rect(fill = &quot;white&quot;),
+        text = element_text(family = &quot;Lato&quot;),
+        legend.position = &quot;bottom&quot;) +
+   labs(x = element_blank(),
+        y = element_blank(),
+        title = &quot;Texas Vaccination Rate by County&quot;,
+        subtitle = &quot;Among Kindergartners&quot;) + 
+  tpltheme::scale_fill_continuous()</code></pre>
+<p>Here’s what the plot looks like before animation:</p>
+<p><img src="/post/tx-vaccination-rates-rayshader/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="rayshader" class="section level3">
+<h3>Rayshader</h3>
+<p>Load in <code>rayshader</code> and <code>rgl</code>. I’m not sure if <code>rgl</code> is necessary for all R users, but I ran into a few errors on my system (Mac) prior to its installation.</p>
+<pre class="r"><code>#devtools::install_github(&quot;tylermorganwall/rayshader&quot;)
+library(rgl)
+options(rgl.useNULL = FALSE)
+library(rayshader)</code></pre>
+<p>Lastly, create the <code>plot_gg()</code> object by following the comprehensive documentation on Wall’s <a href="https://github.com/tylermorganwall/rayshader">README</a>.</p>
+<pre class="r"><code>par(mfrow = c(1,1))
+rayshader::plot_gg(tx, width = 5, raytrace = TRUE, multicore = TRUE, height = 5, scale = 50)
+
+# create custom rotation parameters here
+phivechalf = 30 + 60 * 1/(1 + exp(seq(-7, 20, length.out = 180)/2))
+phivecfull = c(phivechalf, rev(phivechalf))
+thetavec = -90 + 60 * sin(seq(0,359,length.out = 360) * pi/180)
+zoomvec = 0.45 + 0.2 * 1/(1 + exp(seq(-5, 20, length.out = 180)))
+zoomvecfull = c(zoomvec, rev(zoomvec))
+
+render_movie(filename = &quot;outputs/tx_vac_vid&quot;, type = &quot;custom&quot;, 
+             frames = 360,  phi = phivecfull, zoom = zoomvecfull, theta = thetavec)</code></pre>
+<div style="text-align:center">
+<p><video controls>
+<source src="outputs/tx_vac_vid.mp4" type="video/mp4">
+</video></p>
+</div>
+</div>

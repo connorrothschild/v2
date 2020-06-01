@@ -1,0 +1,272 @@
+---
+title: "Creating a Streetmap of Springfield, MO"
+author: "Connor Rothschild"
+date: "2019-11-20"
+authors: 
+  - admin
+categories: ["R"]
+image:
+  preview_only: true
+tags: ["r", "visualization"]
+summary: "Creating a beautiful streetmap of my hometown, exclusively in R!"
+---
+
+
+
+<p>In this post, I expand upon the wonderful <a href="https://christianburkhart.de/">Christian Burkhart’s</a> wonderful <a href="https://ggplot2tutor.com/streetmaps/streetmaps/">ggplot2tor tutorial</a> on streetmap creation using ggplot2. My process differs slightly from his in that I include text using <code>geom_label</code>, rather than PowerPoint, to create the text annotations. (This was much more difficult!)</p>
+<pre class="r"><code>library(tidyverse)
+library(gridExtra)
+library(grid)
+library(ggplot2)
+library(lattice)
+library(osmdata)
+library(sf)</code></pre>
+<p>First, per the tutorial, we load street (and river, etc). data:</p>
+<pre class="r"><code>streets &lt;- getbb(&quot;Springfield Missouri&quot;)%&gt;%
+  opq() %&gt;%
+  add_osm_feature(key = &quot;highway&quot;, 
+                  value = c(&quot;motorway&quot;, &quot;primary&quot;, 
+                            &quot;secondary&quot;, &quot;tertiary&quot;)) %&gt;%
+  osmdata_sf()
+
+small_streets &lt;- getbb(&quot;Springfield Missouri&quot;)%&gt;%
+  opq() %&gt;%
+  add_osm_feature(key = &quot;highway&quot;, 
+                  value = c(&quot;residential&quot;, &quot;living_street&quot;,
+                            &quot;unclassified&quot;,
+                            &quot;service&quot;, &quot;footway&quot;)) %&gt;%
+  osmdata_sf()
+
+river &lt;- getbb(&quot;Springfield Missouri&quot;)%&gt;%
+  opq() %&gt;%
+  add_osm_feature(key = &quot;waterway&quot;, value = &quot;river&quot;) %&gt;%
+  osmdata_sf()</code></pre>
+<p>Next, we define the plot limits, using the lat-long found in the last step.</p>
+<pre class="r"><code>right = -93.175
+left = -93.395
+bottom = 37
+top = 37.275</code></pre>
+<p>In my plot, I’m going to create a text box to hold the city, state, and lat/long combination.</p>
+<p>We can create the parameters for this box through some manipulations of the existing plot limits:</p>
+<pre class="r"><code>top_rect = (top + bottom)/2.0035
+bot_rect = bottom + .01
+box_height = (top_rect + bot_rect)/2
+mid_box = (left + right)/2</code></pre>
+<p>Finally, we can create a black and white plot. This follows the same structure as the ggplot2tor tutorial:</p>
+<pre class="r"><code>plot_bw &lt;- ggplot() +
+  geom_sf(data = streets$osm_lines,
+          inherit.aes = FALSE,
+          color = &quot;#000000&quot;,
+          size = .3,
+          alpha = .8) +
+  geom_sf(data = small_streets$osm_lines,
+          inherit.aes = FALSE,
+          color = &quot;#000000&quot;,
+          size = .1,
+          alpha = .6) +
+  geom_sf(data = river$osm_lines,
+          inherit.aes = FALSE,
+          color = &quot;#000000&quot;,
+          size = .2,
+          alpha = .5) +
+  coord_sf(xlim = c(left, right),
+           ylim = c(bottom, top),
+           expand = FALSE) +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = &quot;#FFFFFF&quot;),
+    panel.background = element_rect(fill = &quot;#FFFFFF&quot;),
+    plot.margin=unit(c(0,-0.5,0,0), &quot;mm&quot;)
+  )</code></pre>
+<p>Finally, we can introduce our text elements using <code>geom_text</code> (as well as borders using <code>geom_rect</code>).</p>
+<pre class="r"><code>map_bw &lt;- plot_bw +
+  # big box
+  geom_rect(
+    aes(
+      xmax = right - .005,
+      xmin = left + .005,
+      ymin = bottom + .005,
+      ymax = top - .005
+    ),
+    alpha = 0,
+    color = &quot;black&quot;,
+    size = 1
+  ) +
+  # smaller, label box
+  geom_rect(
+    aes(
+      xmax = right - .01,
+      xmin = left + .01,
+      ymin = bot_rect,
+      ymax = top_rect
+    ),
+    alpha = .75,
+    color = &quot;black&quot;,
+    fill = &quot;white&quot;,
+    size = .6
+  ) +
+  # springfield
+  geom_text(
+    aes(x = mid_box, y = box_height + .002,
+        label = &quot;SPRINGFIELD\n&quot;),
+    color = &quot;black&quot;,
+    family = &quot;Lato&quot;,
+    fontface = &quot;bold&quot;,
+    size = 9
+  ) +
+  # a line that goes behind &#39;Missouri&#39;
+  geom_segment(aes(
+    x = left + .03,
+    y = (top_rect + bottom) / 2,
+    xend = right - .03,
+    yend = (top_rect + bottom) / 2
+  ), color = &quot;black&quot;) +
+  # Missouri label
+  geom_label(
+    aes(x = mid_box, y = box_height - .005,
+        label = &quot;MISSOURI&quot;),
+    color = &quot;black&quot;,
+    fill = &quot;white&quot;,
+    # alpha = .9,
+    label.size = 0,
+    family = &quot;Lato&quot;,
+    # fontface = &quot;thin&quot;,
+    size = 7
+  ) +
+  # coords
+  geom_text(
+    aes(x = mid_box, y = box_height - .02,
+        label = &quot;37.2090° N / 93.2923° W&quot;),
+    color = &quot;black&quot;,
+    family = &quot;Lato&quot;,
+    size = 4
+  ) +
+  # me!
+  geom_label(
+    aes(
+      x = left + .035,
+      y = top_rect + .005,
+      label = &quot;Design: Connor Rothschild&quot;
+    ),
+    size = 1.5,
+    color = &quot;black&quot;,
+    fill = &quot;white&quot;,
+    label.size = 0,
+    family = &quot;Lato&quot;
+  )
+
+map_bw</code></pre>
+<p><img src="/post/map-springfield/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Finally, save the plot:</p>
+<pre class="r"><code>ggsave(map_bw, filename = &quot;bw_springfield_map.png&quot;, width = 3.234, height = 5.016)</code></pre>
+<p>Replicate that code with different colors:</p>
+<pre class="r"><code>plot_gold &lt;- ggplot() +
+  geom_sf(
+    data = streets$osm_lines,
+    inherit.aes = FALSE,
+    color = &quot;steelblue&quot;,
+    size = .3,
+    alpha = .8
+  ) +
+  geom_sf(
+    data = small_streets$osm_lines,
+    inherit.aes = FALSE,
+    color = &quot;#ffbe7f&quot;,
+    size = .1,
+    alpha = .6
+  ) +
+  geom_sf(
+    data = river$osm_lines,
+    inherit.aes = FALSE,
+    color = &quot;#ffbe7f&quot;,
+    size = .2,
+    alpha = .5
+  ) +
+  coord_sf(
+    xlim = c(left, right),
+    ylim = c(bottom, top),
+    expand = FALSE
+  ) +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = &quot;#282828&quot;),
+    panel.background = element_rect(fill = &quot;#282828&quot;),
+    plot.margin = unit(c(0, -0.5, 0, 0), &quot;mm&quot;)
+  )
+
+map_gold &lt;- plot_gold +
+  geom_rect(
+    aes(
+      xmax = right - .005,
+      xmin = left + .005,
+      ymin = bottom + .005,
+      ymax = top - .005
+    ),
+    alpha = 0,
+    color = &quot;white&quot;,
+    size = 1
+  ) +
+  geom_rect(
+    aes(
+      xmax = right - .01,
+      xmin = left + .01,
+      ymin = bot_rect,
+      ymax = top_rect
+    ),
+    alpha = .5,
+    color = &quot;#ffbe7f&quot;,
+    fill = &quot;#282828&quot;,
+    size = .5
+  ) +
+  geom_text(
+    aes(x = mid_box, y = box_height + .002,
+        label = &quot;SPRINGFIELD\n&quot;),
+    color = &quot;white&quot;,
+    family = &quot;Lato&quot;,
+    fontface = &quot;bold&quot;,
+    size = 9
+  ) +
+  geom_segment(aes(
+    x = left + .03,
+    y = (top_rect + bottom) / 2,
+    xend = right - .03,
+    yend = (top_rect + bottom) / 2
+  ),
+  color = &quot;#ffbe7f&quot;) +
+  geom_label(
+    aes(x = mid_box, y = box_height - .005,
+        label = &quot;MISSOURI&quot;),
+    color = &quot;white&quot;,
+    fill = &quot;#282828&quot;,
+    # alpha = .9,
+    label.size = 0,
+    family = &quot;Lato&quot;,
+    # fontface = &quot;thin&quot;,
+    size = 7
+  ) +
+  geom_text(
+    aes(x = mid_box, y = box_height - .02,
+        label = &quot;37.2090° N / 93.2923° W&quot;),
+    color = &quot;white&quot;,
+    family = &quot;Lato&quot;,
+    size = 4
+  ) +
+  geom_label(
+    aes(
+      x = left + .035,
+      y = top_rect + .005,
+      label = &quot;Design: Connor Rothschild&quot;
+    ),
+    size = 1.5,
+    color = &quot;white&quot;,
+    fill = &quot;#282828&quot;,
+    label.size = 0,
+    family = &quot;Lato&quot;
+  )
+
+map_gold</code></pre>
+<p><img src="/post/map-springfield/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>ggsave(map_gold,
+       filename = &quot;gold_springfield_map.png&quot;,
+       width = 3.234,
+       height = 5.016)</code></pre>

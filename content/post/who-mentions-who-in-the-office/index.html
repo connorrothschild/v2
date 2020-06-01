@@ -1,0 +1,341 @@
+---
+title: "Who Mentions Who in the Office?"
+date: "2019-12-16"
+authors: 
+ - admin
+categories: ["R", "D3.js"]
+image:
+  preview_only: true
+tags: ["r", "visualization", "D3.js", "interactive"]
+summary: "Who is the most popular character in the Office?"
+---
+
+<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/rmarkdown-libs/d3/d3.min.js"></script>
+<script src="/rmarkdown-libs/d3-tip/index.js"></script>
+<link href="/rmarkdown-libs/chorddiag/chorddiag.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/chorddiag/chorddiag.js"></script>
+<script src="/rmarkdown-libs/chorddiag-binding/chorddiag.js"></script>
+
+
+<p>This project explores the relationships between different characters in the classic TV show <strong>The Office</strong>. Using transcript data newly released in <a href="https://technistema.com/">Bradley H. Lindblad</a>’s <a href="https://cran.r-project.org/web/packages/schrute/vignettes/theoffice.html"><code>schrute</code> package</a>, I’d like to see <em>who mentions who in the Office</em>. Is one character more popular than the others?</p>
+<pre class="r"><code>library(schrute)
+library(tidyverse)
+library(cr)
+set_cr_theme()</code></pre>
+<p>Let’s take a look at the transcripts:</p>
+<pre class="r"><code>transcripts &lt;- schrute::theoffice
+
+knitr::kable(transcripts[1:3,])</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">index</th>
+<th align="right">season</th>
+<th align="right">episode</th>
+<th align="left">episode_name</th>
+<th align="left">director</th>
+<th align="left">writer</th>
+<th align="left">character</th>
+<th align="left">text</th>
+<th align="left">text_w_direction</th>
+<th align="right">imdb_rating</th>
+<th align="right">total_votes</th>
+<th align="left">air_date</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">Pilot</td>
+<td align="left">Ken Kwapis</td>
+<td align="left">Ricky Gervais;Stephen Merchant;Greg Daniels</td>
+<td align="left">Michael</td>
+<td align="left">All right Jim. Your quarterlies look very good. How are things at the library?</td>
+<td align="left">All right Jim. Your quarterlies look very good. How are things at the library?</td>
+<td align="right">7.6</td>
+<td align="right">3706</td>
+<td align="left">2005-03-24</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">Pilot</td>
+<td align="left">Ken Kwapis</td>
+<td align="left">Ricky Gervais;Stephen Merchant;Greg Daniels</td>
+<td align="left">Jim</td>
+<td align="left">Oh, I told you. I couldn’t close it. So…</td>
+<td align="left">Oh, I told you. I couldn’t close it. So…</td>
+<td align="right">7.6</td>
+<td align="right">3706</td>
+<td align="left">2005-03-24</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">Pilot</td>
+<td align="left">Ken Kwapis</td>
+<td align="left">Ricky Gervais;Stephen Merchant;Greg Daniels</td>
+<td align="left">Michael</td>
+<td align="left">So you’ve come to the master for guidance? Is this what you’re saying, grasshopper?</td>
+<td align="left">So you’ve come to the master for guidance? Is this what you’re saying, grasshopper?</td>
+<td align="right">7.6</td>
+<td align="right">3706</td>
+<td align="left">2005-03-24</td>
+</tr>
+</tbody>
+</table>
+<p>By using <code>tidytext</code>, we can split the transcripts into their constituent parts (words).</p>
+<pre class="r"><code>transcripts_tokenized &lt;- transcripts %&gt;%
+  tidytext::unnest_tokens(word, text)
+
+knitr::kable(transcripts_tokenized[1:3,])</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">index</th>
+<th align="right">season</th>
+<th align="right">episode</th>
+<th align="left">episode_name</th>
+<th align="left">director</th>
+<th align="left">writer</th>
+<th align="left">character</th>
+<th align="left">text_w_direction</th>
+<th align="right">imdb_rating</th>
+<th align="right">total_votes</th>
+<th align="left">air_date</th>
+<th align="left">word</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">Pilot</td>
+<td align="left">Ken Kwapis</td>
+<td align="left">Ricky Gervais;Stephen Merchant;Greg Daniels</td>
+<td align="left">Michael</td>
+<td align="left">All right Jim. Your quarterlies look very good. How are things at the library?</td>
+<td align="right">7.6</td>
+<td align="right">3706</td>
+<td align="left">2005-03-24</td>
+<td align="left">all</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">Pilot</td>
+<td align="left">Ken Kwapis</td>
+<td align="left">Ricky Gervais;Stephen Merchant;Greg Daniels</td>
+<td align="left">Michael</td>
+<td align="left">All right Jim. Your quarterlies look very good. How are things at the library?</td>
+<td align="right">7.6</td>
+<td align="right">3706</td>
+<td align="left">2005-03-24</td>
+<td align="left">right</td>
+</tr>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">Pilot</td>
+<td align="left">Ken Kwapis</td>
+<td align="left">Ricky Gervais;Stephen Merchant;Greg Daniels</td>
+<td align="left">Michael</td>
+<td align="left">All right Jim. Your quarterlies look very good. How are things at the library?</td>
+<td align="right">7.6</td>
+<td align="right">3706</td>
+<td align="left">2005-03-24</td>
+<td align="left">jim</td>
+</tr>
+</tbody>
+</table>
+<p>We can now use the text to see who mentions who. But first, let’s construct a vector with a list of characters to keep in the analysis. There are <strong>485 characters</strong> in the transcripts, so its important we filter only those of relevance:</p>
+<pre class="r"><code>keep_characters &lt;- transcripts %&gt;% 
+  group_by(character) %&gt;% 
+  count() %&gt;% 
+  arrange(desc(n)) %&gt;% 
+  head(9) %&gt;% 
+  pull(character)
+
+knitr::kable(keep_characters)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">x</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Michael</td>
+</tr>
+<tr class="even">
+<td align="left">Dwight</td>
+</tr>
+<tr class="odd">
+<td align="left">Jim</td>
+</tr>
+<tr class="even">
+<td align="left">Pam</td>
+</tr>
+<tr class="odd">
+<td align="left">Andy</td>
+</tr>
+<tr class="even">
+<td align="left">Angela</td>
+</tr>
+<tr class="odd">
+<td align="left">Kevin</td>
+</tr>
+<tr class="even">
+<td align="left">Erin</td>
+</tr>
+<tr class="odd">
+<td align="left">Oscar</td>
+</tr>
+</tbody>
+</table>
+<p>This is an optional decision. One may be interested in seeing which characters talk about Jim most, including those characters who are otherwise less relevant. I decide to filter according to the main cast so that comparisons between characters (e.g., through a chord diagram) is feasible.</p>
+<div id="who-mentions-who" class="section level2">
+<h2>Who Mentions Who?</h2>
+<div id="jim-a-case-study" class="section level3">
+<h3>Jim: A Case Study</h3>
+<p>Who is talking to who in the Office?</p>
+<p>Now that we have <code>keep_characters</code>, we can filter according to it and spit out who mentions who <em>among the most relevant Office characters</em>.</p>
+<pre class="r"><code>transcripts_tokenized %&gt;% 
+  filter(character %in% keep_characters) %&gt;% 
+  mutate(jim = ifelse(word == &quot;jim&quot;, 1, 0)) %&gt;% 
+  group_by(character) %&gt;% 
+  summarise(jim = sum(jim)) %&gt;% 
+  arrange(desc(jim)) %&gt;% 
+  mutate(character = reorder(character, jim)) %&gt;% 
+  ggplot(ggplot2::aes(character, jim)) +
+  geom_col() +
+  coord_flip() +
+  fix_bars() +
+  labs(title = &quot;Who Mentions Jim?&quot;,
+       subtitle = &quot;Counts of &#39;Jim&#39; in The Office Transcripts&quot;,
+       x = element_blank(),
+       y = &quot;Mentions&quot;)</code></pre>
+<p><img src="/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>The takeaway here is that Dwight mentions Jim the most, followed by Michael. No surprise there! What I find interesting is that only three characters <em>really</em> talk about/to Jim. After Dwight, Michael, and Pam (and Jim referencing himself, apparently), the mention rate for Jim’s name drops from over 200 to only 60 mentions. It seems as if the writers of the Office intentionally made Jim a subject of conversation among only a few characters!</p>
+</div>
+<div id="replicate-for-the-rest-of-the-cast" class="section level3">
+<h3>Replicate for the rest of the cast</h3>
+<p>Next, we replicate that process for the rest of the cast. There is probably a better way to do this.</p>
+<pre class="r"><code>data_chord &lt;- transcripts_tokenized %&gt;% 
+  filter(character %in% keep_characters) %&gt;% 
+  mutate(jim = ifelse(word == &quot;jim&quot;, 1, 0)) %&gt;% 
+  mutate(michael = ifelse(word == &quot;michael&quot;, 1, 0)) %&gt;% 
+  mutate(dwight = ifelse(word == &quot;dwight&quot;, 1, 0)) %&gt;% 
+  mutate(pam = ifelse(word == &quot;pam&quot;, 1, 0)) %&gt;% 
+  mutate(andy = ifelse(word == &quot;andy&quot;, 1, 0)) %&gt;% 
+  mutate(angela = ifelse(word == &quot;angela&quot;, 1, 0)) %&gt;% 
+  mutate(kevin = ifelse(word == &quot;kevin&quot;, 1, 0)) %&gt;% 
+  mutate(erin = ifelse(word == &quot;erin&quot;, 1, 0)) %&gt;% 
+  mutate(oscar = ifelse(word == &quot;oscar&quot;, 1, 0)) %&gt;% 
+  # mutate(ryan = ifelse(word == &quot;ryan&quot;, 1, 0)) %&gt;% 
+  # mutate(darryl = ifelse(word == &quot;darryl&quot;, 1, 0)) %&gt;% 
+  # mutate(phyllis = ifelse(word == &quot;phyllis&quot;, 1, 0)) %&gt;% 
+  # mutate(kelly = ifelse(word == &quot;kelly&quot;, 1, 0)) %&gt;% 
+  # mutate(toby = ifelse(word == &quot;toby&quot;, 1, 0)) %&gt;% 
+  group_by(character) %&gt;% 
+  summarise_at(vars(jim:oscar), funs(sum))</code></pre>
+</div>
+</div>
+<div id="visualize" class="section level2">
+<h2>Visualize</h2>
+<p>Now, let’s make a chord diagram!</p>
+<p>We first have to convert the data frame into a format <code>chordDiagram</code> will recognize.</p>
+<pre class="r"><code>circlize_data &lt;- as.data.frame(data_chord) %&gt;% 
+  pivot_longer(jim:oscar, names_to = &quot;to&quot;, values_to = &quot;value&quot;) %&gt;% 
+  rename(from = &#39;character&#39;) %&gt;% 
+  mutate(to = str_to_title(to))</code></pre>
+<p>This process pivots each row of data into a value-key combination, so that the data looks like this:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">from</th>
+<th align="left">to</th>
+<th align="right">value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Andy</td>
+<td align="left">Jim</td>
+<td align="right">48</td>
+</tr>
+<tr class="even">
+<td align="left">Andy</td>
+<td align="left">Michael</td>
+<td align="right">40</td>
+</tr>
+<tr class="odd">
+<td align="left">Andy</td>
+<td align="left">Dwight</td>
+<td align="right">80</td>
+</tr>
+<tr class="even">
+<td align="left">Andy</td>
+<td align="left">Pam</td>
+<td align="right">34</td>
+</tr>
+<tr class="odd">
+<td align="left">Andy</td>
+<td align="left">Andy</td>
+<td align="right">42</td>
+</tr>
+<tr class="even">
+<td align="left">Andy</td>
+<td align="left">Angela</td>
+<td align="right">33</td>
+</tr>
+</tbody>
+</table>
+<p>Using that data, we can create a chord diagram quite easily, using a single command from the <code>circlize</code> library. <a href="https://jokergoo.github.io/circlize_book/book/the-chorddiagram-function.html">This chapter is helpful</a>.</p>
+<pre class="r"><code>library(circlize)
+chordDiagram(circlize_data, grid.col = c(&quot;#B997C7&quot;, &quot;#824D99&quot;, &quot;#4E78C4&quot;, &quot;#57A2AC&quot;, &quot;#7EB875&quot;, &quot;#D0B541&quot;, &quot;#E67F33&quot;, &quot;#CE2220&quot;, &quot;#521A13&quot;))</code></pre>
+<p><img src="/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<div id="make-it-interactive" class="section level3">
+<h3>Make It Interactive</h3>
+<p>With nine people, some of the data can get easily concealed (how often did Angela mention Michael’s name?). One way to fix this is to make the visualization interactive, so that a user can hover over chords to see relationships between characters.</p>
+<p>First, we conduct some data cleaning. I found that the rownames and column names have to be of the same order; let’s do a little manipulation to get there:</p>
+<pre class="r"><code>int_chord &lt;- as.data.frame(data_chord)
+
+rownames(int_chord) &lt;- int_chord$character
+
+row.order &lt;- c(&quot;Jim&quot;, &quot;Michael&quot;, &quot;Dwight&quot;, &quot;Pam&quot;, &quot;Andy&quot;, &quot;Angela&quot;, &quot;Kevin&quot;, &quot;Erin&quot;, &quot;Oscar&quot;)
+               #, &quot;Ryan&quot;, &quot;Darryl&quot;, &quot;Phyllis&quot;, &quot;Kelly&quot;, &quot;Toby&quot;)
+int_chord &lt;- int_chord[row.order,]</code></pre>
+<p>Next, we load <a href="https://github.com/mattflor">Matt Flor</a>’s <a href="https://github.com/mattflor/chorddiag"><code>chorddiag</code></a> package, and construct a matrix according to its function’s liking:</p>
+<pre class="r"><code># devtools::install_github(&quot;mattflor/chorddiag&quot;)
+library(chorddiag)
+
+m &lt;- as.matrix(int_chord[-1])
+
+dimnames(m) &lt;- list(have = int_chord$character,
+                    prefer = str_to_title(colnames(int_chord[-1])))</code></pre>
+<p>Finally, we add a color palette and construct the diagram.</p>
+<pre class="r"><code>groupColors &lt;- c(&quot;#B997C7&quot;, &quot;#824D99&quot;, &quot;#4E78C4&quot;, &quot;#57A2AC&quot;, &quot;#7EB875&quot;, &quot;#D0B541&quot;, &quot;#E67F33&quot;, &quot;#CE2220&quot;, &quot;#521A13&quot;)
+
+p &lt;- chorddiag(m, 
+               groupColors = groupColors, 
+               groupnamePadding = 35,
+               tickInterval = 50,
+               groupnameFontsize = 12)
+p</code></pre>
+<div id="htmlwidget-1" style="width:672px;height:480px;" class="chorddiag html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"matrix":[[47,181,258,189,53,18,19,3,14],[227,171,353,327,66,48,95,44,100],[294,282,106,104,61,59,41,21,29],[182,262,126,58,35,44,34,17,26],[48,40,80,34,42,33,20,78,19],[11,28,81,31,23,10,40,2,26],[39,71,12,39,19,22,23,7,36],[12,37,23,28,92,9,4,15,5],[16,65,22,22,29,37,34,9,6]],"options":{"type":"directional","width":null,"height":null,"margin":100,"showGroupnames":true,"groupNames":["Jim","Michael","Dwight","Pam","Andy","Angela","Kevin","Erin","Oscar"],"groupColors":["#B997C7","#824D99","#4E78C4","#57A2AC","#7EB875","#D0B541","#E67F33","#CE2220","#521A13"],"groupThickness":0.1,"groupPadding":0.0349065850398866,"groupnamePadding":[35,35,35,35,35,35,35,35,35],"groupnameFontsize":12,"groupedgeColor":null,"chordedgeColor":"#808080","categoryNames":null,"categorynamePadding":100,"categorynameFontsize":28,"showTicks":true,"tickInterval":50,"ticklabelFontsize":10,"fadeLevel":0.1,"showTooltips":true,"showZeroTooltips":true,"tooltipNames":["Jim","Michael","Dwight","Pam","Andy","Angela","Kevin","Erin","Oscar"],"tooltipFontsize":12,"tooltipUnit":"","tooltipGroupConnector":" &#x25B6; ","precision":"null","clickAction":null,"clickGroupAction":null}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code># save the widget
+# library(htmlwidgets)
+# saveWidget(p, file=&quot;chord_interactive.html&quot;)</code></pre>
+<p>Play around with the diagram <a href="connorrothschild.github.io/D3.js/the-office/">here</a>!</p>
+</div>
+</div>

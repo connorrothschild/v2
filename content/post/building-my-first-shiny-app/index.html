@@ -1,0 +1,171 @@
+---
+title: "Building my First Shiny App"
+date: "2019-08-03"
+authors: 
+ - admin
+categories: ["R"]
+image:
+  preview_only: true
+tags: ["r", "visualization", "interactive", "shiny"]
+summary: "Building my first Shiny app."
+---
+
+
+
+<p>I spent some time this weekend playing around with <a href="https://shiny.rstudio.com">Shiny</a>, RStudio’s tool for creating interactive web apps. In a nod to my humble beginnings, I wanted to bring some interactivity to my first R project (<a href="https://connorrothschild.github.io/r/automation/">ever!</a>).</p>
+<p>I finished the project roughly a year ago, in the summer between my freshman and sophomore year. It was an exercise in plotting multiple dimensions related to something of personal interest to me: automation and its impact on jobs. I wanted to use ggplot2 to recreate a visualization I came across on Bloomberg graphics. Here’s <a href="https://www.bloomberg.com/graphics/2017-job-risk/">Bloomberg’s visualization</a> and here’s <a href="https://connorrothschild.github.io/r/automation/">mine</a>.</p>
+<p>There are some obvious differences in our visualizations (our axes are inverted, they likely used D3.js while I used ggplot2), but for the most part, our visualizations depict the same lesson: lower-paying jobs and less-educated jobs are more susceptible to job displacement from automation.</p>
+<p>A year later, there are some things about my first visualization I would definitely change (title and axis label size, unnecessary corner labels, a potentially misleading geom_smooth line), but what I really want to work on now is bringing my project closer to the Bloomberg visualization by making it interactive. (I’ve actually already made an <a href="https://public.tableau.com/profile/connor.rothschild#!/vizhome/JobAutomationRiskintheUnitedStates/Final">interactive version</a> of the visualization using Tableau, but I wanted to do it again in R to expand my skillset!)</p>
+<p>Enter Shiny, RStudio’s tool for creating interactive visualizations. By using Shiny with <a href="https://ggvis.rstudio.com">ggvis</a> (ggplot2’s “successor” with interactive capabilities), I’m able to get pretty close to my initial inspiration.</p>
+<p>ggvis’s commands are pretty similar to ggplot2, and so the learning curve wasn’t that steep (with the exception of setting the default size parameter for my points, which I finally solved with <a href="https://stackoverflow.com/questions/43466172/chang-size-of-points-depending-on-one-column-with-ggvis">this fix</a>). Shiny was a bit more difficult to learn, but RStudio’s <a href="https://shiny.rstudio.com/tutorial/">online video tutorials</a> make it a lot less daunting. All in all, the project only took one night (~3 hours) to complete. Another example of R’s accessibility and ease of use!</p>
+<div id="cleanprepare-data" class="section level2">
+<h2>Clean/Prepare Data</h2>
+<pre class="r"><code>library(ggplot2)
+library(ggthemes)
+library(dplyr)
+library(ggrepel)
+library(tools)
+library(readxl)
+library(tidyverse)
+library(knitr)
+
+options(scipen=999)
+theme_set(theme_minimal())
+
+education &lt;- read_excel(&quot;data/education.xlsx&quot;, skip=1)
+salary &lt;- read_excel(&quot;data/national_M2017_dl.xlsx&quot;)
+automation &lt;- read_excel(&quot;data/raw_state_automation_data.xlsx&quot;)
+
+salary1 &lt;- salary %&gt;% 
+group_by(OCC_TITLE) %&gt;% 
+mutate(natlwage = TOT_EMP * as.numeric(A_MEAN)) %&gt;%
+filter(!is.na(TOT_EMP)) %&gt;%
+filter(!is.na(A_MEAN)) %&gt;%
+filter(!is.na(A_MEDIAN))
+
+salary1$A_MEDIAN = as.numeric(as.character(salary1$A_MEDIAN))
+salary2 &lt;- select(salary1, OCC_TITLE, TOT_EMP, A_MEDIAN, natlwage) %&gt;% 
+distinct()
+
+library(plyr)
+education1 &lt;- education %&gt;% select(-...2)
+
+education1 &lt;- rename(education1, c(&quot;2016 National Employment Matrix title and code&quot; = &quot;occupation&quot;,
+                                   &quot;Less than high school diploma&quot; = &quot;lessthanhs&quot;, 
+                                   &quot;High school diploma or equivalent&quot; = &quot;hsdiploma&quot;,
+                                   &quot;Some college, no degree&quot; = &quot;somecollege&quot;,
+                                   &quot;Associate&#39;s degree&quot; = &quot;associates&quot;,
+                                   &quot;Bachelor&#39;s degree&quot; = &quot;bachelors&quot;,
+                                   &quot;Master&#39;s degree&quot; = &quot;masters&quot;,
+                                   &quot;Doctoral or professional degree&quot; = &quot;professional&quot;))
+
+education2 &lt;- education1 %&gt;% 
+  group_by(occupation) %&gt;%
+  mutate(hsorless = lessthanhs + hsdiploma,
+         somecollegeorassociates = somecollege + associates,
+         postgrad = masters + professional)
+
+education2 &lt;- education2 %&gt;% drop_na()
+
+salary2 &lt;- rename(salary2, c(&quot;OCC_TITLE&quot; = &quot;occupation&quot;))
+salary2$occupation &lt;- tolower(salary2$occupation)
+education2$occupation &lt;- tolower(education2$occupation)
+edsal &lt;- merge(as.data.frame(education2), as.data.frame(salary2), by=&quot;occupation&quot;) %&gt;% drop_na()
+
+  typicaleducation &lt;- read_excel(&quot;data/typicaleducation.xlsx&quot;)
+  typicaleducation2 &lt;- typicaleducation %&gt;% select(occupation,typicaled,workexp)
+  typicaleducation2 &lt;- typicaleducation2 %&gt;% drop_na()
+  typicaleducation2$occupation &lt;- tolower(typicaleducation2$occupation)
+  edsal2 &lt;- merge(as.data.frame(edsal), as.data.frame(typicaleducation2), by=&quot;occupation&quot;)
+
+  detach(package:plyr)
+  edsal3 &lt;- edsal2 %&gt;% 
+  group_by(typicaled) %&gt;% 
+  summarise(medianwage = mean(A_MEDIAN))
+  
+  automationwstates &lt;- automation %&gt;% select(-soc)
+  automation1 &lt;- automationwstates %&gt;% select(occupation,probability,total)
+
+  automation1$occupation &lt;- str_replace_all(automation1$occupation, &quot;;&quot;, &quot;,&quot;)
+  automation1$occupation &lt;- tolower(automation$occupation)
+  data &lt;- merge(as.data.frame(edsal2), as.data.frame(automation1), by=&quot;occupation&quot;)
+
+  data$occupation &lt;- toTitleCase(data$occupation)</code></pre>
+</div>
+<div id="bring-in-shiny" class="section level2">
+<h2>Bring in Shiny</h2>
+<pre class="r"><code>library(shiny)
+
+# Define UI for application 
+ui &lt;- pageWithSidebar(
+  headerPanel(&quot;Automation&quot;),
+  sidebarPanel(
+    wellPanel(
+      h4(&quot;Filter&quot;),
+      sliderInput(&quot;TOT_EMP&quot;, &quot;Number of Workers&quot;,
+                  0, 4450000, 4450000, step = 10000),
+      sliderInput(&quot;A_MEDIAN&quot;, &quot;Median Income&quot;, 
+                  0, 185150, 185150, step = 1000),
+      sliderInput(&quot;probability&quot;, &quot;Probability of Automation&quot;,
+                  0, 1, 1, step = .1),
+      # sliderInput(&quot;boxoffice&quot;, &quot;Dollars at Box Office (millions)&quot;,
+      #             0, 800, c(0, 800), step = 1),
+      selectInput(&quot;typicaled&quot;, &quot;Education Level&quot;,
+                  c(&quot;All&quot;, &quot;Bachelor&#39;s degree&quot;, &quot;High school diploma or equivalent&quot;, &quot;Associate&#39;s degree&quot;, &quot;Postsecondary nondegree award&quot;,
+                    &quot;No formal educational credential&quot;, &quot;Master&#39;s degree&quot;, &quot;Doctoral or professional degree&quot;, &quot;Some college, no degree&quot;)
+      ))
+      #textInput(&quot;occupation&quot;, &quot;Occupation Name&quot;))
+  ),
+  mainPanel(
+    plotOutput(&quot;plot&quot;)
+  )
+)
+
+server &lt;- function(input, output) {
+  
+  # defaultColors &lt;- c(&quot;#3366cc&quot;, &quot;#dc3912&quot;, &quot;#ff9900&quot;, &quot;#109618&quot;, &quot;#990099&quot;, &quot;#0099c6&quot;, &quot;#dd4477&quot;)
+  # series &lt;- structure(
+  #   lapply(defaultColors, function(color) { list(color=color) }),
+  #   names = levels(data$typicaled)
+  # )
+  
+  
+  dfInput &lt;- reactive({
+    if (input$typicaled!=&quot;All&quot;) {
+    data %&gt;% filter(TOT_EMP &lt;= input$TOT_EMP,
+                    A_MEDIAN &lt;= input$A_MEDIAN,
+                    probability &lt;= input$probability,
+                    typicaled %in% input$typicaled)
+    #occupation == input$occupation)
+      } else { 
+    data %&gt;% filter(TOT_EMP &lt;= input$TOT_EMP,
+                    A_MEDIAN &lt;= input$A_MEDIAN,
+                    probability &lt;= input$probability)
+      }
+    })
+
+  
+  output$plot &lt;- renderPlot({
+    
+    data1 &lt;- dfInput()
+    
+    ggplot(data1) +
+      geom_point(mapping = aes(x = A_MEDIAN, y = probability, size = TOT_EMP, alpha=0.05, col = typicaled)) +
+      # #geom_smooth(aes(x=A_MEDIAN, y=probability), method=&quot;lm&quot;, se=FALSE) +
+      scale_size_area(max_size = 20) +
+      scale_alpha(guide = &#39;none&#39;) +
+      guides(size = &quot;none&quot;) +
+      theme(legend.position = &quot;bottom&quot;) +
+      guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+      ylim(-.05,1.05) +
+      xlim(25000,200000) +
+      xlab(&quot;Median Income&quot;) +
+      ylab(&quot;Probability of Automation&quot;) +
+      ggtitle(&quot;Likelihood of Job Automation vs Median Income&quot;) +
+      labs(size=&quot;Total Employment&quot;, col=&quot;Education Level&quot;)
+  })
+}
+
+# shinyApp(ui = ui, server = server)</code></pre>
+<p><a href="https://connorrothschild.shinyapps.io/ggvis/">You can find the Shiny app here</a>!</p>
+</div>

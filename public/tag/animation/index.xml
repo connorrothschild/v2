@@ -1,0 +1,1326 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>animation | Connor Rothschild</title>
+    <link>/tag/animation/</link>
+      <atom:link href="/tag/animation/index.xml" rel="self" type="application/rss+xml" />
+    <description>animation</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sat, 26 Oct 2019 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/img/static/img/avatar.jpg</url>
+      <title>animation</title>
+      <link>/tag/animation/</link>
+    </image>
+    
+    <item>
+      <title>How to Scrollytell in R: Automation and Its Impact on Jobs</title>
+      <link>/post/automation-scrollytell/</link>
+      <pubDate>Sat, 26 Oct 2019 00:00:00 +0000</pubDate>
+      <guid>/post/automation-scrollytell/</guid>
+      <description>
+
+
+&lt;p&gt;I’ve always been interested in data visualization, and my most recent sub-passion has been &lt;em&gt;scrollytelling&lt;/em&gt;. I’ve seen numerous examples of amazing scrolling articles, from sites such as &lt;a href=&#34;https://pudding.cool/&#34;&gt;The Pudding&lt;/a&gt;, the &lt;a href=&#34;https://www.nytimes.com/&#34;&gt;New York Times&lt;/a&gt;, and &lt;a href=&#34;https://fivethirtyeight.com/&#34;&gt;FiveThirtyEight&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Although most of these sites rely on the same high-powered visualization tools (such as &lt;a href=&#34;https://d3js.org/&#34;&gt;D3.js&lt;/a&gt;) to create their stories, the learning curve for those are a bit too steep for a full-time college student to pursue (although &lt;a href=&#34;https://github.com/connorrothschild/D3.js&#34;&gt;I am trying&lt;/a&gt;!).&lt;/p&gt;
+&lt;p&gt;Thankfully, I came across some examples of scrollytelling in my language of choice, R.&lt;/p&gt;
+&lt;p&gt;What follows is a scrollytelling recreation of the &lt;a href=&#34;https://connorrothschild.github.io/r/automation/&#34;&gt;very first visualization I ever made&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(shiny)
+library(scrollytell)
+library(shinyjs)
+library(ggvis)
+library(plotly)
+
+theme_set(theme_minimal())&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;construct-an-updating-plot-object&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Construct an Updating Plot Object&lt;/h2&gt;
+&lt;p&gt;Once the data (&lt;a href=&#34;https://github.com/connorrothschild/shiny-scrollytell/tree/master/data&#34;&gt;which can be found here&lt;/a&gt;) is already &lt;a href=&#34;https://connorrothschild.github.io/r/automation/#load-datasets&#34;&gt;loaded and cleaned&lt;/a&gt;, we construct a plot object that will update as the user scrolls. (&lt;a href=&#34;https://github.com/scottyd22/dream_team&#34;&gt;Other R users&lt;/a&gt; make multiple plots; either way is fine.)&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot &amp;lt;- data %&amp;gt;% 
+  filter(if (add != 8) add &amp;gt;= reveal else reveal %in% c(1:8)) %&amp;gt;%
+  ggplot() +
+  geom_point(mapping=aes(x=A_MEDIAN, y=probability, size=TOT_EMP,
+                         alpha=ifelse(add == reveal, 1/5, 1/10), col=typicaled,
+                         text = glue::glue(&amp;#39;&amp;lt;b&amp;gt;Occupation&amp;lt;/b&amp;gt;: {occupation}
+                                            &amp;lt;b&amp;gt;Probability of Automation&amp;lt;/b&amp;gt;: {probability}%
+                                            &amp;lt;b&amp;gt;Median Income&amp;lt;/b&amp;gt;: ${A_MEDIAN}
+                                            &amp;lt;b&amp;gt;Number of Workers&amp;lt;/b&amp;gt;: {TOT_EMP}&amp;#39;))) +
+  scale_size(range = c(1, 20)) +
+  xlab(&amp;quot;\nMedian Income&amp;quot;) +
+  ylab(&amp;quot;Probability of Automation&amp;quot;) +
+  labs(size= &amp;quot;&amp;quot;, col= &amp;quot;&amp;quot;, alpha = &amp;quot;&amp;quot;) +
+  scale_color_manual(values = cols, breaks = legend_ord) +
+  scale_x_continuous(labels=scales::dollar_format(prefix=&amp;quot;$&amp;quot;), limits = c(25000,200000)) +
+  scale_y_continuous(labels=scales::number_format(suffix=&amp;quot;%&amp;quot;), limits = c(0,100)) +
+  # cr::drop_axis(axis = &amp;quot;y&amp;quot;) +
+  theme(axis.line.x = ggplot2::element_line(colour = NULL, 
+                                            size = NULL, linetype = NULL, lineend = NULL), 
+        axis.line.y = ggplot2::element_blank(),
+        panel.grid.major.x = element_blank())&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But wait, what’s that second line of code?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(if (add != 8) add &amp;gt;= reveal else reveal %in% c(1:8))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This may make &lt;em&gt;0 sense&lt;/em&gt; right now, but here’s why we have it.&lt;/p&gt;
+&lt;p&gt;The important part (and somewhat difficult thing to understand) about this step is that your plot object has some &lt;strong&gt;data which corresponds to an updating variable&lt;/strong&gt;. For me, I added a variable called &lt;em&gt;reveal&lt;/em&gt; for each step of the visualization. For me, this meant having reveal correspond to a typical level of education for a given job.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- data %&amp;gt;% 
+  mutate(reveal = case_when(
+    typicaled == &amp;quot;No formal educational credential&amp;quot; ~ 1,
+    typicaled == &amp;quot;High school diploma or equivalent&amp;quot; ~ 2,
+    typicaled == &amp;quot;Postsecondary nondegree award&amp;quot; ~ 3,
+    typicaled == &amp;quot;Some college, no degree&amp;quot; ~ 0,
+    typicaled == &amp;quot;Associate&amp;#39;s degree&amp;quot; ~ 4,
+    typicaled == &amp;quot;Bachelor&amp;#39;s degree&amp;quot; ~ 5,
+    typicaled == &amp;quot;Master&amp;#39;s degree&amp;quot; ~ 6,
+    typicaled == &amp;quot;Doctoral or professional degree&amp;quot; ~ 7,
+  ))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What this means is that every time the post observes an event (a scroll), it will update according to the number in the &lt;em&gt;reveal&lt;/em&gt; column.&lt;/p&gt;
+&lt;p&gt;So, when my plot object has a line of code which says:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(if (add != 8) add &amp;gt;= reveal else reveal %in% c(1:8))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;That can be read as “Update the plot object to include all data points &lt;strong&gt;up until the current point&lt;/strong&gt; encoded in reveal.”&lt;/p&gt;
+&lt;p&gt;But, it also depends on what level of &lt;em&gt;add&lt;/em&gt; we are at; if &lt;em&gt;add&lt;/em&gt; == 8 (the last data point, e.g. the concluding plot), then we want to show &lt;em&gt;all data points&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;“Okay, okay. But what is &lt;em&gt;add&lt;/em&gt;???”&lt;/p&gt;
+&lt;p&gt;Good question. &lt;em&gt;add&lt;/em&gt; is the variable I constructed to correspond to the user’s input (in this case, the scroll!). When we put it all together, we’re going to wrap our plot object into a rendering function &lt;em&gt;inside&lt;/em&gt; the server function. Confusing? It looks like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;server &amp;lt;- function(input, output, session) {
+  
+  output$plot &amp;lt;- renderPlotly({
+    
+    add &amp;lt;- input$scr
+    
+    plot &amp;lt;- 
+      # static ggplot goes here
+      
+      ggplotly(plot) %&amp;gt;%
+      # other ggplotly parameters go here
+      
+  })
+  
+  # render the plot here
+  output$scr &amp;lt;- renderScrollytell({scrollytell()})
+  renderText(paste0(&amp;quot;Section: &amp;quot;, input$scr))
+  observe({cat(&amp;quot;section:&amp;quot;, input$scr, &amp;quot;\n&amp;quot;)})
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What’s happening here? Within the server function, we’re doing two things:&lt;/p&gt;
+&lt;p&gt;First, we’re creating the plot object. Because we have the command &lt;em&gt;add &amp;lt;- input&lt;span class=&#34;math inline&#34;&gt;\(scr* **inside** the function `renderPlotly`, our plot object will be dynamically updated along with *input\)&lt;/span&gt;scr&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;This makes more sense when you connect it to the ui. In our ui function, we include a &lt;code&gt;scrolly_container&lt;/code&gt; from the scrollytell package. Within that, we make our &lt;code&gt;outputId&lt;/code&gt; correspond to the name of our updating input (in this case, &lt;em&gt;scr&lt;/em&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ui &amp;lt;- fluidPage(
+  
+  # a bunch of introductory stuff, css stuff
+  
+  # scrollytelling plot
+  scrolly_container(outputId = &amp;quot;scr&amp;quot;, 
+                       scrolly_graph(
+                                     ## this is the plot object that we made earlier:
+                                     plotlyOutput(&amp;quot;plot&amp;quot;, height = &amp;#39;600px&amp;#39;)
+                                     
+                    ), 
+                    scrolly_sections(
+                      ## each of these sections corresponds to an update
+                      ## the number after id = corresponds to the `scr` update
+                      ## the render_text() function will be discussed later
+                      scrolly_section(id = 0, render_text(0)),
+                      scrolly_section(id = 1, render_text(1)),
+                      scrolly_section(id = 2, render_text(2)),
+                      scrolly_section(id = 3, render_text(3)),
+                      scrolly_section(id = 4, render_text(4)),
+                      scrolly_section(id = 5, render_text(5)),
+                      scrolly_section(id = 6, render_text(6)),
+                      scrolly_section(id = 7, render_text(7)),
+                      scrolly_section(id = 8, render_text(8)),
+                      # add a scrolly_section with nothing in it; 
+                      # this buffer prevents the plot from disappearing while reading last section
+                      scrolly_section(id = &amp;quot;buffer&amp;quot;, br())
+                    )
+                    
+  ),
+ 
+  # a bunch of concluding stuff, other html 
+
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So, the simplest way to think about this so far is:&lt;/p&gt;
+&lt;p&gt;Construct a plot object with some updating variable (in my case, &lt;em&gt;reveal&lt;/em&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(if (add != 8) add &amp;gt;= reveal else reveal %in% c(1:8))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Make that variable correspond with some input variable (in my case &lt;em&gt;add&lt;/em&gt;, which is created from the &lt;em&gt;input$scr&lt;/em&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;server &amp;lt;- function(input, output, session) {
+  
+  output$plot &amp;lt;- renderPlotly({
+    
+    add &amp;lt;- input$scr
+    #... &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Render your plot object in &lt;code&gt;scrolly_graph&lt;/code&gt;, and provide input updates via each &lt;code&gt;scrolly_section&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ui &amp;lt;- fluidPage(
+  
+  # a bunch of introductory stuff, css stuff
+  
+  # scrollytelling plot
+  scrolly_container(outputId = &amp;quot;scr&amp;quot;, 
+                       scrolly_graph(plotlyOutput(&amp;quot;plot&amp;quot;, height = &amp;#39;600px&amp;#39;)
+                                     
+                    ), 
+                    scrolly_sections(
+                      scrolly_section(id = 0, render_text(0)),
+                      scrolly_section(id = 1, render_text(1)),
+                      
+                      # ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Render your plots in your server function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;server &amp;lt;- function(input, output, session) {
+  
+  output$plot &amp;lt;- 
+    #...
+  })
+  
+  output$scr &amp;lt;- renderScrollytell({scrollytell()})
+  renderText(paste0(&amp;quot;Section: &amp;quot;, input$scr))
+  observe({cat(&amp;quot;section:&amp;quot;, input$scr, &amp;quot;\n&amp;quot;)})
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;That’s (most of) it for the plot section. You can play around with other customizations too (for example, the alphas for my circles correspond to an &lt;code&gt;ifelse&lt;/code&gt; around &lt;em&gt;reveal&lt;/em&gt;, so old circles are faded out compared to new ones).&lt;/p&gt;
+&lt;div id=&#34;create-a-series-of-text-reveals&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Create a Series of Text Reveals&lt;/h3&gt;
+&lt;p&gt;Next, we create text sections using &lt;code&gt;HTML&lt;/code&gt; and some helper functions which beautify them.&lt;/p&gt;
+&lt;p&gt;First, we create the text boxes for each section following a similar naming convention:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;text1 &amp;lt;- HTML(&amp;quot;&amp;lt;H2&amp;gt; No education credentials &amp;lt;/H2&amp;gt;
+              &amp;lt;br&amp;gt; &amp;lt;p&amp;gt; Workers with &amp;lt;font color=&amp;#39;#A00042&amp;#39;&amp;gt;no formal education credential&amp;lt;/font&amp;gt; have a median income of $25,636.
+              &amp;lt;br&amp;gt; On average, those occupations have a &amp;lt;b&amp;gt;90% chance&amp;lt;/b&amp;gt; of job automation.
+              &amp;lt;br&amp;gt;&amp;lt;br&amp;gt; There are 23,765,700 workers with &amp;lt;font color=&amp;#39;#A00042&amp;#39;&amp;gt;no formal education credential&amp;lt;/font&amp;gt;.&amp;lt;p&amp;gt;&amp;quot;)
+
+text2 &amp;lt;- HTML(&amp;quot;&amp;lt;H2&amp;gt; High school diplomas &amp;lt;/H2&amp;gt;
+              &amp;lt;br&amp;gt; &amp;lt;p&amp;gt;Workers with &amp;lt;font color=&amp;#39;#F56C42&amp;#39;&amp;gt;high school diplomas&amp;lt;/font&amp;gt; have a median income of $25,636.
+              &amp;lt;br&amp;gt; On average, those occupations have a &amp;lt;b&amp;gt;60% chance&amp;lt;/b&amp;gt; of job automation.
+              &amp;lt;br&amp;gt;&amp;lt;br&amp;gt; There are 33,129,910 workers with a &amp;lt;font color=&amp;#39;#F56C42&amp;#39;&amp;gt;high school diploma&amp;lt;/font&amp;gt;.&amp;lt;p&amp;gt;&amp;quot;)
+
+# ... &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then, we create a function &lt;code&gt;render_text&lt;/code&gt; which beautifies that HTML with CSS:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;text &amp;lt;- function(num){
+  p(
+    switch(num,
+           text1,
+           text2,
+           text3,
+           text4,
+           text5,
+           text6,
+           text7,
+           text8
+    )
+  )
+}
+
+render_text &amp;lt;- function(num){
+  
+  div(
+    text(num), class = &amp;quot;text&amp;quot;
+  )
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For all 8 of the above &lt;em&gt;text_&lt;/em&gt;s, we’ve created a switch function which calls them depnding on the number passed to &lt;code&gt;render_text&lt;/code&gt;. Then, we apply paragraph format, put them in their own div, and apply the &lt;em&gt;text&lt;/em&gt; class in our CSS sheet.&lt;/p&gt;
+&lt;p&gt;How does this work?&lt;/p&gt;
+&lt;p&gt;Recall that above, in our ui section, we had the following:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;scrolly_sections(
+                      HTML(&amp;#39;&amp;lt;center&amp;gt;&amp;#39;),
+                      scrolly_section(id = 0, render_text(0)),
+                      scrolly_section(id = 1, render_text(1)),
+                      # ...
+                      
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here, our &lt;code&gt;scrolly_section&lt;/code&gt;s take two inputs: our ID and our corresponding text. Rather than write out lengthy text boxes in each &lt;code&gt;scrolly_section&lt;/code&gt;, we can construct them in a single file and then knit them all into the same format using &lt;code&gt;render_text&lt;/code&gt;. This makes life a lot easier.&lt;/p&gt;
+&lt;p&gt;So, on each scroll (or observation), the app will update 1) the plot object, by adding &lt;em&gt;add&lt;/em&gt; and updating according to &lt;em&gt;reveal&lt;/em&gt;, and 2) the text, by running &lt;code&gt;render_text&lt;/code&gt; which calls &lt;code&gt;text&lt;/code&gt; which beautifies our HTML text.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;final-touches&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Final Touches&lt;/h3&gt;
+&lt;p&gt;Surprisingly, that’s about it. The rest of the app is built on &lt;code&gt;fluidPage&lt;/code&gt;, and organizing via rows and columns in your shiny app. Your app should have a CSS style sheet (in the &lt;a href=&#34;https://shiny.rstudio.com/articles/css.html&#34;&gt;www folder&lt;/a&gt;). You may also include other plots (for my post, I have an introductory plot with a bit more context), which you will have to separately create and render in your server function.&lt;/p&gt;
+&lt;p&gt;All in all, my code looks like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ui &amp;lt;- fluidPage(
+  
+  # suppress warning messages while data is loading on-screen 
+  tags$style(type=&amp;quot;text/css&amp;quot;,
+             &amp;quot;.shiny-output-error { visibility: hidden; }&amp;quot;,
+             &amp;quot;.shiny-output-error:before { visibility: hidden; }&amp;quot;),
+  tags$head(
+    includeCSS(&amp;quot;www/style.css&amp;quot;)
+  ),
+  
+  # article title &amp;amp; name
+  fluidRow(HTML(&amp;quot;&amp;lt;center&amp;gt;
+                &amp;lt;h1&amp;gt;Automation and Its Impact on Jobs&amp;lt;/h1&amp;gt;
+                &amp;lt;p style=&amp;#39;font-size:26px&amp;#39;&amp;gt; by &amp;lt;a href=&amp;#39;https://connorrothschild.github.io/&amp;#39; target=&amp;#39;_blank&amp;#39;&amp;gt;Connor Rothschild&amp;lt;/a&amp;gt;&amp;lt;/p&amp;gt;
+                &amp;lt;/center&amp;gt;&amp;quot;)
+  ),
+  
+  br(),
+  
+  fluidRow(
+    column(1),
+    
+    column(10,
+           # intro text
+           fluidRow(id=&amp;#39;text&amp;#39;,
+                    column(1),
+                    column(10, 
+                           br(),
+                           text0,
+                           hr(),
+                           h1(
+                             class = &amp;quot;instructions&amp;quot;,
+                             &amp;quot;How to read this chart:&amp;quot;, 
+                             br(),
+                             br(),
+                             &amp;quot;The size of each&amp;quot;, icon(&amp;quot;circle&amp;quot;), &amp;quot;corresponds to the number of workers in that job.&amp;quot;,
+                             br(),
+                             &amp;quot;Hover over each&amp;quot;, icon(&amp;quot;circle&amp;quot;), &amp;quot;to see details on the occupation&amp;#39;s income and probability of automation.&amp;quot;,
+                             br(),
+                             &amp;quot;Double click on a&amp;quot;, icon(&amp;quot;circle&amp;quot;), &amp;quot;in the legend to focus on a specific level of education.&amp;quot; 
+                           )),
+                    column(1)),
+           # plot object for intro
+           plotlyOutput(&amp;quot;introPlot&amp;quot;, height = &amp;#39;400px&amp;#39;)
+           ),
+    
+    column(1),
+    
+           ),
+  
+  # scrollytelling plot
+  scrolly_container(&amp;quot;scr&amp;quot;
+                    , scrolly_graph( br(), 
+                                     br(),
+                                     textOutput(&amp;quot;section&amp;quot;),
+                                     br(),
+                                     HTML(&amp;#39;&amp;lt;center&amp;gt;&amp;#39;),
+                                     plotlyOutput(&amp;quot;plot&amp;quot;, height = &amp;#39;600px&amp;#39;),
+                                     HTML(&amp;#39;&amp;lt;/center&amp;gt;&amp;#39;)
+                                     
+                    )
+                    , scrolly_sections(
+                      HTML(&amp;#39;&amp;lt;center&amp;gt;&amp;#39;),
+                      scrolly_section(id = 0, render_text(0)),
+                      scrolly_section(id = 1, render_text(1)),
+                      scrolly_section(id = 2, render_text(2)),
+                      scrolly_section(id = 3, render_text(3)),
+                      scrolly_section(id = 4, render_text(4)),
+                      scrolly_section(id = 5, render_text(5)),
+                      scrolly_section(id = 6, render_text(6)),
+                      scrolly_section(id = 7, render_text(7)),
+                      scrolly_section(id = 8, render_text(8)),
+                      # add a scrolly_section with nothing in it; 
+                      # this buffer prevents the plot from disappearing while reading last section
+                      scrolly_section(id = &amp;quot;buffer&amp;quot;, br()),
+                      HTML(&amp;#39;&amp;lt;/center&amp;gt;&amp;#39;)
+                    )
+                    
+  ),
+  
+  # concluding text
+  div(fluidRow(id = &amp;#39;text&amp;#39;,
+               column(2),
+               column(8, 
+                      concludingtext,
+                      br()
+               ),
+               column(2)
+  ), style = &amp;#39;margin-top: -300px;&amp;#39;),
+  
+  br(),
+  br(),
+  br(),
+  hr(),
+  
+  fluidRow(
+    column(1),
+    column(10,
+           technicalnotes
+    ),
+    column(1)
+  ),
+  br(),
+  br(),
+column(1)
+
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And the server looks like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;server &amp;lt;- function(input, output, session) {
+  
+  output$plot &amp;lt;- renderPlotly({
+    
+    add &amp;lt;- input$scr
+    
+    plot &amp;lt;- data %&amp;gt;% 
+      filter(typicaled != &amp;quot;Some college, no degree&amp;quot;) %&amp;gt;%
+      filter(if (add != 8) add &amp;gt;= reveal else reveal %in% c(1:8)) %&amp;gt;%
+      ggplot() +
+      geom_point(mapping=aes(x=A_MEDIAN, y=probability, size=TOT_EMP,
+                             alpha=ifelse(add == reveal, 1/5, 1/10), col=typicaled,
+                             text = glue::glue(&amp;#39;&amp;lt;b&amp;gt;Occupation&amp;lt;/b&amp;gt;: {occupation}
+                                                &amp;lt;b&amp;gt;Probability of Automation&amp;lt;/b&amp;gt;: {probability}%
+                                                &amp;lt;b&amp;gt;Median Income&amp;lt;/b&amp;gt;: ${A_MEDIAN}
+                                                &amp;lt;b&amp;gt;Number of Workers&amp;lt;/b&amp;gt;: {TOT_EMP}&amp;#39;))) +
+      scale_size(range = c(1, 20)) +
+      xlab(&amp;quot;\nMedian Income&amp;quot;) +
+      ylab(&amp;quot;Probability of Automation&amp;quot;) +
+      labs(size= &amp;quot;&amp;quot;, col= &amp;quot;&amp;quot;, alpha = &amp;quot;&amp;quot;) +
+      scale_color_manual(values = cols, breaks = legend_ord) +
+      scale_x_continuous(labels=scales::dollar_format(prefix=&amp;quot;$&amp;quot;), limits = c(25000,200000)) +
+      scale_y_continuous(labels=scales::number_format(suffix=&amp;quot;%&amp;quot;), limits = c(0,100)) +
+      # cr::drop_axis(axis = &amp;quot;y&amp;quot;) +
+      theme(axis.line.x = ggplot2::element_line(colour = NULL, 
+                                                size = NULL, linetype = NULL, lineend = NULL), 
+            axis.line.y = ggplot2::element_blank(),
+            panel.grid.major.x = element_blank())
+    
+    ggplotly(plot, tooltip = &amp;#39;text&amp;#39;) %&amp;gt;%
+    layout(
+      title = list(element_blank()),
+      legend = list(x = 0.65, y = 0.925),
+      font = list(family = &amp;#39;Lato&amp;#39;),
+      margin=list(t=50),
+      hoverlabel = list(bgcolor = &amp;#39;whitesmoke&amp;#39;, color = &amp;#39;DarkGray&amp;#39;)) %&amp;gt;%
+    config(displaylogo = F, showSendToCloud = F, displayModeBar = F)
+    
+  })
+    
+  output$introPlot &amp;lt;- renderPlotly({introPlot})
+  output$scr &amp;lt;- renderScrollytell({scrollytell()})
+  renderText(paste0(&amp;quot;Section: &amp;quot;, input$scr))
+  observe({cat(&amp;quot;section:&amp;quot;, input$scr, &amp;quot;\n&amp;quot;)})
+  
+}
+
+# Run the application
+shinyApp(ui = ui, server = server)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-output&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The Output&lt;/h2&gt;
+&lt;p&gt;You can see the final output of my post &lt;a href=&#34;https://connorrothschild.shinyapps.io/automation/&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;You can look at the code and all of its context on GitHub &lt;a href=&#34;https://github.com/connorrothschild/shiny-scrollytell&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>TidyTuesday: Powerlifting</title>
+      <link>/post/tidy-tuesday-powerlifting/</link>
+      <pubDate>Tue, 08 Oct 2019 00:00:00 +0000</pubDate>
+      <guid>/post/tidy-tuesday-powerlifting/</guid>
+      <description>
+
+
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+library(tidyverse)
+library(ggtext)
+library(gifski)
+library(gganimate)
+library(cr)
+
+set_cr_theme(font = &amp;quot;lato&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;load-and-clean-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Load and Clean Data&lt;/h2&gt;
+&lt;p&gt;First, read in the data from &lt;a href=&#34;https://openpowerlifting.org/data&#34; class=&#34;uri&#34;&gt;https://openpowerlifting.org/data&lt;/a&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# df &amp;lt;- readr::read_csv(&amp;quot;openpowerlifting-2019-09-20.csv&amp;quot;)
+# 
+# df_clean &amp;lt;- df %&amp;gt;% 
+#   janitor::clean_names()
+# 
+# ipf_lifts &amp;lt;- df_clean %&amp;gt;% 
+#   select(name:weight_class_kg, starts_with(&amp;quot;best&amp;quot;), place, date, federation, meet_name)  %&amp;gt;% 
+#   filter(!is.na(date)) %&amp;gt;% 
+#   filter(federation == &amp;quot;IPF&amp;quot;)
+
+ipf_lifts &amp;lt;- readr::read_csv(&amp;quot;data/ipf_lifts.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Clean ipf_lifts, and reshape the three lifts into one column:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ipf_lifts &amp;lt;- ipf_lifts %&amp;gt;% 
+  mutate(year = lubridate::year(date))
+
+ipf_lifts_reshape &amp;lt;- ipf_lifts %&amp;gt;% 
+  tidyr::pivot_longer(cols = c(&amp;quot;best3squat_kg&amp;quot;, &amp;quot;best3bench_kg&amp;quot;, &amp;quot;best3deadlift_kg&amp;quot;), names_to = &amp;quot;lift&amp;quot;) %&amp;gt;% 
+  select(name, sex, year, lift, value)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For my visualization, I’m only concerned with the &lt;em&gt;heaviest&lt;/em&gt; lifts from each year:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ipf_lifts_maxes &amp;lt;- ipf_lifts_reshape %&amp;gt;% 
+  group_by(year, sex, lift) %&amp;gt;% 
+  top_n(1, value) %&amp;gt;% 
+  ungroup %&amp;gt;% 
+  distinct(year, lift, value, .keep_all = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In order to construct a dumbbell plot, we need both male and female observations in the same row.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;max_pivot &amp;lt;- ipf_lifts_maxes %&amp;gt;% 
+  spread(sex, value)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s try to construct a dataframe for each sex:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;male_lifts &amp;lt;- max_pivot %&amp;gt;% 
+  select(-name) %&amp;gt;% 
+  filter(!is.na(M)) %&amp;gt;% 
+  group_by(year, lift) %&amp;gt;% 
+  summarise(male = mean(M))
+
+female_lifts &amp;lt;- max_pivot %&amp;gt;% 
+  select(-name) %&amp;gt;% 
+  filter(!is.na(`F`)) %&amp;gt;% 
+  group_by(year, lift) %&amp;gt;% 
+  summarise(female = mean(`F`))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And join them:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;max_lifts &amp;lt;- merge(male_lifts, female_lifts)
+
+max_lifts_final &amp;lt;- max_lifts %&amp;gt;% 
+  group_by(year, lift) %&amp;gt;% 
+  mutate(diff = male - female)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualize&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Visualize&lt;/h2&gt;
+&lt;p&gt;Finally, we can construct the visualization.&lt;/p&gt;
+&lt;p&gt;First, a static viz (thanks to hrbrmaster’s &lt;code&gt;ggalt&lt;/code&gt; &lt;a href=&#34;https://rud.is/b/2016/04/17/ggplot2-exercising-with-ggalt-dumbbells/&#34;&gt;package&lt;/a&gt;):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;max_lifts_final %&amp;gt;% 
+  filter(year == 2019) %&amp;gt;% 
+  ggplot() + 
+  ggalt::geom_dumbbell(aes(y = lift,
+                    x = female, xend = male),
+                colour = &amp;quot;grey&amp;quot;, size = 5,
+                colour_x = &amp;quot;#D6604C&amp;quot;, colour_xend = &amp;quot;#395B74&amp;quot;) +
+  labs(y = element_blank(),
+       x = &amp;quot;Top Lift Recorded (kg)&amp;quot;,
+       title =  &amp;quot;How &amp;lt;span style=&amp;#39;color:#D6604C&amp;#39;&amp;gt;Women&amp;lt;/span&amp;gt; and &amp;lt;span style=&amp;#39;color:#395B74&amp;#39;&amp;gt;Men&amp;lt;/span&amp;gt; Differ in Top Lifts&amp;quot;,
+                       subtitle = &amp;quot;In 2019&amp;quot;) +
+  theme(plot.title = element_markdown(lineheight = 1.1, size = 20),
+        plot.subtitle = element_text(size = 15)) +
+  scale_y_discrete(labels = c(&amp;quot;Bench&amp;quot;, &amp;quot;Deadlift&amp;quot;, &amp;quot;Squat&amp;quot;)) +
+  drop_axis(axis = &amp;quot;y&amp;quot;) +
+  geom_text(aes(x = female, y = lift, label = paste(female, &amp;quot;kg&amp;quot;)),
+            color = &amp;quot;#D6604C&amp;quot;, size = 4, vjust = -2) +
+  geom_text(aes(x = male, y = lift, label = paste(male, &amp;quot;kg&amp;quot;)),
+            color = &amp;quot;#395B74&amp;quot;, size = 4, vjust = -2) +
+  geom_rect(aes(xmin=430, xmax=470, ymin=-Inf, ymax=Inf), fill=&amp;quot;grey80&amp;quot;) +
+  geom_text(aes(label=diff, y=lift, x=450), fontface=&amp;quot;bold&amp;quot;, size=4) +
+  geom_text(aes(x=450, y=3, label=&amp;quot;Difference&amp;quot;),
+            color=&amp;quot;grey20&amp;quot;, size=4, vjust=-3, fontface=&amp;quot;bold&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Finally, we animate, using Thomas Pedersen’s wonderful &lt;a href=&#34;https://github.com/thomasp85/gganimate&#34;&gt;gganimate package&lt;/a&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animation &amp;lt;- max_lifts_final %&amp;gt;% 
+  ggplot() + 
+  ggalt::geom_dumbbell(aes(y = lift,
+                    x = female, xend = male),
+                colour = &amp;quot;grey&amp;quot;, size = 5,
+                colour_x = &amp;quot;#D6604C&amp;quot;, colour_xend = &amp;quot;#395B74&amp;quot;) +
+  labs(y = element_blank(),
+       x = &amp;quot;Top Lift Recorded (kg)&amp;quot;,
+       title =  &amp;quot;How &amp;lt;span style=&amp;#39;color:#D6604C&amp;#39;&amp;gt;Women&amp;lt;/span&amp;gt; and &amp;lt;span style=&amp;#39;color:#395B74&amp;#39;&amp;gt;Men&amp;lt;/span&amp;gt; Differ in Top Lifts&amp;quot;,
+  subtitle=&amp;#39;\nThis plot depicts the difference between the heaviest lifts for each sex at International Powerlifting Federation\nevents over time. \n \n{closest_state}&amp;#39;) +
+  theme(plot.title = element_markdown(lineheight = 1.1, size = 25, margin=margin(0,0,0,0)),
+        plot.subtitle = element_text(size = 15, margin=margin(8,0,-30,0))) +
+  scale_y_discrete(labels = c(&amp;quot;Bench&amp;quot;, &amp;quot;Deadlift&amp;quot;, &amp;quot;Squat&amp;quot;)) +
+  drop_axis(axis = &amp;quot;y&amp;quot;) +
+  geom_text(aes(x = female, y = lift, label = paste(female, &amp;quot;kg&amp;quot;)),
+            color = &amp;quot;#D6604C&amp;quot;, size = 4, vjust = -2) +
+  geom_text(aes(x = male, y = lift, label = paste(male, &amp;quot;kg&amp;quot;)),
+            color = &amp;quot;#395B74&amp;quot;, size = 4, vjust = -2) +
+  transition_states(year, transition_length = 4, state_length = 1) +
+  ease_aes(&amp;#39;cubic-in-out&amp;#39;)
+
+a_gif &amp;lt;- animate(animation, 
+                 fps = 10, 
+                 duration = 25,
+                 width = 800, height = 400, 
+                 renderer = gifski_renderer(&amp;quot;outputs/animation.gif&amp;quot;))
+
+a_gif&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-9-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;I’d like to include another GIF: a line chart of differences over time&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animation2 &amp;lt;- max_lifts_final %&amp;gt;% 
+  ungroup %&amp;gt;% 
+  mutate(lift = case_when(lift == &amp;quot;best3bench_kg&amp;quot; ~ &amp;quot;Bench&amp;quot;,
+                          lift == &amp;quot;best3squat_kg&amp;quot; ~ &amp;quot;Squat&amp;quot;,
+                          lift == &amp;quot;best3deadlift_kg&amp;quot; ~ &amp;quot;Deadlift&amp;quot;)) %&amp;gt;% 
+  ggplot(aes(year, diff, group = lift, color = lift)) + 
+  geom_line(show.legend = FALSE) + 
+  geom_segment(aes(xend = 2019.1, yend = diff), linetype = 2, colour = &amp;#39;grey&amp;#39;, show.legend = FALSE) + 
+  geom_point(size = 2, show.legend = FALSE) + 
+  geom_text(aes(x = 2019.1, label = lift, color = &amp;quot;#000000&amp;quot;), hjust = 0, show.legend = FALSE) + 
+  drop_axis(axis = &amp;quot;y&amp;quot;) +
+  transition_reveal(year) +
+  coord_cartesian(clip = &amp;#39;off&amp;#39;) +
+  theme(plot.title = element_text(size = 20)) +
+  labs(title = &amp;#39;Difference over time&amp;#39;,
+       y = &amp;#39;Difference (kg)&amp;#39;,
+       x = element_blank()) + 
+  theme(plot.margin = margin(5.5, 40, 5.5, 5.5))
+
+b_gif &amp;lt;- animate(animation2, 
+                 fps = 10, 
+                 duration = 25,
+        width = 800, height = 200, 
+        renderer = gifski_renderer(&amp;quot;outputs/animation2.gif&amp;quot;))
+
+b_gif&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-10-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;Next, combine them using &lt;code&gt;magick&lt;/code&gt; (thanks to &lt;a href=&#34;https://github.com/thomasp85/gganimate/wiki/Animation-Composition&#34;&gt;this post&lt;/a&gt;):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(magick)
+a_mgif &amp;lt;- image_read(a_gif)
+b_mgif &amp;lt;- image_read(b_gif)
+
+new_gif &amp;lt;- image_append(c(a_mgif[1], b_mgif[1]), stack = TRUE)
+for(i in 2:250){
+  combined &amp;lt;- image_append(c(a_mgif[i], b_mgif[i]), stack = TRUE)
+  new_gif &amp;lt;- c(new_gif, combined)
+}
+
+new_gif&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-11-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Texas Vaccination Rates (How to Use Rayshader)</title>
+      <link>/post/tx-vaccination-rates-rayshader/</link>
+      <pubDate>Wed, 24 Jul 2019 00:00:00 +0000</pubDate>
+      <guid>/post/tx-vaccination-rates-rayshader/</guid>
+      <description>
+
+
+&lt;p&gt;A brief exploration of Texas vaccination rates among kindergartners. Also an attempt to use &lt;code&gt;rayshader&lt;/code&gt; for the first time.&lt;/p&gt;
+&lt;div id=&#34;load-packages&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Load Packages&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(readxl)
+library(tidyverse)
+library(stringr)
+library(dplyr)
+library(ggplot2)
+library(ggmap)
+library(maps)
+library(mapdata)
+library(scales)
+library(tpltheme)
+library(knitr)
+conflicted::conflict_prefer(&amp;quot;filter&amp;quot;, &amp;quot;dplyr&amp;quot;)
+
+set_tpl_theme(font = &amp;quot;lato&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;read-in-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Read in Data&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tx_vac &amp;lt;- read_excel(&amp;quot;data/2018-2019 School Vaccination Coverage Levels - Kindergarten (XLS) .xlsx&amp;quot;, skip = 2)
+
+kable(head(tx_vac))&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;right&#34;&gt;Facility Number&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;School Type&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Facility Name&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Facility Address&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;County&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;DTP/DTaP/DT/Td&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;Hepatitis A&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;Hepatitis B&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;MMR&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;Polio&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;Varicella&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9057816000&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Public ISD&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A W Brown Leadership Academy&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;5701 RED BIRD CTR DR, DALLAS, TX, 75237&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Dallas&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.8317308&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.9086538&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.9471154&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.8509615&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.8413462&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.8509615&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9057829000&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Public ISD&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A+ Academy&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;8225 BRUTON RD, DALLAS, TX, 75217&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Dallas&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.9909091&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9109901000&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Public ISD&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Abbott ISD&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;P O BOX 226, ABBOTT, TX, 76621&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Hill&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;7101130101&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Private School&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Abercrombie Academy&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;17102 Theiss Mail Road, Spring, TX, 77379&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Harris&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.7500000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.7500000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9095901000&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Public ISD&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Abernathy ISD&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;505 7TH ST, ABERNATHY, TX, 79311&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Hale&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;7101220001&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Private School&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Abiding Word Lutheran School&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;17123 Red Oak Drive, Houston, TX, 77090&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Harris&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.7692308&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.7692308&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.7692308&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.7692308&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.6923077&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.7692308&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The data contains information on six different vaccines split up by school. The set also contains information on the county of each school, allowing us to aggregate on the county level. By finding the average of the six vaccines listed in this dataset, we can see average vaccination rate by county:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;grouped &amp;lt;- tx_vac %&amp;gt;% 
+  mutate(avgvac = (`DTP/DTaP/DT/Td`+`Hepatitis A`+`Hepatitis B`+MMR+Polio+Varicella)/6) %&amp;gt;%
+  group_by(County) %&amp;gt;%
+  summarize(avgvac = mean(avgvac, na.rm = TRUE)) %&amp;gt;%
+  mutate(County = tolower(County)) %&amp;gt;%
+  # rename to subregion so that we can later join with ggplot map data
+  rename(&amp;quot;subregion&amp;quot; = County) %&amp;gt;%
+  filter(subregion != &amp;quot;king&amp;quot;)
+
+kable(head(grouped))&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;subregion&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;avgvac&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;anderson&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.9676797&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;andrews&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.9715335&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;angelina&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.9693150&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;aransas&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.9735294&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;archer&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.9915167&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;armstrong&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.9677419&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Next, we read in the county-level data from &lt;code&gt;ggplot2&lt;/code&gt; and merge it with our vaccination data:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;counties &amp;lt;- map_data(&amp;quot;county&amp;quot;)
+tx_county &amp;lt;- subset(counties, region == &amp;quot;texas&amp;quot;)
+merged &amp;lt;- left_join(tx_county, grouped, by = &amp;quot;subregion&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;plot&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Plot&lt;/h3&gt;
+&lt;p&gt;Construct the plot using &lt;code&gt;geom_polygon()&lt;/code&gt;, and pay special attention to theme attributes (axes, panels, etc.).&lt;/p&gt;
+&lt;p&gt;Unfortunately, &lt;code&gt;theme_nothing()&lt;/code&gt; led to some conflicts with &lt;code&gt;rayshader&lt;/code&gt;, so I essentially recreated it using &lt;code&gt;theme()&lt;/code&gt; attributes.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tx &amp;lt;- ggplot(data = merged, mapping = aes(x = long, y = lat, group = group, fill = avgvac*100)) +
+  coord_fixed(1.3) +
+  geom_polygon(color = &amp;quot;black&amp;quot;) +
+  labs(fill = &amp;quot;Vaccination Rate&amp;quot;) +
+  #theme_nothing(legend = TRUE) +
+  theme(legend.title = element_text(),
+        #legend.key.width = unit(.1, &amp;quot;in&amp;quot;),
+        panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_blank(), 
+        axis.text.x = element_blank(), axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        panel.background = element_rect(fill = &amp;quot;white&amp;quot;),
+        text = element_text(family = &amp;quot;Lato&amp;quot;),
+        legend.position = &amp;quot;bottom&amp;quot;) +
+   labs(x = element_blank(),
+        y = element_blank(),
+        title = &amp;quot;Texas Vaccination Rate by County&amp;quot;,
+        subtitle = &amp;quot;Among Kindergartners&amp;quot;) + 
+  tpltheme::scale_fill_continuous()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here’s what the plot looks like before animation:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/tx-vaccination-rates-rayshader/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;rayshader&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Rayshader&lt;/h3&gt;
+&lt;p&gt;Load in &lt;code&gt;rayshader&lt;/code&gt; and &lt;code&gt;rgl&lt;/code&gt;. I’m not sure if &lt;code&gt;rgl&lt;/code&gt; is necessary for all R users, but I ran into a few errors on my system (Mac) prior to its installation.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#devtools::install_github(&amp;quot;tylermorganwall/rayshader&amp;quot;)
+library(rgl)
+options(rgl.useNULL = FALSE)
+library(rayshader)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Lastly, create the &lt;code&gt;plot_gg()&lt;/code&gt; object by following the comprehensive documentation on Wall’s &lt;a href=&#34;https://github.com/tylermorganwall/rayshader&#34;&gt;README&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;par(mfrow = c(1,1))
+rayshader::plot_gg(tx, width = 5, raytrace = TRUE, multicore = TRUE, height = 5, scale = 50)
+
+# create custom rotation parameters here
+phivechalf = 30 + 60 * 1/(1 + exp(seq(-7, 20, length.out = 180)/2))
+phivecfull = c(phivechalf, rev(phivechalf))
+thetavec = -90 + 60 * sin(seq(0,359,length.out = 360) * pi/180)
+zoomvec = 0.45 + 0.2 * 1/(1 + exp(seq(-5, 20, length.out = 180)))
+zoomvecfull = c(zoomvec, rev(zoomvec))
+
+render_movie(filename = &amp;quot;outputs/tx_vac_vid&amp;quot;, type = &amp;quot;custom&amp;quot;, 
+             frames = 360,  phi = phivecfull, zoom = zoomvecfull, theta = thetavec)&lt;/code&gt;&lt;/pre&gt;
+&lt;div style=&#34;text-align:center&#34;&gt;
+&lt;p&gt;&lt;video controls&gt;
+&lt;source src=&#34;outputs/tx_vac_vid.mp4&#34; type=&#34;video/mp4&#34;&gt;
+&lt;/video&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Bible Babies: Exploring Biblically-Inspired Baby Names over Time</title>
+      <link>/post/bible-babies/</link>
+      <pubDate>Wed, 12 Jun 2019 00:00:00 +0000</pubDate>
+      <guid>/post/bible-babies/</guid>
+      <description>
+
+
+&lt;p&gt;The goal of this post is to explore how baby names have changed over time.&lt;/p&gt;
+&lt;p&gt;More specifically, I’m focusing on the decision to name one’s baby after a Biblical figure. I’m curious if the popularity of Biblically-inspired baby names has changed over time. We’re able to explore this question using the &lt;a href=&#34;https://cran.r-project.org/web/packages/babynames/babynames.pdf&#34;&gt;&lt;em&gt;babynames&lt;/em&gt; package&lt;/a&gt; in R, which contains historical data from the U.S. Social Security Administration ranging back to 1880. It contains information on the number of babies born with a certain name in a given year, the sex of those babies, the year they were born, and their name (obviously).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(babynames)
+library(knitr)
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+library(cr)
+conflicted::conflict_prefer(&amp;quot;filter&amp;quot;, &amp;quot;dplyr&amp;quot;)
+
+set_cr_theme(font = &amp;quot;lato&amp;quot;)
+kable(head(babynames))&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;right&#34;&gt;year&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;sex&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;name&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;n&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;prop&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1880&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;F&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Mary&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7065&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0723836&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1880&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;F&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Anna&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2604&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0266790&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1880&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;F&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Emma&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2003&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0205215&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1880&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;F&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Elizabeth&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1939&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0198658&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1880&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;F&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Minnie&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1746&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0178884&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1880&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;F&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Margaret&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1578&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0161672&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;In order to determine the popularity of “Bible babies,” we need a list of names found in the Bible in order to search the &lt;em&gt;babynames&lt;/em&gt; dataset. I pulled a random list of Bible baby names from &lt;a href=&#34;https://www.babycentre.co.uk/a1025984/baby-names-from-the-bible&#34;&gt;babycentre.co.uk&lt;/a&gt;. The list likely doesn’t include &lt;em&gt;all&lt;/em&gt; names found in the Bible (only popular baby names), but that’s probably no big deal considering few, if any, parents name their child Athaliah.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;biblenames &amp;lt;- read_excel(&amp;quot;data/biblebabynames.xlsx&amp;quot;)
+
+boybible &amp;lt;- biblenames %&amp;gt;% 
+  select(boynames) %&amp;gt;% 
+  rename(names = boynames)
+
+girlbible &amp;lt;- biblenames %&amp;gt;% 
+  filter(!is.na(girlnames)) %&amp;gt;% 
+  select(girlnames) %&amp;gt;% 
+  rename(names = girlnames)
+
+biblenamesbind &amp;lt;- rbind(boybible, girlbible)
+
+# use the %in% operator to match names with those in biblenamesbind
+babynames &amp;lt;- babynames %&amp;gt;%
+  mutate(biblepercent = ifelse(name %in% biblenamesbind$names, prop, 0)) &lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;popularity-of-biblical-baby-names-over-time&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Popularity of Biblical Baby Names over Time&lt;/h2&gt;
+&lt;p&gt;One initial question is whether the popularity of “Bible babies” has declined over time. Given that &lt;a href=&#34;https://www.prri.org/research/american-religious-landscape-christian-religiously-unaffiliated/&#34;&gt;Christian identity&lt;/a&gt; and &lt;a href=&#34;https://religionnews.com/2014/01/27/great-decline-religion-united-states-one-graph/&#34;&gt;religiosity more generally&lt;/a&gt; have experienced declines in recent years, one may assume that the decision to name one’s baby after a Biblical figure has also become less popular.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;babynames %&amp;gt;% 
+  group_by(year) %&amp;gt;% 
+  summarise(sum = sum(biblepercent)) %&amp;gt;% 
+  ggplot(aes(x=year, y=sum)) +
+    geom_line() +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(title = &amp;quot;Bible Babies over Time&amp;quot;,
+       subtitle=&amp;quot;Percent of babies born with names found in the Bible&amp;quot;,
+       x=&amp;quot;Year&amp;quot;,
+       y=&amp;quot;Percent&amp;quot;,
+       caption = &amp;quot;Source: U.S. Social Security Administration
+       \n Design: www.connorrothschild.com&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/bible-babies/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Biblical names have become significantly less popular over time. We can split up the trend by sex to see if it is primarily driven by one group of babies.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;babynames %&amp;gt;% 
+  group_by(year, sex) %&amp;gt;% 
+  summarise(sum = sum(biblepercent)) %&amp;gt;% 
+  ungroup %&amp;gt;% 
+  group_by(sex) %&amp;gt;% 
+  ggplot(aes(x=year, y=sum, col=sex)) +
+  geom_line() +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(title = &amp;quot;Bible Babies over Time&amp;quot;,
+       subtitle=&amp;quot;Percent of babies born with names found in the Bible&amp;quot;,
+       x=&amp;quot;Year&amp;quot;,
+       y=&amp;quot;Percent&amp;quot;,
+       color=&amp;quot;Sex&amp;quot;,
+       caption = &amp;quot;Source: U.S. Social Security Administration
+       \n Design: www.connorrothschild.com&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/bible-babies/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Indeed, much of the departure from Biblically-inspired baby names has been driven by girls. While 13% of boys born in 2017 shared a name with some biblical figure, the same was true of only 4% of girls.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;exploring-popular-names-over-time-using-gganimate&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Exploring Popular Names over Time Using gganimate&lt;/h2&gt;
+&lt;p&gt;Finally, we can incorporate Thomas Lin Pedersen’s &lt;a href=&#34;https://github.com/thomasp85/gganimate&#34;&gt;&lt;em&gt;gganimate&lt;/em&gt; package&lt;/a&gt; to explore the popularity of &lt;em&gt;specific Bible names&lt;/em&gt; over time. This was inspired by Kieran Healy’s &lt;a href=&#34;https://kieranhealy.org/blog/archives/2019/05/13/baby-name-animation/&#34;&gt;similar visualization&lt;/a&gt; depicting changes in the structure of babies’ names over time. The below code creates a GIF showing the shifting popularity of boys’ names over time.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(gganimate)
+
+# make male rank variable
+malebabynames &amp;lt;- babynames %&amp;gt;%
+  filter(sex==&amp;quot;M&amp;quot;) %&amp;gt;% 
+  group_by(year) %&amp;gt;%
+  mutate(rank = min_rank(-biblepercent) * 1) %&amp;gt;%
+  filter(rank &amp;lt;= 10) %&amp;gt;%
+  ungroup()
+
+# plot male animation
+maleanimation &amp;lt;- malebabynames %&amp;gt;% 
+  filter(sex==&amp;quot;M&amp;quot;) %&amp;gt;% 
+  ggplot(aes(rank, group = name, 
+                fill = as.factor(name), color = as.factor(name))) +
+  geom_tile(aes(y = biblepercent/2,
+                height = biblepercent,
+                width = 0.9), alpha = 0.8, color = NA) +
+  geom_text(aes(y = 0, label = paste(name, &amp;quot; &amp;quot;)), vjust = 0.2, hjust = 1) +
+  coord_flip(clip = &amp;quot;off&amp;quot;, expand = FALSE) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_x_reverse() +
+  guides(color = FALSE, fill = FALSE) +
+  labs(title=&amp;quot;Most Popular Biblical Baby Names for Males&amp;quot;, 
+       subtitle=&amp;#39;in {closest_state}&amp;#39;, x = element_blank(), y = &amp;quot;Percent of Names&amp;quot;,
+       caption = &amp;quot;Source: U.S. Social Security Administration
+       \n Design: www.connorrothschild.com&amp;quot;) +
+  theme(plot.title = element_text(hjust = 0, size = 22),
+        plot.subtitle = element_text(hjust = 0, size = 16),
+        axis.ticks.y = element_blank(), 
+        axis.text.y  = element_blank(), 
+        plot.margin = margin(1,1,1,4, &amp;quot;cm&amp;quot;)) +
+  transition_states(year, transition_length = 4, state_length = 1) +
+  ease_aes(&amp;#39;cubic-in-out&amp;#39;)
+
+animate(maleanimation, fps = 25, nframes = 500, width = 800, height = 600)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/bible-babies/index_files/figure-html/unnamed-chunk-5-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;        #, renderer = gifski_renderer(&amp;quot;boybiblebabies.gif&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Replicating that code with minor tweaks creates the same animation for girls’ names:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# make rank variable
+femalebabynames &amp;lt;- babynames %&amp;gt;%
+  filter(sex==&amp;quot;F&amp;quot;) %&amp;gt;% 
+  group_by(year) %&amp;gt;%
+  mutate(rank = min_rank(-biblepercent) * 1) %&amp;gt;%
+  filter(rank &amp;lt;= 10) %&amp;gt;%
+  ungroup()
+
+# plot animation
+femaleanimation &amp;lt;- femalebabynames %&amp;gt;% 
+  filter(sex==&amp;quot;F&amp;quot;) %&amp;gt;% 
+  ggplot(aes(rank, group = name, 
+             fill = as.factor(name), color = as.factor(name))) +
+  geom_tile(aes(y = biblepercent/2,
+                height = biblepercent,
+                width = 0.9), alpha = 0.8, color = NA) +
+  geom_text(aes(y = 0, label = paste(name, &amp;quot; &amp;quot;)), vjust = 0.2, hjust = 1) +
+  coord_flip(clip = &amp;quot;off&amp;quot;, expand = FALSE) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_x_reverse() +
+  guides(color = FALSE, fill = FALSE) +
+  labs(title=&amp;quot;Most Popular Biblical Baby Names for Females&amp;quot;, 
+       subtitle=&amp;#39;in {closest_state}&amp;#39;, x = element_blank(), y = &amp;quot;Percent of Names&amp;quot;,
+       caption = &amp;quot;Source: U.S. Social Security Administration\n Design: www.connorrothschild.com&amp;quot;) +
+  theme(plot.title = element_text(hjust = 0, size = 22),
+        plot.subtitle = element_text(hjust = 0, size = 16),
+        axis.ticks.y = element_blank(),  
+        axis.text.y  = element_blank(),  
+        plot.margin = margin(1,1,1,4, &amp;quot;cm&amp;quot;)) +
+  transition_states(year, transition_length = 4, state_length = 1) +
+  ease_aes(&amp;#39;cubic-in-out&amp;#39;)
+
+animate(femaleanimation, fps = 25, nframes = 500, width = 800, height = 600)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/bible-babies/index_files/figure-html/unnamed-chunk-6-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;        #, renderer = gifski_renderer(&amp;quot;girlbiblebabies.gif&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, we can combine some of the insights from our earlier plot (depicting the popularity of Biblical names by sex) to show which boys’ names are responsible for their sex’s relative dominance over girls’ Biblically-inspired names.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# make rank variable
+babynamesrank &amp;lt;- babynames %&amp;gt;%
+  group_by(year) %&amp;gt;%
+  mutate(rank = min_rank(-biblepercent) * 1) %&amp;gt;%
+  filter(rank &amp;lt;= 10) %&amp;gt;%
+  ungroup()
+
+# plot animation
+babyanimation &amp;lt;- babynamesrank %&amp;gt;% 
+  ggplot(aes(rank, group = name, 
+             fill = as.factor(sex), color = as.factor(sex))) +
+  geom_tile(aes(y = biblepercent/2,
+                height = biblepercent,
+                width = 0.9), alpha = 0.8, color = NA) +
+  geom_text(aes(y = 0, label = paste(name, &amp;quot; &amp;quot;)), vjust = 0.2, hjust = 1) +
+  coord_flip(clip = &amp;quot;off&amp;quot;, expand = FALSE) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_x_reverse() +
+  guides(color = FALSE, fill = FALSE) +
+  labs(title=&amp;quot;Most Popular Biblical Baby Names&amp;quot;, 
+       subtitle=&amp;#39;in {closest_state}&amp;#39;, x = element_blank(), y = &amp;quot;Percent of Names&amp;quot;,
+       caption = &amp;quot;Source: U.S. Social Security Administration
+       \n Design: www.connorrothschild.com&amp;quot;) +
+  theme(plot.title = element_text(hjust = 0, size = 22),
+        plot.subtitle = element_text(hjust = 0, size = 16),
+        axis.ticks.y = element_blank(),  
+        axis.text.y  = element_blank(),  
+        plot.margin = margin(1,1,1,4, &amp;quot;cm&amp;quot;)) +
+  transition_states(year, transition_length = 4, state_length = 1) +
+  ease_aes(&amp;#39;cubic-in-out&amp;#39;)
+
+animate(babyanimation, fps = 25, nframes = 500, width = 800, height = 600)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/bible-babies/index_files/figure-html/unnamed-chunk-7-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;        #, renderer = gifski_renderer(&amp;quot;combinedbiblebabies.gif&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>The Race for Media Attention</title>
+      <link>/post/media-mentions/</link>
+      <pubDate>Thu, 30 May 2019 00:00:00 +0000</pubDate>
+      <guid>/post/media-mentions/</guid>
+      <description>
+
+
+&lt;p&gt;In this post, I explore which presidential candidates are discussed most frequently in the American news media.&lt;/p&gt;
+&lt;p&gt;Note: This post has become somewhat outdated since it’s &lt;a href=&#34;https://connorrothschild.github.io/media-mentions/&#34;&gt;original publication&lt;/a&gt; because the dataset (linked via FiveThirtyEight’s GitHub) has changed variable names and some of the data has changed.&lt;/p&gt;
+&lt;p&gt;You can find a less technical version of this post without code &lt;a href=&#34;https://www.connorrothschild.com/single-post/2019/05/30/The-Race-for-Media-Attention&#34;&gt;on my blog&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;overview&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Overview&lt;/h2&gt;
+&lt;p&gt;In this post, I explore which presidential candidates are discussed most frequently in the American news media. I do so using the &lt;a href=&#34;https://blog.gdeltproject.org/gdelt-2-0-television-api-debuts/&#34;&gt;GDELT Television API&lt;/a&gt;, which pulls data from the &lt;a href=&#34;https://archive.org/details/tv&#34;&gt;TV News Archive&lt;/a&gt;. For sake of convenience, I use an existing dataset found on FiveThirtyEight’s &lt;a href=&#34;https://github.com/fivethirtyeight/data/tree/master/media-mentions-2020&#34;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;load-libraries-and-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Load Libraries and Data&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(httr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(ggridges)
+library(ggrepel)
+library(viridis)
+library(lubridate)
+library(RColorBrewer)
+library(devtools)
+library(knitr)
+library(cr)
+
+set_cr_theme(font = &amp;quot;lato&amp;quot;)
+
+data &amp;lt;- read.csv(&amp;quot;data/mentions.csv&amp;quot;, header = T)
+  #read.csv((&amp;quot;https://raw.githubusercontent.com/fivethirtyeight/data/master/media-mentions-2020/cable_weekly.csv&amp;quot;), header=T)
+
+data &amp;lt;- data %&amp;gt;% 
+  mutate(date = as.Date(date, &amp;quot;%m/%d/%y&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The dataset contains information on 22 presidential candidates, recording weekly the number of clips which mention a presidential candidate (&lt;em&gt;matched_clips&lt;/em&gt;) and dividing them by the total number of clips that week (&lt;em&gt;total_clips&lt;/em&gt;) to reveal the percent (&lt;em&gt;pct_of_all_candidate_clips&lt;/em&gt;) of clips which mention that candidate.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;name&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;date&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;pct_of_all_candidate_clips&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;matched_clips&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;total_clips&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;John Delaney&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2018-12-30&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0039432&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;76029&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;John Delaney&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2019-01-06&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0019589&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;82964&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;John Delaney&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2019-01-13&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0081566&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;82521&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;John Delaney&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2019-01-20&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0020182&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;83649&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;John Delaney&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2019-01-27&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0015723&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;80994&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;John Delaney&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2019-02-03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0006901&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;79183&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Of interest to us is the &lt;em&gt;name&lt;/em&gt; of each candidate and the percent (&lt;em&gt;pct_of_all_candidate_clips&lt;/em&gt;) of media mentions they receive on a weekly basis.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;analysis&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Analysis&lt;/h2&gt;
+&lt;p&gt;We can begin with a simple analysis of which candidates are discussed most frequently by the media by averaging their weekly proportion of mentions in the media.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
+  group_by(name) %&amp;gt;% 
+  summarise(pct_of_all_candidate_clips = mean(pct_of_all_candidate_clips)*100) %&amp;gt;% 
+  top_n(12, wt = pct_of_all_candidate_clips) %&amp;gt;% 
+  ggplot(aes(x=reorder(name,pct_of_all_candidate_clips),y=pct_of_all_candidate_clips)) +
+  geom_col(show.legend=FALSE) +
+  coord_flip() +
+  fix_bars() +
+  labs(x=element_blank(),
+       y=&amp;quot;Percent of Media Mentions&amp;quot;,
+       title=&amp;quot;Average Proportion of Media Coverage on a Weekly Basis&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/media-mentions/index_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Somewhat unsurprisingly. Joe Biden and Bernie Sanders lead the pack in media attention. Joe Biden tends to receive significantly more media attention than the average candidate (a weekly average of 0.9% of overall media content compared to 0.14% for the average candidate).&lt;/p&gt;
+&lt;p&gt;How has that coverage changed over time?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
+  group_by(name) %&amp;gt;% 
+  filter(mean(pct_of_all_candidate_clips) &amp;gt; .06) %&amp;gt;% # filter out unpopular candidates for plot clarity
+  ggplot(aes(x=as.Date(date),y=pct_of_all_candidate_clips*100,group=name, color=name)) +
+  geom_point() +
+  geom_smooth(se = FALSE, show.legend = FALSE) +
+  # geom_text(data = subset(data, as.numeric(date) == 21 &amp;amp; mean(pct_of_all_candidate_clips) &amp;gt; .05), 
+  #           aes(x = 21, label = name, color = &amp;quot;#000000&amp;quot;), hjust = -.05, 
+  #           show.legend = FALSE) + 
+  geom_label_repel(data=subset(data, pct_of_all_candidate_clips&amp;gt;.6),
+          label = &amp;quot;Lucy Flores accuses Biden of \n inappropriate touching&amp;quot;,
+                   nudge_x = -25, nudge_y=-5,
+                   show.legend = FALSE,
+                   color=&amp;quot;black&amp;quot;) + 
+  geom_label_repel(data=subset(data, pct_of_all_candidate_clips &amp;gt; .58 &amp;amp; pct_of_all_candidate_clips &amp;lt;.6),
+          label = &amp;quot;Joe Biden announces candidacy&amp;quot;,
+           nudge_x = -5, nudge_y=-7,
+           show.legend = FALSE,
+           color=&amp;quot;black&amp;quot;) +
+  # theme(axis.text.x = element_text(angle = 65, hjust = 1)) +
+  # coord_cartesian(clip = &amp;#39;off&amp;#39;) +
+  # # scale_x_discrete(breaks = c(&amp;quot;1/20/19&amp;quot;, &amp;quot;2/10/19&amp;quot;,&amp;quot;3/10/19&amp;quot;,&amp;quot;3/31/19&amp;quot;,&amp;quot;4/28/19&amp;quot;),
+  # #                  labels = c(&amp;quot;January&amp;quot;, &amp;quot;February&amp;quot;, &amp;quot;March&amp;quot;, &amp;quot;April&amp;quot;, &amp;quot;May&amp;quot;)) +
+  # # theme(plot.margin = margin(5.5, 100, 5.5, 5.5)) +
+  labs(x=element_blank(),
+       y=&amp;quot;Percent of Media Mentions&amp;quot;,
+       title=&amp;quot;Media Mentions of Candidates Over Time&amp;quot;) + 
+  scale_color_discrete(name=&amp;quot;Candidate&amp;quot;, 
+                       limits = c(&amp;quot;Joe Biden&amp;quot;, &amp;quot;Bernie Sanders&amp;quot;, &amp;quot;Elizabeth Warren&amp;quot;, 
+                                  &amp;quot;Kamala Harris&amp;quot;, &amp;quot;Beto O&amp;#39;Rourke&amp;quot;, &amp;quot;Cory Booker&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/media-mentions/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Evidently, much of Joe Biden’s popularity in the media can be explained by a few large spikes in weekly media mentions. We can explore the distribution of weekly media mentions using a visualization known as a &lt;a href=&#34;https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html&#34;&gt;density ridge plot&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
+  group_by(name) %&amp;gt;% 
+  filter(mean(pct_of_all_candidate_clips) &amp;gt; 0.1) %&amp;gt;% 
+  ungroup() %&amp;gt;% 
+ggplot(aes(x = pct_of_all_candidate_clips*100, y = reorder(name,pct_of_all_candidate_clips))) +
+  geom_density_ridges(aes(point_colour=name), 
+                      show.legend = FALSE, 
+                      alpha = .2, 
+                      point_alpha = 1, 
+                      jittered_points = TRUE) +
+  labs(x = &amp;quot;Percent of Media Mentions&amp;quot;,
+       y=element_blank(),
+       title=&amp;quot;Media Mentions of Each Candidate&amp;quot;,
+       subtitle=&amp;quot;With density ridges depicting average mentions on a weekly basis&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/media-mentions/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This plot illustrates that most candidates enjoy the same levels of media coverage from one week to another. Joe Biden, however, often has weeks in which he receives much more attention than usual, as evidenced by his small peaks throughout the plot. Bernie Sanders, Kamala Harris, and Beto O’Rourke also experienced a few jumps in attention, likely when they announced their candidacy for the presidency.&lt;/p&gt;
+&lt;p&gt;This raises an interesting question: when did candidates experience the most drastic changes in media attention? For example, were there any weeks in which a candidate who normally enjoys nearly no media attention began to get a lot of it?&lt;/p&gt;
+&lt;p&gt;We can answer this question by calculating the difference between one week’s coverage and the prior week’s coverage (using the &lt;a href=&#34;https://www.rdocumentation.org/packages/stats/versions/3.6.0/topics/lag&#34;&gt;lag&lt;/a&gt; function).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
+  group_by(name) %&amp;gt;% 
+  mutate(change = (pct_of_all_candidate_clips-(dplyr::lag(pct_of_all_candidate_clips, n=1, default=NA)))) %&amp;gt;% 
+  filter(change &amp;gt;.2 | change &amp;lt; -.2) %&amp;gt;% 
+  ggplot(aes(x=reorder(as.factor(date),change),y=change*100, fill=name)) +
+  geom_col() +
+  scale_fill_discrete(name=&amp;quot;Candidate&amp;quot;) +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
+  labs(x=element_blank(),
+       y=&amp;quot;Percent Change&amp;quot;,
+       title=&amp;quot;Largest Differences in Weekly Media Mentions&amp;quot;,
+       subtitle=&amp;quot;Subtracting a given week&amp;#39;s % mentions from the week prior&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/media-mentions/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Unsurprisingly, the bars tend to mirror one another. If a candidate enjoys a steep increase in media attention one week, they are likely to see a correlated drop in the following week (if that week were really a spike in attention). The plot suggests that Joe Biden’s announcement (on April 25th) led to the most dramatic change in media attention in the 2020 cycle so far. Bernie Sanders also witnessed a spike in attention in the week following his announcement on February 19th. The same is true for the other candidates included in this plot.&lt;/p&gt;
+&lt;p&gt;Finally, I am interested in who is “winning” the race for media attention. Although a previous plot has shown media attention over time, this data can be somewhat hard to digest and interpret as so many candidates crowd the lower bound of the data (as they receive little media attention compared to Joe Biden).&lt;/p&gt;
+&lt;p&gt;By constructing a &lt;a href=&#34;https://learnr.wordpress.com/2009/05/06/ggplot2-bump-chart/&#34;&gt;bump chart&lt;/a&gt;, I am able to depict the rank of each candidate in terms of their media attention in a given week. This type of visualization assigns each candidate a categorical rank and makes their progress throughout the campaign easier to visualize.&lt;/p&gt;
+&lt;p&gt;As an added benefit, this plot was difficult to construct and so it was rewarding to finally finish.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create extended color palette for 22 candidates
+nb.cols &amp;lt;- 22
+mycolors &amp;lt;- colorRampPalette(brewer.pal(8, &amp;quot;RdYlBu&amp;quot;))(nb.cols)
+show.top.n &amp;lt;- 10
+
+# give each candidate a ranking for each week
+data &amp;lt;- data %&amp;gt;% 
+  group_by(date) %&amp;gt;% 
+  arrange(date, desc(pct_of_all_candidate_clips), name) %&amp;gt;%  
+  mutate(rank = row_number()) %&amp;gt;% 
+  ungroup()
+
+# filter most recent data so as to make the plot more digestible
+recentdata &amp;lt;- data %&amp;gt;% 
+  mutate(date = as.Date(date, &amp;quot;%m/%d/%y&amp;quot;)) %&amp;gt;% 
+  filter(date &amp;gt; &amp;quot;2019-03-01&amp;quot;)
+
+# for axis labels, create ranking at the start and end of the analysis
+finranking &amp;lt;- recentdata %&amp;gt;% 
+  filter(date==&amp;quot;2019-05-19&amp;quot;) %&amp;gt;% 
+  select(date,name,rank) 
+
+startranking &amp;lt;- recentdata %&amp;gt;% 
+  filter(date==&amp;quot;2019-03-03&amp;quot;) %&amp;gt;% 
+  select(date,name,rank) 
+
+# and plot!
+recentdata %&amp;gt;% 
+  ggplot(aes(x=date, y=rank, group=name, label=name)) +
+  geom_line(aes(color=name, alpha = 1), size = 2) +
+  geom_point(aes(color = name, alpha = 1), size = 4) +
+    geom_point(color = &amp;quot;#FFFFFF&amp;quot;, size = 1) +
+  scale_fill_manual(values = mycolors) +
+  scale_y_reverse(breaks = 1:show.top.n) +
+  scale_x_date(expand = c(0,29)) +
+  coord_cartesian(ylim = c(1,show.top.n)) +
+  geom_text(data = subset(startranking), size=3, 
+            aes(x = date, hjust = 1.2)) +
+  geom_text(data = subset(finranking), size=3, 
+            aes(x = date, hjust = -.2)) +
+  # scale_color_brewer(palette = &amp;quot;Paired&amp;quot;) +
+  theme(line = element_blank(), rect = element_blank(), axis.text = element_blank(), 
+        axis.title = element_blank(),
+        axis.ticks.length = unit(0, &amp;quot;pt&amp;quot;), axis.ticks.length.x = NULL, 
+        axis.ticks.length.x.top = NULL, axis.ticks.length.x.bottom = NULL, 
+        axis.ticks.length.y = NULL, axis.ticks.length.y.left = NULL, 
+        axis.ticks.length.y.right = NULL, legend.box = NULL, legend.position = &amp;quot;none&amp;quot;) +
+  labs(x = element_blank(),
+       y = &amp;quot;Rank&amp;quot;,
+       title = &amp;quot;The Race for Media Attention&amp;quot;,
+       subtitle = &amp;quot;Candidates ranked by weekly media mentions&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/media-mentions/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Let’s focus on the meteoric rise of Pete Buttigieg:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;petedata &amp;lt;- recentdata %&amp;gt;% 
+  mutate(pete = ifelse(name == &amp;quot;Pete Buttigieg&amp;quot;, 1, 0))
+
+petedata %&amp;gt;% 
+  ggplot(aes(x=date, y=rank, group=name, label=name)) +
+  # pete&amp;#39;s line
+  geom_line(aes(color = &amp;quot;#1089FF&amp;quot;),
+                data = subset (petedata, pete == 1), 
+            size = 2, show.legend = FALSE) +
+  # everyone else&amp;#39;s line
+  geom_line(aes(alpha = 1), 
+            data = subset(petedata, pete != 1),
+            size = .5, show.legend = FALSE) +
+  geom_point(aes(fill = &amp;quot;grey80&amp;quot;, alpha = 1), 
+             data = subset(petedata, pete == 1), size = 4) +
+  geom_point(aes(alpha = 1), 
+             data = subset(petedata, pete != 1), size = 2) +
+  geom_point(color = &amp;quot;#FFFFFF&amp;quot;, size = 1) +
+  # scale_fill_manual(values = mycolors) +
+  scale_y_reverse(breaks = 1:show.top.n) +
+  scale_x_date(expand = c(0,29)) +
+  coord_cartesian(ylim = c(show.top.n, 1)) +
+  geom_text(data = subset(startranking), size=3, 
+            aes(x = date, hjust = 1.2)) +
+  geom_text(data = subset(finranking), size=3, 
+            aes(x = date, hjust = -.2)) +
+  # scale_fill_brewer(palette = &amp;quot;Dark2&amp;quot;) +
+  theme(line = element_blank(), rect = element_blank(), axis.text = element_blank(), 
+        axis.title = element_blank(),
+        axis.ticks.length = unit(0, &amp;quot;pt&amp;quot;), axis.ticks.length.x = NULL, 
+        axis.ticks.length.x.top = NULL, axis.ticks.length.x.bottom = NULL, 
+        axis.ticks.length.y = NULL, axis.ticks.length.y.left = NULL, 
+        axis.ticks.length.y.right = NULL, legend.box = NULL, legend.position = &amp;quot;none&amp;quot;) +
+  labs(x = element_blank(),
+       y = &amp;quot;Rank&amp;quot;,
+       title = &amp;quot;Out of Nowhere&amp;quot;,
+       subtitle = &amp;quot;Pete Buttigieg&amp;#39;s Rapid Rise in Media Mentions&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/media-mentions/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Some takeaways:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Bernie Sanders and Joe Biden consistently receive the most attention from the media.&lt;/li&gt;
+&lt;li&gt;The most stark increase in media mentions can be seen in the rise of Pete Buttigieg, who began not even in the top 10 but now receives the third most media mentions of any candidate.&lt;/li&gt;
+&lt;li&gt;Cory Booker and John Hickenlooper have all but disappeared from the media, while most other candidates remain in a place similar to where they began.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div id=&#34;next-steps&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Next Steps&lt;/h2&gt;
+&lt;p&gt;Future work could capitalize upon this analysis by looking at the &lt;em&gt;content&lt;/em&gt; of media coverage of candidates. In similar &lt;a href=&#34;https://www.connorrothschild.com/single-post/2019/05/21/following-the-race&#34;&gt;work&lt;/a&gt;, I have performed preliminary sentiment analysis on the Tweets of presidential candidates. Other researchers have &lt;a href=&#34;http://www.storybench.org/watching-the-watchdog-analyzing-initial-coverage-of-2020-candidates/&#34;&gt;shown&lt;/a&gt; that media coverage of female presidential candidates tends to be more negative than coverage of male candidates. Continuing this work with a larger dataset could reveal interesting insights about the relationship between media, politics, and sexism.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

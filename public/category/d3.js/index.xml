@@ -1,0 +1,1051 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>D3.js | Connor Rothschild</title>
+    <link>/category/d3.js/</link>
+      <atom:link href="/category/d3.js/index.xml" rel="self" type="application/rss+xml" />
+    <description>D3.js</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sat, 04 Jan 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/img/static/img/avatar.jpg</url>
+      <title>D3.js</title>
+      <link>/category/d3.js/</link>
+    </image>
+    
+    <item>
+      <title>How (and Why) to Add a Chart to Your D3.js Tooltip</title>
+      <link>/post/adding-a-chart-to-your-d3-tooltip/</link>
+      <pubDate>Sat, 04 Jan 2020 00:00:00 +0000</pubDate>
+      <guid>/post/adding-a-chart-to-your-d3-tooltip/</guid>
+      <description>&lt;p&gt;I think tooltips are one of the most underrated parts of a visualization. When users are initially confused by a visualization, they often hover over a data point of interest to get more information.&lt;/p&gt;
+&lt;p&gt;Unfortunately, many tooltips fail to really illuminate much about our data. They often recapitulate what is already being presented without clarifying any of the confusing parts of the data. Most frequently, I see (and even create 😦) tooltips which present the most basic information (in a map, a tooltip would present the state name and the value of interest), and nothing else!&lt;/p&gt;
+&lt;p&gt;Of course, there&amp;rsquo;s nothing &lt;em&gt;wrong&lt;/em&gt; with these kinds of tooltips. But they are truly doing the bare minimum, and, as a result, they&amp;rsquo;re missing out on the full potential of tooltips. &lt;strong&gt;If users are actively seeking more information by hovering over data, we ought to reward them with the most helpful and interesting information we can.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;That&amp;rsquo;s why I recently updated one of my tooltips from a static presentation of textual information to a line chart depicting change over time. In other words, I went from this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;figures/old-tooltip.gif&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;to this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;figures/new-tooltip.gif&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;why-did-i-make-that-change&#34;&gt;Why did I make that change?&lt;/h2&gt;
+&lt;p&gt;The former tooltip provided information which was rather uninteresting. Although it clarified the exact &lt;em&gt;rate&lt;/em&gt; of overdose deaths in a given state at a given time, it didn&amp;rsquo;t do much else. It did provide the year currently in view, but this was also visible in the bottom right corner of the visualization! It also provided the state name, but most of my viewers have likely taken US geography in middle school.&lt;/p&gt;
+&lt;p&gt;Thus, this tooltip was rather redundant. At best, it provided the &lt;em&gt;exact&lt;/em&gt; rate, so that a viewer could compare two states, or learn more information about a given state without solely relying on color encoding (
+&lt;a href=&#34;https://courses.cs.washington.edu/courses/cse442/17au/lectures/CSE442-VisualEncoding.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;which can be somewhat unreliable when it comes to quantitative encoding&lt;/a&gt;, as is the case in a choropleth map).&lt;/p&gt;
+&lt;p&gt;The new tooltip shows a trend over time. It also shows the state name (just in case you skipped that day in US geography!), and also the most recent data on overdose deaths. Because this map is meant to show how the opioid crisis &lt;em&gt;has evolved&lt;/em&gt;, showing a line chart for each state in my tooltip allows the user to explore state-by-state trends on hover! This is much easier than hovering on each state during each year and trying to keep track of the trends.&lt;/p&gt;
+&lt;p&gt;For example, hovering on West Virginia, which in 2017 seemed to have the highest opioid-involved overdose death rate (as indicated by it having the darkest shade of red), reveals that its also experienced one of the largest over-time increase in this rate since 1999:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;figures/west-virginia.jpg&#34; alt=&#34;West Virginia Image&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;so-how-do-you-do-it&#34;&gt;So, how do you do it?&lt;/h2&gt;
+&lt;p&gt;Great question! It&amp;rsquo;s thankfully not that hard, but the payoff is huge. The shift from my old, boring tooltip to my new, sexy one took only a couple of hours, thanks to a few 
+&lt;a href=&#34;https://stackoverflow.com/questions/43904643/add-chart-to-tooltip-in-d3&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Stack Overflow answers&lt;/a&gt; and 
+&lt;a href=&#34;https://bl.ocks.org/maelafifi/ee7fecf90bb5060d5f9a7551271f4397&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;online examples&lt;/a&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;step-1-load-d3-tip&#34;&gt;Step 1: Load &lt;code&gt;d3-tip&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;The process mostly relies on &lt;code&gt;d3-tip&lt;/code&gt;, which you can learn more about 
+&lt;a href=&#34;http://labratrevenge.com/d3-tip/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;You can load &lt;code&gt;d3-tip&lt;/code&gt;with the following code:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;&amp;lt;script src=&amp;quot;https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;step-2-create-a-tooltip-object&#34;&gt;Step 2: Create a tooltip object&lt;/h3&gt;
+&lt;p&gt;Next, you initialize your tooltip, give it a class (for CSS styling), and provide the specified &lt;code&gt;offset&lt;/code&gt;. In my example, I define my offset according to the 
+&lt;a href=&#34;https://stackoverflow.com/questions/28536367/in-d3-js-how-to-adjust-tooltip-up-and-down-based-on-the-screen-position&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;user&amp;rsquo;s mouse position&lt;/a&gt;. That way, if a user hovers over an eastern state, the tooltip doesn&amp;rsquo;t disappear off the screen!&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;  // define the tooltip 
+var tool_tip = d3.tip()
+  .attr(&amp;quot;class&amp;quot;, &amp;quot;d3-tip&amp;quot;)
+  // if the mouse position is greater than 650 (~ Kentucky/Missouri), offset tooltip to the left instead of the right
+  .offset(function() {if(current_position[0] &amp;gt; 650) {
+  	return [-20,-120] } 
+  	else { return [20,120]}
+  })
+  // input the title, and include the div
+  .html(
+  	&amp;quot;&amp;lt;p&amp;gt;Opioid-involved deaths over time in&amp;lt;/p&amp;gt;&amp;lt;div id=&#39;tipDiv&#39;&amp;gt;&amp;lt;/div&amp;gt;&amp;quot;
+  );
+
+svg.call(tool_tip);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The most important part here is&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;.html(
+     &amp;quot;&amp;lt;p&amp;gt;Opioid-involved deaths over time in&amp;lt;/p&amp;gt;&amp;lt;div id=&#39;tipDiv&#39;&amp;gt;&amp;lt;/div&amp;gt;&amp;quot;
+);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;where we define the html that creates the tooltip itself. In our case, we provide a title, &amp;ldquo;Opioid-involved deaths over time&amp;rdquo;, and also specify the div that the tooltip should include.&lt;/p&gt;
+&lt;h3 id=&#34;step-3-create-the-tipdiv-object&#34;&gt;Step 3: Create the &lt;code&gt;tipDiv&lt;/code&gt; object&lt;/h3&gt;
+&lt;p&gt;Finally, we can create the &lt;code&gt;tipDiv&lt;/code&gt; object we referenced in the above code. The object will be created on mouseover of the group of interest (in my case, states). Thus, the code will look something like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;states = svg.append(&amp;quot;g&amp;quot;)
+  .attr(&amp;quot;class&amp;quot;, &amp;quot;states&amp;quot;)
+  .selectAll(&amp;quot;path&amp;quot;)
+  .data(topojson.feature(us, us.objects.states).features)
+  .enter()
+  .append(&amp;quot;path&amp;quot;)
+  .attr(&amp;quot;d&amp;quot;, path)
+  .on(&#39;mouseover&#39;, function(d) {
+
+// define and store the mouse position. this is used to define tooltip offset, seen above.
+current_position = d3.mouse(this); 				
+
+// define current state
+current_state = nameById[d.id]
+	
+// show the tooltip
+tool_tip.show();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After that initialization and &lt;code&gt;show&lt;/code&gt; function, we can define the &lt;code&gt;tipDiv&lt;/code&gt; object:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;var tipSVG = d3.select(&amp;quot;#tipDiv&amp;quot;)
+     .append(&amp;quot;svg&amp;quot;)
+     .attr(&amp;quot;width&amp;quot;, 220)
+     .attr(&amp;quot;height&amp;quot;, 55);
+
+tipSVG.append(&amp;quot;path&amp;quot;)
+     .datum(overdoses.filter(function(d) {return nameById[d.id] == current_state}))
+     .style(&amp;quot;stroke&amp;quot;, function() {
+     	if (rateById[d.id] &amp;lt; 10) {
+     		return &amp;quot;grey&amp;quot;
+     	} else {
+     	return color(rateById[d.id])
+     	}
+ 	  })
+     .style(&amp;quot;stroke-width&amp;quot;, 1.5)
+     .style(&amp;quot;fill&amp;quot;, &amp;quot;none&amp;quot;)
+     .attr(&amp;quot;d&amp;quot;, line)
+     
+tipSVG.append(&amp;quot;circle&amp;quot;)
+     .attr(&amp;quot;fill&amp;quot;, function() {
+     	if (rateById[d.id] &amp;lt; 10) {
+     		return &amp;quot;grey&amp;quot;
+     	} else {
+     	return color(rateById[d.id])
+     	}
+ 	  })
+    .attr(&amp;quot;stroke&amp;quot;, &amp;quot;black&amp;quot;)
+    .attr(&amp;quot;cx&amp;quot;, 130)
+    .attr(&amp;quot;cy&amp;quot;, y_tooltip(rateById[d.id]))
+    .attr(&amp;quot;r&amp;quot;, 3)
+
+tipSVG.append(&amp;quot;text&amp;quot;)
+     .text(rateById[d.id] + &amp;quot; deaths&amp;quot;)
+     .attr(&amp;quot;x&amp;quot;, 140)
+     .attr(&amp;quot;y&amp;quot;, function() {
+     	if (y_tooltip(rateById[d.id]) &amp;lt; 15) { return 10 }
+     		else { return y_tooltip(rateById[d.id]) - 7 }
+     	})
+
+tipSVG.append(&amp;quot;text&amp;quot;)
+     .text(&amp;quot;per 100,000&amp;quot;)
+     .attr(&amp;quot;x&amp;quot;, 140)
+     .attr(&amp;quot;y&amp;quot;, function() {
+     	if (y_tooltip(rateById[d.id]) &amp;lt; 15) { return 24 }
+     		else { return y_tooltip(rateById[d.id]) + 7 }
+     	})
+	
+tipSVG.append(&amp;quot;text&amp;quot;)
+     .text(current_state)
+     .attr(&amp;quot;x&amp;quot;, 0)
+     .attr(&amp;quot;y&amp;quot;, 15)
+     .style(&amp;quot;font-size&amp;quot;, 18)
+     .style(&amp;quot;font-weight&amp;quot;, 400)
+ })
+.on(&#39;mouseout&#39;, tool_tip.hide)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What&amp;rsquo;s happening here? Let&amp;rsquo;s look at one piece at a time.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;First&lt;/strong&gt;, we define the object and name it &lt;code&gt;tipSVG&lt;/code&gt;. &lt;code&gt;tipSVG&lt;/code&gt; selects &lt;code&gt;#tipDiv&lt;/code&gt; (defined in our d3-tip) and appends an SVG. We also define the width and height of the tooltip.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;var tipSVG = d3.select(&amp;quot;#tipDiv&amp;quot;)
+	      .append(&amp;quot;svg&amp;quot;)
+	      .attr(&amp;quot;width&amp;quot;, 220)
+	      .attr(&amp;quot;height&amp;quot;, 55);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Next&lt;/strong&gt;, we append a path to that SVG. This could be a circle, or a rectangle, or any other appendable shape. Because I am drawing a simple line, we use &lt;code&gt;path&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;tipSVG.append(&amp;quot;path&amp;quot;)
+  .datum(overdoses.filter(function(d) {return nameById[d.id] == current_state}))
+  .style(&amp;quot;stroke&amp;quot;, function() {
+  	if (rateById[d.id] &amp;lt; 10) {
+  		return &amp;quot;grey&amp;quot;
+  	} else {
+  	return color(rateById[d.id])
+  	}
+	  })
+  .style(&amp;quot;stroke-width&amp;quot;, 1.5)
+  .style(&amp;quot;fill&amp;quot;, &amp;quot;none&amp;quot;)
+  .attr(&amp;quot;d&amp;quot;, line)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In defining the &lt;code&gt;d&lt;/code&gt; attribute, you see I use the phrase &lt;code&gt;line&lt;/code&gt;. This is defined earlier in my code to return the x and y position of each data point, to create the path itself.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;var x_tooltip = d3.scaleLinear()
+  .domain(d3.extent(overdoses, function(d) { return d.year; }))
+  .range([ 0, 130 ]);
+
+var y_tooltip = d3.scaleLinear()
+  .domain([0, 60])
+  .range([ 50, 0 ]);
+
+var line = d3.line()
+  .x(function(d) {
+    return x_tooltip(d.year);
+  })
+  .y(function(d) {
+    return y_tooltip(+d.rate);
+  })
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Lastly&lt;/strong&gt;, we add a circle at the end of the line to signify the final data point. We also add the text label for the year 2017.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;tipSVG.append(&amp;quot;circle&amp;quot;)
+  .attr(&amp;quot;fill&amp;quot;, function() {
+  	if (rateById[d.id] &amp;lt; 10) {
+  		return &amp;quot;grey&amp;quot;
+  	} else {
+  	return color(rateById[d.id])
+  	}
+	  })
+   .attr(&amp;quot;stroke&amp;quot;, &amp;quot;black&amp;quot;)
+  .attr(&amp;quot;cx&amp;quot;, 130)
+  .attr(&amp;quot;cy&amp;quot;, y_tooltip(rateById[d.id]))
+  .attr(&amp;quot;r&amp;quot;, 3)
+
+tipSVG.append(&amp;quot;text&amp;quot;)
+  .text(rateById[d.id] + &amp;quot; deaths&amp;quot;)
+  .attr(&amp;quot;x&amp;quot;, 140)
+  .attr(&amp;quot;y&amp;quot;, function() {
+  	if (y_tooltip(rateById[d.id]) &amp;lt; 15) { return 10 }
+  		else { return y_tooltip(rateById[d.id]) - 7 }
+  	})
+
+tipSVG.append(&amp;quot;text&amp;quot;)
+  .text(&amp;quot;per 100,000&amp;quot;)
+  .attr(&amp;quot;x&amp;quot;, 140)
+  .attr(&amp;quot;y&amp;quot;, function() {
+  	if (y_tooltip(rateById[d.id]) &amp;lt; 15) { return 24 }
+  		else { return y_tooltip(rateById[d.id]) + 7 }
+  	})
+
+tipSVG.append(&amp;quot;text&amp;quot;)
+  .text(current_state)
+  .attr(&amp;quot;x&amp;quot;, 0)
+  .attr(&amp;quot;y&amp;quot;, 15)
+  .style(&amp;quot;font-size&amp;quot;, 18)
+  .style(&amp;quot;font-weight&amp;quot;, 400)
+ })
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And finally, we hide the tooltip on mouseout:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;.on(&#39;mouseout&#39;, tool_tip.hide)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Thanks for reading! You can play around with the visualization and checkout the tooltip for yourself here (find the fullscreen version 
+&lt;a href=&#34;https://connorrothschild.github.io/D3.js/map-overdoses/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;):&lt;/p&gt;
+&lt;div&gt;    
+&lt;svg width=&#34;960&#34; height=&#34;600&#34;&gt;&lt;/svg&gt;
+&lt;/div&gt;
+&lt;style&gt;
+
+@import url(&#39;https://rsms.me/inter/inter.css&#39;);
+html { font-family: &#39;Inter&#39;, sans-serif; }
+@supports (font-variation-settings: normal) {
+  html { font-family: &#39;Inter var&#39;, sans-serif; }
+}
+
+.states :hover {
+  stroke: white;
+  stroke-width: 8px;
+}
+
+.year.label {
+  font: 300 2.5em &#34;Inter&#34;;
+  fill: gray;
+}
+
+.helper.label {
+  font: 150 1em &#34;Inter&#34;;
+  fill: gray;
+}
+
+.overlay {
+  fill: none;
+  pointer-events: all;
+  cursor: ew-resize;
+}
+
+.caption {
+  font: 150 1.1em &#34;Inter&#34;;
+}
+
+.d3-tip {
+  padding-right: 6px;
+  padding-left: 6px;
+  padding-bottom: 6px;
+  padding-top: 0;
+  background: #fff;
+  border: 1px solid black;
+  font-size: 12px;
+  pointer-events: none !important;
+}
+
+/* .my_chart {
+	width: 90%;
+	padding-left: 15%;
+	padding-right: 10%;
+} */
+
+&lt;/style&gt;
+&lt;script src=&#34;https://d3js.org/d3.v4.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://d3js.org/d3-scale-chromatic.v1.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://d3js.org/topojson.v1.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://d3js.org/queue.v1.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js&#34;&gt;&lt;/script&gt;
+&lt;script&gt;
+
+/* This viz was made a lot easier thanks to the following code:
+
+* animation using TweenYear
+http://bl.ocks.org/jgujgu/bfbb41f5e8b90ff09d7805f71ef2538e
+* choropleth map of us states (using json fips state ids)
+https://bl.ocks.org/chucklam/f628765b873d707a3d0e44ffc78deab8
+* another choropleth; although I didn&#39;t end up following its structure it was a helpful introduction
+https://bl.ocks.org/wboykinm/dbbe50d1023f90d4e241712395c27fb3
+
+A special thanks to Robert Hosbach for his viz here (and his willingness to respond to my email!): https://rahosbach.github.io/2018-10-27-d3UnemploymentChoropleth/
+*/  
+
+var svg = d3.select(&#34;svg&#34;)
+  .attr(&#34;class&#34;, &#34;my_chart&#34;)
+  // resize plot when window is resized (see below)
+  .call(responsivefy);
+
+var path = d3.geoPath();
+var format = d3.format(&#34;&#34;);
+var height = 600;
+var width = 960;
+
+// thanks to https://brendansudol.com/writing/responsive-d3 for this function!
+function responsivefy(svg) {
+  // container will be the DOM element
+  // that the svg is appended to
+  // we then measure the container
+  // and find its aspect ratio
+  const container = d3.select(svg.node().parentNode),
+      width = parseInt(svg.style(&#39;width&#39;), 10),
+      height = parseInt(svg.style(&#39;height&#39;), 10),
+      aspect = width / height;
+
+  // set viewBox attribute to the initial size
+  // control scaling with preserveAspectRatio
+  // resize svg on inital page load
+  svg.attr(&#39;viewBox&#39;, `0 0 ${width} ${height}`)
+      .attr(&#39;preserveAspectRatio&#39;, &#39;xMinYMid&#39;)
+      .call(resize);
+
+  // add a listener so the chart will be resized
+  // when the window resizes
+  // multiple listeners for the same event type
+  // requires a namespace, i.e., &#39;click.foo&#39;
+  // api docs: https://goo.gl/F3ZCFr
+  d3.select(window).on(
+      &#39;resize.&#39; + container.attr(&#39;id&#39;), 
+      resize
+  );
+
+  // this is the code that resizes the chart
+  // it will be called on load
+  // and in response to window resizes
+  // gets the width of the container
+  // and resizes the svg to fill it
+  // while maintaining a consistent aspect ratio
+  function resize() {
+      const w = parseInt(container.style(&#39;width&#39;));
+      svg.attr(&#39;width&#39;, w);
+      svg.attr(&#39;height&#39;, Math.round(w / aspect));
+  }
+}
+
+// options for color scheme: https://github.com/d3/d3-scale-chromatic
+var colorScheme = d3.schemeReds[9];
+colorScheme.unshift(&#34;#eee&#34;);
+
+// building the legend at the top
+var color = d3.scaleQuantize()
+  .domain([0, 50])
+  .range(colorScheme);
+var x = d3.scaleLinear()
+  .domain(d3.extent(color.domain()))
+  // the range specifies the x position of the legend
+  .rangeRound([600,860]);
+var g = svg.append(&#34;g&#34;)
+  .attr(&#34;transform&#34;, &#34;translate(0,40)&#34;);
+
+// legend boxes
+g.selectAll(&#34;rect&#34;)
+  .data(color.range().map(function(d){ return color.invertExtent(d); }))
+  .enter()
+  .append(&#34;rect&#34;)
+    .attr(&#34;height&#34;, 8)
+    .attr(&#34;x&#34;, function(d){ return x(d[0]); })
+    .attr(&#34;width&#34;, function(d){ return x(d[1]) - x(d[0]); })
+    .attr(&#34;fill&#34;, function(d){ return color(d[0]); });
+
+// legend title
+g.append(&#34;text&#34;)
+  .attr(&#34;class&#34;, &#34;caption&#34;)
+  .attr(&#34;x&#34;, x.range()[0])
+  .attr(&#34;y&#34;, -6)
+  .attr(&#34;fill&#34;, &#34;#000&#34;)
+  .attr(&#34;text-anchor&#34;, &#34;start&#34;)
+  .attr(&#34;font-weight&#34;, 30)
+  .text(&#34;Overdose Death Rate (Per 100,000)&#34;);
+
+// legend ticks
+g.call(d3.axisBottom(x)
+  .tickSize(13)
+  .tickFormat(format)
+  .tickValues(color.range().slice(1).map(function(d){ return color.invertExtent(d)[0]; })))
+  .select(&#34;.domain&#34;)
+  .remove();
+
+// create tooltip
+var div = d3.select(&#34;body&#34;)
+  .append(&#34;div&#34;)
+  .attr(&#34;class&#34;, &#34;tooltip&#34;)
+  .style(&#34;opacity&#34;, 0);
+
+// label positions
+labely = height - 50
+labelx = width - 280
+
+// Add the year label; the value is set on transition.
+var label = svg.append(&#34;text&#34;)
+  .attr(&#34;class&#34;, &#34;year label&#34;)
+  .attr(&#34;text-anchor&#34;, &#34;middle&#34;)
+  // position the label
+  .attr(&#34;y&#34;, labely)
+  .attr(&#34;x&#34;, labelx)
+  .text(1999);
+
+var helperlabel = svg.append(&#34;text&#34;)
+  .attr(&#34;class&#34;, &#34;helper label&#34;)
+  .attr(&#34;text-anchor&#34;, &#34;middle&#34;)
+  // position the label
+  .attr(&#34;y&#34;, labely + 20)
+  .attr(&#34;x&#34;, labelx)
+  .text(&#34;Hover to change year&#34;);
+
+queue()
+  // read in JSON which includes all of the complicated shape data for states/counties/etc.
+  .defer(d3.json, &#34;https://d3js.org/us-10m.v1.json&#34;)
+  // read in opioid data
+  .defer(d3.csv, &#34;figures/overdoses.csv&#34;)
+  /*
+  NOTE ON OVERDOSE DATA: 
+
+  This CSV file was created via pulling data from CDC&#39;s WONDER database.
+
+  I pulled all deaths from the National Vital Statistics System&#39;s multiple cause-of-death mortality files which had one of the following causes of death: opioids (T40.0, T40.1, T40.2, T40.3, T40.4, or T40.6)**; natural/semisynthetic opioids (T40.2); methadone (T40.3); heroin (T40.1); synthetic opioids other than methadone (T40.4); cocaine (T40.5). I followed the methodology of this paper: https://www.cdc.gov/mmwr/volumes/67/wr/mm675152e1.htm?s_cid=mm675152e1_w. Deaths may include multiple opioids as a cause and thus are not mutually exclusive.
+
+  You can replicate the data pull on CDC WONDER with this link: https://wonder.cdc.gov/mcd-icd10.html
+
+  Source: Multiple Cause of Death 1999–2017 on CDC Wide-ranging Online Data for Epidemiologic Research (CDC WONDER). Atlanta, GA: CDC, National Center for Health Statistics. 2018. Available at http://wonder.cdc.gov. 
+  */
+  .await(ready);
+
+function ready(error, us, overdoses) {
+  if (error) throw error;
+
+    // Initialize data to 1990
+    var currentYear = 1999;
+    var rateById = {};
+    var nameById = {};
+    // var yearById = {};
+    
+    //console.table(overdoses)
+    
+    overdoses.forEach(function(d){
+   	  rateById[d.id] = +d.rate;
+      nameById[d.id] = d.state;
+      d.year = d.year;
+  });
+
+   	console.table(overdoses)
+
+    // Add an overlay for the year label.
+    var box = label.node().getBBox();
+    
+    var overlay = svg.append(&#34;rect&#34;)
+      .attr(&#34;class&#34;, &#34;overlay&#34;)
+      .attr(&#34;x&#34;, box.x)
+      .attr(&#34;y&#34;, box.y)
+      .attr(&#34;width&#34;, box.width)
+      .attr(&#34;height&#34;, box.height)
+      .on(&#34;mouseover&#34;, enableInteraction);
+
+  var x_tooltip = d3.scaleLinear()
+    .domain(d3.extent(overdoses, function(d) { return d.year; }))
+    .range([ 0, 130 ]);
+
+  var y_tooltip = d3.scaleLinear()
+    .domain([0, 60])
+    .range([ 50, 0 ]);
+
+  // define line function
+  var line = d3.line()
+    .x(function(d) {
+      return x_tooltip(d.year);
+    })
+    .y(function(d) {
+      return y_tooltip(+d.rate);
+    })
+
+  var tool_tip = d3.tip()
+  .attr(&#34;class&#34;, &#34;d3-tip&#34;)
+  // if the mouse position is greater than 650 (~ Kentucky/Missouri), 
+  // offset tooltip to the left instead of the right
+  // credit https://stackoverflow.com/questions/28536367/in-d3-js-how-to-adjust-tooltip-up-and-down-based-on-the-screen-position
+  .offset(function() {if(current_position[0] &gt; 650) {
+  	return [-20,-120] } 
+  	else { return [20,120]}
+  })
+  .html(
+  	&#34;&lt;p&gt;Opioid-involved deaths over time in&lt;/p&gt;&lt;div id=&#39;tipDiv&#39;&gt;&lt;/div&gt;&#34;
+  );
+
+	svg.call(tool_tip);
+	
+	// Start a transition that interpolates the data based on year.
+	svg.transition()
+	  .duration(10000)
+	  .ease(d3.easeLinear)
+	  .tween(&#34;year&#34;, tweenYear);
+	
+	states = svg.append(&#34;g&#34;)
+	  .attr(&#34;class&#34;, &#34;states&#34;)
+	  .selectAll(&#34;path&#34;)
+	  .data(topojson.feature(us, us.objects.states).features)
+	  .enter()
+	  .append(&#34;path&#34;)
+	  .attr(&#34;d&#34;, path)
+	  // appending svg inside of tooltip for year by year change.
+	  // h/t https://bl.ocks.org/maelafifi/ee7fecf90bb5060d5f9a7551271f4397
+	  // h/t https://stackoverflow.com/questions/43904643/add-chart-to-tooltip-in-d3
+	   .on(&#39;mouseover&#39;, function(d) {
+	
+	   	// define and store the mouse position. this is used to define
+	   	// tooltip offset, seen above.
+		current_position = d3.mouse(this); 				
+	   	//console.log(current_position[0])
+	
+	   	current_state = nameById[d.id]
+	
+	    tool_tip.show();
+	    var tipSVG = d3.select(&#34;#tipDiv&#34;)
+	      .append(&#34;svg&#34;)
+	      .attr(&#34;width&#34;, 220)
+	      .attr(&#34;height&#34;, 55);
+	
+	    tipSVG.append(&#34;path&#34;)
+	      .datum(overdoses.filter(function(d) {return nameById[d.id] == current_state}))
+	      .style(&#34;stroke&#34;, function() {
+	      	if (rateById[d.id] &lt; 10) {
+	      		return &#34;grey&#34;
+	      	} else {
+	      	return color(rateById[d.id])
+	      	}
+	  	  })
+	      .style(&#34;stroke-width&#34;, 1.5)
+	      .style(&#34;fill&#34;, &#34;none&#34;)
+	      .attr(&#34;d&#34;, line)
+	      
+	    tipSVG.append(&#34;circle&#34;)
+	      .attr(&#34;fill&#34;, function() {
+	      	if (rateById[d.id] &lt; 10) {
+	      		return &#34;grey&#34;
+	      	} else {
+	      	return color(rateById[d.id])
+	      	}
+	  	  })
+	      .attr(&#34;stroke&#34;, &#34;black&#34;)
+	      .attr(&#34;cx&#34;, 130)
+		  .attr(&#34;cy&#34;, y_tooltip(rateById[d.id]))
+		  .attr(&#34;r&#34;, 3)
+	
+	    tipSVG.append(&#34;text&#34;)
+	      .text(rateById[d.id] + &#34; deaths&#34;)
+	      // .transition()
+	      // .duration(1000)
+	      .attr(&#34;x&#34;, 140)
+	      .attr(&#34;y&#34;, function() {
+	      	if (y_tooltip(rateById[d.id]) &lt; 15) { return 10 }
+	      		else { return y_tooltip(rateById[d.id]) - 7 }
+	      	})
+	
+		tipSVG.append(&#34;text&#34;)
+	      .text(&#34;per 100,000&#34;)
+	      // .transition()
+	      // .duration(1000)
+	      .attr(&#34;x&#34;, 140)
+	      .attr(&#34;y&#34;, function() {
+	      	if (y_tooltip(rateById[d.id]) &lt; 15) { return 24 }
+	      		else { return y_tooltip(rateById[d.id]) + 7 }
+	      	})
+	
+	    tipSVG.append(&#34;text&#34;)
+	      .text(current_state)
+	      // .transition()
+	      // .duration(1000)
+	      .attr(&#34;x&#34;, 0)
+	      .attr(&#34;y&#34;, 15)
+	      .style(&#34;font-size&#34;, 18)
+	      .style(&#34;font-weight&#34;, 400)
+
+
+	  })
+  	  .on(&#39;mouseout&#39;, tool_tip.hide)
+      .call(style, currentYear)
+
+ // FOR BAR CHART //
+   //    .on(&#39;mouseover&#39;, function(d) {
+	  //   tool_tip.show();
+	  //   var tipSVG = d3.select(&#34;#tipDiv&#34;)
+	  //     .append(&#34;svg&#34;)
+	  //     .attr(&#34;width&#34;, 200)
+	  //     .attr(&#34;height&#34;, 50);
+
+	  //   tipSVG.append(&#34;rect&#34;)
+	  //     .attr(&#34;fill&#34;, color(rateById[d.id]))
+	  //     .attr(&#34;y&#34;, 10)
+	  //     .attr(&#34;width&#34;, 0)
+	  //     .attr(&#34;height&#34;, 30)
+	  //     .transition()
+	  //     .duration(1000)
+	  //     .attr(&#34;width&#34;, rateById[d.id] * 6);
+	
+	  //   tipSVG.append(&#34;text&#34;)
+	  //     .text(rateById[d.id] + &#34; per 100,000&#34;)
+	  //     .attr(&#34;x&#34;, 10)
+	  //     .attr(&#34;y&#34;, 30)
+	  //     .transition()
+	  //     .duration(1000)
+	  //     .attr(&#34;x&#34;, 6 + rateById[d.id] * 6)
+	  // })
+  	//   .on(&#39;mouseout&#39;, tool_tip.hide)
+   //    .call(style, currentYear)
+
+    function style(states, year){
+      newoverdoses = interpolateData(year);
+    
+    var rateById = {};
+    var nameById = {};
+    
+    newoverdoses.forEach(function(d) {
+    
+      // each state is encoded according to its ANSI/FIPS state code
+      // you can find states and their codes here https://en.wikipedia.org/wiki/List_of_U.S._state_abbreviations#ANSI_standard_INCITS_38:2009
+      rateById[d.id] = +d.rate;
+      nameById[d.id] = d.state;
+      d.year = d.year;
+      
+    });
+    
+    // add fill according to death rates, for each id (state)
+    states.style(&#34;fill&#34;, function(d) { return color(rateById[d.id]); })
+    // OLD TOOLTIP // 
+      // .on(&#34;mouseover&#34;, function(d) {      
+      //     div.transition()        
+      //       .duration(200)      
+      //       .style(&#34;opacity&#34;, .9);  
+    
+      // // add tooltip here    
+      //     div.html(&#39;&lt;strong&gt; State: &lt;/strong&gt;&#39; + nameById[d.id] + 
+      //       &#39;&lt;br&gt;&#39; + 
+      //       &#39;&lt;strong&gt; Year: &lt;/strong&gt;&#39; + Math.round(currentYear) +
+      //       &#39;&lt;br&gt;&#39; + 
+      //       &#39;&lt;strong&gt; Rate: &lt;/strong&gt;&#39; + rateById[d.id] + &#34; per 100,000&#34;)
+      //       .style(&#34;left&#34;, (d3.event.pageX) + &#34;px&#34;)     
+      //       .style(&#34;top&#34;, (d3.event.pageY - 28) + &#34;px&#34;);})   
+      //  // remove tooltip on mouse out               
+      //  .on(&#34;mouseout&#34;, function(d) {       
+      //     div.transition()        
+      //      .duration(500)      
+      //      .style(&#34;opacity&#34;, 0);});
+
+  // create the actual state objects
+  svg.append(&#34;path&#34;)
+    .datum(topojson.mesh(us, us.objects.states, (a, b) =&gt; a !== b))
+    .attr(&#34;fill&#34;, &#34;none&#34;)
+    .attr(&#34;stroke&#34;, &#34;white&#34;)
+    // .attr(&#34;stroke-linejoin&#34;, &#34;round&#34;)
+    .attr(&#34;d&#34;, path)
+   }
+
+  // after the transition finishes, mouseover to change  year.
+  function enableInteraction() {
+    var yearScale = d3.scaleLinear()
+      .domain([1999, 2017])
+      .range([box.x + 10, box.x + box.width - 10])
+      .clamp(true);
+
+    // Cancel the current transition, if any.
+    svg.transition().duration(0);
+    
+    overlay
+      .on(&#34;mouseover&#34;, mouseover)
+      .on(&#34;mouseout&#34;, mouseout)
+      .on(&#34;mousemove&#34;, mousemove)
+      .on(&#34;touchmove&#34;, mousemove);
+    
+    function mouseover() { label.classed(&#34;active&#34;, true); }
+    function mouseout() { label.classed(&#34;active&#34;, false); }
+    function mousemove() { displayYear(yearScale.invert(d3.mouse(this)[0])); }
+  }
+
+  // Tweens the entire chart by first tweening the year, and then the data.
+  // For the interpolated data, the dots and label are redrawn.
+  function tweenYear() {
+    var year = d3.interpolateNumber(1999, 2017);
+    return function(t) { displayYear(year(t)); };
+  }
+
+  // Updates the display to show the specified year.
+  function displayYear(year) {
+    currentYear = year;
+    states.call(style,year)
+    label.text(Math.round(year));
+  }
+
+  // Interpolates the dataset for the given (fractional) year.
+  function interpolateData(year) {
+    return overdoses.filter(function(row) {
+    return row[&#39;year&#39;] == Math.round(year);
+     });
+    }
+};
+    &lt;/script&gt; 
+</description>
+    </item>
+    
+    <item>
+      <title>Who Mentions Who in the Office?</title>
+      <link>/post/who-mentions-who-in-the-office/</link>
+      <pubDate>Mon, 16 Dec 2019 00:00:00 +0000</pubDate>
+      <guid>/post/who-mentions-who-in-the-office/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/d3/d3.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/d3-tip/index.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;/rmarkdown-libs/chorddiag/chorddiag.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;/rmarkdown-libs/chorddiag/chorddiag.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/chorddiag-binding/chorddiag.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;This project explores the relationships between different characters in the classic TV show &lt;strong&gt;The Office&lt;/strong&gt;. Using transcript data newly released in &lt;a href=&#34;https://technistema.com/&#34;&gt;Bradley H. Lindblad&lt;/a&gt;’s &lt;a href=&#34;https://cran.r-project.org/web/packages/schrute/vignettes/theoffice.html&#34;&gt;&lt;code&gt;schrute&lt;/code&gt; package&lt;/a&gt;, I’d like to see &lt;em&gt;who mentions who in the Office&lt;/em&gt;. Is one character more popular than the others?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(schrute)
+library(tidyverse)
+library(cr)
+set_cr_theme()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s take a look at the transcripts:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;transcripts &amp;lt;- schrute::theoffice
+
+knitr::kable(transcripts[1:3,])&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;right&#34;&gt;index&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;season&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;episode&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;episode_name&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;director&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;writer&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;character&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;text&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;text_w_direction&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;imdb_rating&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;total_votes&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;air_date&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Pilot&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ken Kwapis&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ricky Gervais;Stephen Merchant;Greg Daniels&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Michael&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;All right Jim. Your quarterlies look very good. How are things at the library?&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;All right Jim. Your quarterlies look very good. How are things at the library?&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.6&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3706&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2005-03-24&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Pilot&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ken Kwapis&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ricky Gervais;Stephen Merchant;Greg Daniels&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Jim&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Oh, I told you. I couldn’t close it. So…&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Oh, I told you. I couldn’t close it. So…&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.6&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3706&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2005-03-24&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Pilot&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ken Kwapis&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ricky Gervais;Stephen Merchant;Greg Daniels&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Michael&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;So you’ve come to the master for guidance? Is this what you’re saying, grasshopper?&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;So you’ve come to the master for guidance? Is this what you’re saying, grasshopper?&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.6&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3706&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2005-03-24&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;By using &lt;code&gt;tidytext&lt;/code&gt;, we can split the transcripts into their constituent parts (words).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;transcripts_tokenized &amp;lt;- transcripts %&amp;gt;%
+  tidytext::unnest_tokens(word, text)
+
+knitr::kable(transcripts_tokenized[1:3,])&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;right&#34;&gt;index&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;season&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;episode&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;episode_name&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;director&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;writer&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;character&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;text_w_direction&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;imdb_rating&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;total_votes&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;air_date&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;word&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Pilot&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ken Kwapis&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ricky Gervais;Stephen Merchant;Greg Daniels&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Michael&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;All right Jim. Your quarterlies look very good. How are things at the library?&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.6&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3706&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2005-03-24&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;all&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Pilot&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ken Kwapis&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ricky Gervais;Stephen Merchant;Greg Daniels&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Michael&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;All right Jim. Your quarterlies look very good. How are things at the library?&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.6&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3706&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2005-03-24&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;right&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Pilot&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ken Kwapis&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ricky Gervais;Stephen Merchant;Greg Daniels&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Michael&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;All right Jim. Your quarterlies look very good. How are things at the library?&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.6&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3706&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2005-03-24&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;jim&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;We can now use the text to see who mentions who. But first, let’s construct a vector with a list of characters to keep in the analysis. There are &lt;strong&gt;485 characters&lt;/strong&gt; in the transcripts, so its important we filter only those of relevance:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;keep_characters &amp;lt;- transcripts %&amp;gt;% 
+  group_by(character) %&amp;gt;% 
+  count() %&amp;gt;% 
+  arrange(desc(n)) %&amp;gt;% 
+  head(9) %&amp;gt;% 
+  pull(character)
+
+knitr::kable(keep_characters)&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;x&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Michael&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Dwight&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Jim&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Pam&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Andy&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Angela&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Kevin&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Erin&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Oscar&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;This is an optional decision. One may be interested in seeing which characters talk about Jim most, including those characters who are otherwise less relevant. I decide to filter according to the main cast so that comparisons between characters (e.g., through a chord diagram) is feasible.&lt;/p&gt;
+&lt;div id=&#34;who-mentions-who&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Who Mentions Who?&lt;/h2&gt;
+&lt;div id=&#34;jim-a-case-study&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Jim: A Case Study&lt;/h3&gt;
+&lt;p&gt;Who is talking to who in the Office?&lt;/p&gt;
+&lt;p&gt;Now that we have &lt;code&gt;keep_characters&lt;/code&gt;, we can filter according to it and spit out who mentions who &lt;em&gt;among the most relevant Office characters&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;transcripts_tokenized %&amp;gt;% 
+  filter(character %in% keep_characters) %&amp;gt;% 
+  mutate(jim = ifelse(word == &amp;quot;jim&amp;quot;, 1, 0)) %&amp;gt;% 
+  group_by(character) %&amp;gt;% 
+  summarise(jim = sum(jim)) %&amp;gt;% 
+  arrange(desc(jim)) %&amp;gt;% 
+  mutate(character = reorder(character, jim)) %&amp;gt;% 
+  ggplot(ggplot2::aes(character, jim)) +
+  geom_col() +
+  coord_flip() +
+  fix_bars() +
+  labs(title = &amp;quot;Who Mentions Jim?&amp;quot;,
+       subtitle = &amp;quot;Counts of &amp;#39;Jim&amp;#39; in The Office Transcripts&amp;quot;,
+       x = element_blank(),
+       y = &amp;quot;Mentions&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The takeaway here is that Dwight mentions Jim the most, followed by Michael. No surprise there! What I find interesting is that only three characters &lt;em&gt;really&lt;/em&gt; talk about/to Jim. After Dwight, Michael, and Pam (and Jim referencing himself, apparently), the mention rate for Jim’s name drops from over 200 to only 60 mentions. It seems as if the writers of the Office intentionally made Jim a subject of conversation among only a few characters!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;replicate-for-the-rest-of-the-cast&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Replicate for the rest of the cast&lt;/h3&gt;
+&lt;p&gt;Next, we replicate that process for the rest of the cast. There is probably a better way to do this.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_chord &amp;lt;- transcripts_tokenized %&amp;gt;% 
+  filter(character %in% keep_characters) %&amp;gt;% 
+  mutate(jim = ifelse(word == &amp;quot;jim&amp;quot;, 1, 0)) %&amp;gt;% 
+  mutate(michael = ifelse(word == &amp;quot;michael&amp;quot;, 1, 0)) %&amp;gt;% 
+  mutate(dwight = ifelse(word == &amp;quot;dwight&amp;quot;, 1, 0)) %&amp;gt;% 
+  mutate(pam = ifelse(word == &amp;quot;pam&amp;quot;, 1, 0)) %&amp;gt;% 
+  mutate(andy = ifelse(word == &amp;quot;andy&amp;quot;, 1, 0)) %&amp;gt;% 
+  mutate(angela = ifelse(word == &amp;quot;angela&amp;quot;, 1, 0)) %&amp;gt;% 
+  mutate(kevin = ifelse(word == &amp;quot;kevin&amp;quot;, 1, 0)) %&amp;gt;% 
+  mutate(erin = ifelse(word == &amp;quot;erin&amp;quot;, 1, 0)) %&amp;gt;% 
+  mutate(oscar = ifelse(word == &amp;quot;oscar&amp;quot;, 1, 0)) %&amp;gt;% 
+  # mutate(ryan = ifelse(word == &amp;quot;ryan&amp;quot;, 1, 0)) %&amp;gt;% 
+  # mutate(darryl = ifelse(word == &amp;quot;darryl&amp;quot;, 1, 0)) %&amp;gt;% 
+  # mutate(phyllis = ifelse(word == &amp;quot;phyllis&amp;quot;, 1, 0)) %&amp;gt;% 
+  # mutate(kelly = ifelse(word == &amp;quot;kelly&amp;quot;, 1, 0)) %&amp;gt;% 
+  # mutate(toby = ifelse(word == &amp;quot;toby&amp;quot;, 1, 0)) %&amp;gt;% 
+  group_by(character) %&amp;gt;% 
+  summarise_at(vars(jim:oscar), funs(sum))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualize&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Visualize&lt;/h2&gt;
+&lt;p&gt;Now, let’s make a chord diagram!&lt;/p&gt;
+&lt;p&gt;We first have to convert the data frame into a format &lt;code&gt;chordDiagram&lt;/code&gt; will recognize.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;circlize_data &amp;lt;- as.data.frame(data_chord) %&amp;gt;% 
+  pivot_longer(jim:oscar, names_to = &amp;quot;to&amp;quot;, values_to = &amp;quot;value&amp;quot;) %&amp;gt;% 
+  rename(from = &amp;#39;character&amp;#39;) %&amp;gt;% 
+  mutate(to = str_to_title(to))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This process pivots each row of data into a value-key combination, so that the data looks like this:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;from&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;to&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;value&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Andy&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Jim&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;48&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Andy&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Michael&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;40&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Andy&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Dwight&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;80&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Andy&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Pam&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;34&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Andy&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Andy&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;42&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Andy&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Angela&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;33&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Using that data, we can create a chord diagram quite easily, using a single command from the &lt;code&gt;circlize&lt;/code&gt; library. &lt;a href=&#34;https://jokergoo.github.io/circlize_book/book/the-chorddiagram-function.html&#34;&gt;This chapter is helpful&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(circlize)
+chordDiagram(circlize_data, grid.col = c(&amp;quot;#B997C7&amp;quot;, &amp;quot;#824D99&amp;quot;, &amp;quot;#4E78C4&amp;quot;, &amp;quot;#57A2AC&amp;quot;, &amp;quot;#7EB875&amp;quot;, &amp;quot;#D0B541&amp;quot;, &amp;quot;#E67F33&amp;quot;, &amp;quot;#CE2220&amp;quot;, &amp;quot;#521A13&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div id=&#34;make-it-interactive&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Make It Interactive&lt;/h3&gt;
+&lt;p&gt;With nine people, some of the data can get easily concealed (how often did Angela mention Michael’s name?). One way to fix this is to make the visualization interactive, so that a user can hover over chords to see relationships between characters.&lt;/p&gt;
+&lt;p&gt;First, we conduct some data cleaning. I found that the rownames and column names have to be of the same order; let’s do a little manipulation to get there:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;int_chord &amp;lt;- as.data.frame(data_chord)
+
+rownames(int_chord) &amp;lt;- int_chord$character
+
+row.order &amp;lt;- c(&amp;quot;Jim&amp;quot;, &amp;quot;Michael&amp;quot;, &amp;quot;Dwight&amp;quot;, &amp;quot;Pam&amp;quot;, &amp;quot;Andy&amp;quot;, &amp;quot;Angela&amp;quot;, &amp;quot;Kevin&amp;quot;, &amp;quot;Erin&amp;quot;, &amp;quot;Oscar&amp;quot;)
+               #, &amp;quot;Ryan&amp;quot;, &amp;quot;Darryl&amp;quot;, &amp;quot;Phyllis&amp;quot;, &amp;quot;Kelly&amp;quot;, &amp;quot;Toby&amp;quot;)
+int_chord &amp;lt;- int_chord[row.order,]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next, we load &lt;a href=&#34;https://github.com/mattflor&#34;&gt;Matt Flor&lt;/a&gt;’s &lt;a href=&#34;https://github.com/mattflor/chorddiag&#34;&gt;&lt;code&gt;chorddiag&lt;/code&gt;&lt;/a&gt; package, and construct a matrix according to its function’s liking:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# devtools::install_github(&amp;quot;mattflor/chorddiag&amp;quot;)
+library(chorddiag)
+
+m &amp;lt;- as.matrix(int_chord[-1])
+
+dimnames(m) &amp;lt;- list(have = int_chord$character,
+                    prefer = str_to_title(colnames(int_chord[-1])))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, we add a color palette and construct the diagram.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;groupColors &amp;lt;- c(&amp;quot;#B997C7&amp;quot;, &amp;quot;#824D99&amp;quot;, &amp;quot;#4E78C4&amp;quot;, &amp;quot;#57A2AC&amp;quot;, &amp;quot;#7EB875&amp;quot;, &amp;quot;#D0B541&amp;quot;, &amp;quot;#E67F33&amp;quot;, &amp;quot;#CE2220&amp;quot;, &amp;quot;#521A13&amp;quot;)
+
+p &amp;lt;- chorddiag(m, 
+               groupColors = groupColors, 
+               groupnamePadding = 35,
+               tickInterval = 50,
+               groupnameFontsize = 12)
+p&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;htmlwidget-1&#34; style=&#34;width:672px;height:480px;&#34; class=&#34;chorddiag html-widget&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-1&#34;&gt;{&#34;x&#34;:{&#34;matrix&#34;:[[47,181,258,189,53,18,19,3,14],[227,171,353,327,66,48,95,44,100],[294,282,106,104,61,59,41,21,29],[182,262,126,58,35,44,34,17,26],[48,40,80,34,42,33,20,78,19],[11,28,81,31,23,10,40,2,26],[39,71,12,39,19,22,23,7,36],[12,37,23,28,92,9,4,15,5],[16,65,22,22,29,37,34,9,6]],&#34;options&#34;:{&#34;type&#34;:&#34;directional&#34;,&#34;width&#34;:null,&#34;height&#34;:null,&#34;margin&#34;:100,&#34;showGroupnames&#34;:true,&#34;groupNames&#34;:[&#34;Jim&#34;,&#34;Michael&#34;,&#34;Dwight&#34;,&#34;Pam&#34;,&#34;Andy&#34;,&#34;Angela&#34;,&#34;Kevin&#34;,&#34;Erin&#34;,&#34;Oscar&#34;],&#34;groupColors&#34;:[&#34;#B997C7&#34;,&#34;#824D99&#34;,&#34;#4E78C4&#34;,&#34;#57A2AC&#34;,&#34;#7EB875&#34;,&#34;#D0B541&#34;,&#34;#E67F33&#34;,&#34;#CE2220&#34;,&#34;#521A13&#34;],&#34;groupThickness&#34;:0.1,&#34;groupPadding&#34;:0.0349065850398866,&#34;groupnamePadding&#34;:[35,35,35,35,35,35,35,35,35],&#34;groupnameFontsize&#34;:12,&#34;groupedgeColor&#34;:null,&#34;chordedgeColor&#34;:&#34;#808080&#34;,&#34;categoryNames&#34;:null,&#34;categorynamePadding&#34;:100,&#34;categorynameFontsize&#34;:28,&#34;showTicks&#34;:true,&#34;tickInterval&#34;:50,&#34;ticklabelFontsize&#34;:10,&#34;fadeLevel&#34;:0.1,&#34;showTooltips&#34;:true,&#34;showZeroTooltips&#34;:true,&#34;tooltipNames&#34;:[&#34;Jim&#34;,&#34;Michael&#34;,&#34;Dwight&#34;,&#34;Pam&#34;,&#34;Andy&#34;,&#34;Angela&#34;,&#34;Kevin&#34;,&#34;Erin&#34;,&#34;Oscar&#34;],&#34;tooltipFontsize&#34;:12,&#34;tooltipUnit&#34;:&#34;&#34;,&#34;tooltipGroupConnector&#34;:&#34; &amp;#x25B6; &#34;,&#34;precision&#34;:&#34;null&#34;,&#34;clickAction&#34;:null,&#34;clickGroupAction&#34;:null}},&#34;evals&#34;:[],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# save the widget
+# library(htmlwidgets)
+# saveWidget(p, file=&amp;quot;chord_interactive.html&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Play around with the diagram &lt;a href=&#34;connorrothschild.github.io/D3.js/the-office/&#34;&gt;here&lt;/a&gt;!&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

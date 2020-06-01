@@ -1,0 +1,1176 @@
+<!DOCTYPE html><html lang="en-us" >
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Connor Rothschild">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="If our use of color in visualizations follows the Five Ws (and one H), we&rsquo;re spending too much time on how, and not enough time on why. Color is too often seen as a tool to make pretty pictures, when it should be used to inform our audiences.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/2020-01-10-color-in-data-vis/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+        
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:400,500,600,700%7CLato%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+  
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_2.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_2.png">
+
+  <link rel="canonical" href="/post/2020-01-10-color-in-data-vis/">
+
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@CL_Rothschild">
+  <meta property="twitter:creator" content="@CL_Rothschild">
+  
+  <meta property="og:site_name" content="Connor Rothschild">
+  <meta property="og:url" content="/post/2020-01-10-color-in-data-vis/">
+  <meta property="og:title" content="Color in Data Visualization: Less How, More Why | Connor Rothschild">
+  <meta property="og:description" content="If our use of color in visualizations follows the Five Ws (and one H), we&rsquo;re spending too much time on how, and not enough time on why. Color is too often seen as a tool to make pretty pictures, when it should be used to inform our audiences."><meta property="og:image" content="/img/static/img/avatar.jpg">
+  <meta property="twitter:image" content="/img/static/img/avatar.jpg"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-01-10T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-01-10T00:00:00&#43;00:00">
+  
+
+  
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "/post/2020-01-10-color-in-data-vis/"
+  },
+  "headline": "Color in Data Visualization: Less How, More Why",
+  
+  "datePublished": "2020-01-10T00:00:00Z",
+  "dateModified": "2020-01-10T00:00:00Z",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Connor Rothschild"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Connor Rothschild",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_2.png"
+    }
+  },
+  "description": "If our use of color in visualizations follows the Five Ws (and one H), we\u0026rsquo;re spending too much time on how, and not enough time on why. Color is too often seen as a tool to make pretty pictures, when it should be used to inform our audiences."
+}
+</script>
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Color in Data Visualization: Less How, More Why | Connor Rothschild</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Connor Rothschild</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Connor Rothschild</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/post"><span>Blog</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#experience"><span>Experience</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#accomplishments"><span>Awards</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#projects"><span>Projects</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#contact"><span>Contact</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/cv.pdf"><span>Resume</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      <li class="nav-item dropdown theme-dropdown">
+        <a href="#" class="nav-link js-theme-selector" data-toggle="dropdown" aria-haspopup="true">
+          <i class="fas fa-palette" aria-hidden="true"></i>
+        </a>
+        <div class="dropdown-menu">
+          <a href="#" class="dropdown-item js-set-theme-light">
+            <span>Light</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-dark">
+            <span>Dark</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-auto">
+            <span>Automatic</span>
+          </a>
+        </div>
+      </li>
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>Color in Data Visualization: Less How, More Why</h1>
+
+  
+
+  
+    
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    Jan 10, 2020
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    9 min read
+  </span>
+  
+
+  
+  
+  
+
+  
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      <p>If our use of color in visualizations follows the 
+<a href="https://en.wikipedia.org/wiki/Five_Ws" target="_blank" rel="noopener">Five Ws (and one H)</a>, we&rsquo;re spending too much time on <em>how</em>, and not enough time on <em>why</em>. Color is too often seen as a tool to make pretty pictures, when it should be used to inform our audiences.</p>
+<p>For one example, look at this &ldquo;Color Emotion Guide&rdquo; from marketing site 
+<a href="https://www.tapclicks.com/resources/blog/the-influence-of-color-in-data-visualization/" target="_blank" rel="noopener">TapClicks</a> (one of the top results when you Google &ldquo;color in data visualization&rdquo; 🧐).</p>
+<img src="../data/2020-01-10-color-in-data-vis/color-emotion-guide-lol.jpg" alt="color-emotion-guide-lol"/>
+<p>The implicit suggestion here is that we should use color&ndash;whenever and however we can&ndash;to capture some form of emotion. Not only is this specific categorization rather odd (Monster energy drinks are peaceful, Virgin Mobile embodies &ldquo;bold excitement&rdquo;, and Harley Davidson motorcycles just scream &ldquo;cheerful friendliness&rdquo; 🤩), it leads novice practitioners to believe that color should be used just for the sake of using color.</p>
+<p>Examples of gratuitous color use abound.</p>
+<p><img src="../data/2020-01-10-color-in-data-vis/bad-color-use-1.jpg" alt="A pie chart with far too many colors"></p>
+<p><img src="../data/2020-01-10-color-in-data-vis/bad-color-use-2.jpg" alt="Multiple pie charts with poor color usage"></p>
+<p>These examples illustrate my thesis: <strong>Too often, we ask <em>how</em> we can use color in our visualizations when we should be asking <em>why</em> we are using it.</strong></p>
+<p>Some combination of 1) default software settings, 2) an obsession with pretty color palettes, and 3) a lack of emphasis on careful color consideration has led to a sloppy use of color in some of our most popular data visualizations.</p>
+<p>One of the most common errors I see is the <em>overuse</em> of color. In the charts above, for example, it&rsquo;s evident that there are far too many colors, with no apparent reason for the</p>
+<p>Often times, those creating visualizations will argue that they <em>must</em> include a 14 colors in their chart because the dataset has 14 data points of interest! It doesn&rsquo;t help that the default settings of some of the most popular data viz tools (such as Excel) by default map categorical variables to colors.</p>
+<p>The reality is, however, that if you need more than a handful of colors in your chart, you can probably present your data in a different way. Take 
+<a href="https://blog.datawrapper.de/colors/" target="_blank" rel="noopener">this example</a> from Datawrapper:</p>
+<p><img src="../data/2020-01-10-color-in-data-vis/bad-and-better.jpg" alt="bad-and-better"></p>
+<p>The takeaway? When you emphasize <em>everything</em>, you end up emphasizing <em>nothing</em>. That&rsquo;s why its important that we stop uncritically asking <em>how</em> we can use color in our charts.</p>
+<p>A data visualization is nothing more than a pretty picture if it does not <em>inform</em> its viewer. And if your chart presents 14 different data points all mapped to different colors, what kind of story is it telling? I really like this from Apple&rsquo;s data visualization practitioner 
+<a href="https://medium.com/@Elijah_Meeks/viz-palette-for-data-visualization-color-8e678d996077?" target="_blank" rel="noopener">Elijah Meeks</a>:</p>
+<blockquote>
+<p>Rather than trying to find that impossible 20-color palette, stop using color when you have so many dimensions. It’s indistinguishable, it’s confusing and you’re just off-loading the complexity and decision-making to your reader.</p>
+</blockquote>
+<p>That&rsquo;s why color should be used <em>more sparingly</em> and <em>more thoughtfully</em>. Color is one of the most important parts of our visualizations, yet their current use is far too often gratuitous and overwhelming.</p>
+<h2 id="so-how-should-you-use-color">So, how <em>should</em> you use color?</h2>
+<p>Color is not the enemy. Rather, the (far too frequent) abuse and misuse of color is. So, how can you use color correctly? It depends on the purpose of your visualization, and, as a corollary, the purpose of color. You should ask: <strong>why am I using color?</strong></p>
+<h3 id="1-color-to-differentiate">1) Color to differentiate</h3>
+<p>One use of color is to draw attention to a data point of interest. This kind of color use would fall into the category of 
+<a href="https://www.oreilly.com/library/view/designing-data-visualizations/9781449314774/ch01.html" target="_blank" rel="noopener">explanatory visualization</a>, as opposed to its exploratory counterpart. If you&rsquo;ve already explored, analyzed, and probed your data, you now need to deliver those insights to someone else (a supervisor, a client, or a curious friend). It would be a waste of time to present to them all of the exploratory work you did, which is why your presentation should make use of color to focus on your findings.</p>
+<p>As practitioner Andy Kirk 
+<a href="https://www.visualisingdata.com/2015/01/make-grey-best-friend/" target="_blank" rel="noopener">puts it</a>, visualization practitioners in this stage of presentation should <strong>make grey their best friend</strong>. This is because the <em>absence of color</em>, not the excessive use of it, helps paint a picture and tell a story. By using grey as the primary color in a visualization, we automatically draw our viewers&rsquo; eyes to <span style = "color:red">whatever isn&rsquo;t grey</span>. That way, if we are interested in telling a story about <em>one data point</em>, we can do so quite easily.</p>
+<p>Here&rsquo;s a quick 
+<a href="https://github.com/connorrothschild/bbdata" target="_blank" rel="noopener">example</a> I made in R a while back:</p>
+<p><img src="../data/2020-01-10-color-in-data-vis/color-emphasized.png" alt="color-emphasized"></p>
+<p>The point of the visualization is not to show our audience the kindergarten vaccination rate of <em>every county</em> in Texas. It is instead to highlight the lowest rate&ndash;Terry County. This visualization leverages the grey fill of every other bar to immediately draw the audiences&rsquo; eyes to Terry County. Because we used only two colors, we can also highlight text in the subtitle to make the connection even clearer for our audience. Color&ndash;if used prudently&ndash;makes our visualizations more digestible and more informative.</p>
+<p>Now, imagine if I visualized that same data in the following way:</p>
+<p><img src="../data/2020-01-10-color-in-data-vis/all-grey.jpg" alt="all-grey"></p>
+<p>Or, even worse:</p>
+<p><img src="../data/2020-01-10-color-in-data-vis/all-color.jpg" alt="all-colors"></p>
+<p>After seeing those eyesores, aren&rsquo;t you thankful that we used color sparingly in the initial plot?</p>
+<p>Perhaps you&rsquo;re interested in a county-by-county overview of 2016 election results. Although you might be tempted to code all counties according to their Trump/Clinton split, that&rsquo;s prettier than it is insightful. What if, instead, we focused on those notable counties which flipped from one party to another between 2012 and 2016? From Kieran Healy&rsquo;s book 
+<a href="https://socviz.co/refineplots.html#use-color-to-your-advantage" target="_blank" rel="noopener">Data Visualization</a>:</p>
+<p><img src="../data/2020-01-10-color-in-data-vis/flipping-points-color.jpg" alt="flipping-points-color"></p>
+<p>As we can see here, more counties flipped from majority-Democratic in 2012 to majority-Republican in 2016 than vice-versa. Because we&rsquo;re focusing on only a fraction of all of the data points, we can also observe trends: The majority of counties that flipped had a small black population. No county that had over a ~53% black population flipped in either direction (annotation my own):</p>
+<p><img src="../data/2020-01-10-color-in-data-vis/flipping-points-color-annotate1.jpg" alt="flipping-points-color-annotate1"></p>
+<p>We also notice that flipping direction might be correlated with population size: nearly all of the flipping counties with a log population under 100,000 flipped to Republicans, while a greater proportion of all switching counties flipped toward the Democratic Party if their log population was greater than 100,000.</p>
+<p><img src="../data/2020-01-10-color-in-data-vis/flipping-points-color-annotate2.jpg" alt="flipping-points-color-annotate2"></p>
+<p>Color can, and should, be used to focus on the key parts of your visualization that you want your audience to see. By using color strategically, we can reduce the cognitive load required to understand <em>what</em> a visualization is depicting. 
+<a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0183884#pone.0183884.ref008" target="_blank" rel="noopener">Kalyuga et al.</a> found that color-coding &ldquo;ameliorated split-attention effects, resulting in lower perceived difficulty.&rdquo; 
+<a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0183884#pone.0183884.ref024" target="_blank" rel="noopener">Other researchers</a> have reported reductions in cognitive load when experiment participants were provided color-coding.</p>
+<p>The overuse of colors can have the opposite effect. In one 
+<a href="https://journals-sagepub-com.ezproxy.rice.edu/doi/full/10.1177/1747021818781425" target="_blank" rel="noopener">2019 paper</a>, researchers found &ldquo;task-irrelevant digit colour information hampers the learning process only in instances where it triggers a conflict with the semantic properties of the base-code words.&rdquo; What does this mean? If color encoding conflicts with the objects it represents, it impedes learning and weakens understanding. You don&rsquo;t have to understand what all this means (I don&rsquo;t dully understand all of it). This point is simply to illustrate: <em>we should care about color</em>. Color can be confusing and complicated, which is why its use should be intentional and minimal. It should be used to draw attention to the important parts of our charts.</p>
+<h3 id="2-color-to-explore">2) Color to explore</h3>
+<p>Color does not have to be used in contrast to plain old grey. It can also be used as a tool to showcase a variety of data points all mapped to different colors. The important note is that this usage should be sparing. Given our prior examples, we definitely don&rsquo;t want a plot like this one (from 
+<a href="https://serialmentor.com/dataviz/color-pitfalls.html" target="_blank" rel="noopener">Chapter 19 of Claus Wilke&rsquo;s <em>Fundamentals of Data Visualization</em></a>):</p>
+<p><img src="../data/2020-01-10-color-in-data-vis/bad-chart.jpg" alt="bad-chart"></p>
+<p>A more appropriate alternative may look something like this:</p>
+<p><img src="../data/2020-01-10-color-in-data-vis/betterchart-1.jpg" alt="betterchart-1"></p>
+<p>This way, the audience can still see general patterns in the data, but they don&rsquo;t have to treat the fill legend like a lookup table! Most ideally, this chart would have some interactivity, so that a user could hover over a point to see its respective data.</p>
+<p>In examples like this, where we are <em>exploring</em> rather than <em>explaining</em>, we leave the exploration to our users; they can see what they want to see and we give them the information they need to do exactly that.</p>
+<p>Another common use of color for exploratory purposes is showing data progression across a gradient (e.g. low to high, bad to good, cold to warm).</p>
+<p>These examples are most commonly found in 
+<a href="https://en.wikipedia.org/wiki/Choropleth_map" target="_blank" rel="noopener">choropleth maps</a>, where the shade of color in a given state (or county, or region) corresponds to a value of interest. As an example, here&rsquo;s a 
+<a href="https://connorrothschild.github.io/D3.js/map-overdoses/" target="_blank" rel="noopener">choropleth map</a> I created using D3.js, which visualizes opioid-involved overdose deaths in the United States:</p>
+<p><img src="../data/2020-01-10-color-in-data-vis/choropleth-ex.jpg" alt="choropleth-ex"></p>
+<p>As we can see from the map, &ldquo;rust belt&rdquo; states are suffering from the opioid crisis to a much greater degree than those in western states. Choropleth maps utilize color to show regional variation and illustrate the power of color <em>shading</em> to represent the severity or extent of a given variable.</p>
+<p>However, color in this context can also be misused. Data may be mapped according to a categorical color scale, or a rainbow scale which makes it difficult to see progression. This chart from 
+<a href="https://serialmentor.com/dataviz/color-pitfalls.html" target="_blank" rel="noopener">Claus O. Wilke</a> is a good (bad) example:</p>
+<p><img src="../data/2020-01-10-color-in-data-vis/map-Texas-rainbow-1.jpg" alt="map-Texas-rainbow-1"></p>
+<p>This chart is pretty! When rainbow scales are used in the media or elsewhere, it may be because their creator asked &ldquo;How can I use color to make a pretty picture?&rdquo; But this use of a non-monotonic color scale means that the relative size of differences between data points are difficult to detect. As an illustration, see how long it takes you to answer this question: using the legend above, what is the percent difference between <span style = "color:#FF6701;">this color </span>and <span style = "color:#3736FF;">this color</span>? (The answer is ~70%.)</p>
+<p>In 2019, 
+<a href="https://ieeexplore.ieee.org/document/8494817" target="_blank" rel="noopener">a group of researchers</a> asked climate scientists to evaluate maps depicting changes in climate, where maps were either rainbow (similar to the Texas map above) or monotonic (such as the opioid map earlier). The researchers found that evaluations of magnitude difference in these maps were significantly more accurate when they were encoded with monotonic luminance scales rather than traditional rainbow scales. Other research consistently finds that rainbow color scales are both 
+<a href="http://people.renci.org/~borland/pdfs/RainbowColorMap_VisViewpoints.pdf" target="_blank" rel="noopener">harmful and popular</a>. All this to say: color matters.</p>
+<p>So, color can be used for exploratory purposes. That is to say, color doesn&rsquo;t have to be used exclusively for focus, and it can be used in charts that have colors other than just grey! But exploratory color usage (as with all use of color) requires caution.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Color is tricky. While it can take your plot to the next level, it can also ruin it. The difference? The questions we ask. Are we questioning <em>how</em> you can use color; which of the many palettes to use, and how we can map them across variables? These are 
+<a href="https://socviz.co/refineplots.html#use-color-to-your-advantage" target="_blank" rel="noopener">important questions</a>, but they have to be preceded by the question of <em>why</em>  we use color in the first place. If color doesn&rsquo;t serve the purpose of informing, clarifying, or guiding our audience, what purpose does it serve?</p>
+
+    </div>
+
+    
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tag/visualization/">visualization</a>
+  
+  <a class="badge badge-light" href="/tag/data-viz/">data-viz</a>
+  
+</div>
+
+
+
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=/post/2020-01-10-color-in-data-vis/&amp;text=Color%20in%20Data%20Visualization:%20Less%20How,%20More%20Why" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=/post/2020-01-10-color-in-data-vis/&amp;t=Color%20in%20Data%20Visualization:%20Less%20How,%20More%20Why" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Color%20in%20Data%20Visualization:%20Less%20How,%20More%20Why&amp;body=/post/2020-01-10-color-in-data-vis/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=/post/2020-01-10-color-in-data-vis/&amp;title=Color%20in%20Data%20Visualization:%20Less%20How,%20More%20Why" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://web.whatsapp.com/send?text=Color%20in%20Data%20Visualization:%20Less%20How,%20More%20Why%20/post/2020-01-10-color-in-data-vis/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=/post/2020-01-10-color-in-data-vis/&amp;title=Color%20in%20Data%20Visualization:%20Less%20How,%20More%20Why" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+    
+    
+    
+      
+    
+    
+    
+    <div class="media author-card content-widget-hr">
+      
+        
+        <img class="avatar mr-3 avatar-circle" src="/author/connor-rothschild/avatar_hu1ead2b9ee20986310202f8406c13a0e9_6686606_270x270_fill_q90_lanczos_center.jpg" alt="Connor Rothschild">
+      
+
+      <div class="media-body">
+        <h5 class="card-title"><a href="/">Connor Rothschild</a></h5>
+        <h6 class="card-subtitle">Undergraduate at Rice University</h6>
+        <p class="card-text">Undergraduate at Rice University</p>
+        <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/#contact" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://twitter.com/GeorgeCushen" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://scholar.google.co.uk/citations?user=sIwtMXoAAAAJ" target="_blank" rel="noopener">
+        <i class="ai ai-google-scholar"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/gcushen" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+</ul>
+
+      </div>
+    </div>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <div class="article-widget content-widget-hr">
+    <h3>Related</h3>
+    <ul>
+      
+      <li><a href="/post/color-in-data-vis/">Color in Data Visualization: Less How, More Why</a></li>
+      
+      <li><a href="/post/2020-01-04-adding-a-chart-in-your-tooltip/">How (and Why) to Add a Chart to Your D3.js Tooltip</a></li>
+      
+      <li><a href="/post/who-mentions-who-in-the-office/">Who Mentions Who in the Office?</a></li>
+      
+      <li><a href="/post/tidy-tuesday-replication/">Tidy Tuesday: Replication</a></li>
+      
+      <li><a href="/post/map-springfield/">Creating a Streetmap of Springfield, MO</a></li>
+      
+    </ul>
+  </div>
+  
+
+
+
+  </div>
+</article>
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.37431be2d92d7fb0160054761ab79602.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+  <div class="container">
+    <footer class="site-footer">
+  
+  <p class="powered-by">
+    
+      <a href="/privacy/">Privacy Policy</a>
+    
+    
+       &middot; 
+      <a href="/terms/">Terms</a>
+    
+  </p>
+  
+
+  <p class="powered-by">
+    
+  </p>
+
+  
+  
+
+
+
+
+
+
+  <p class="powered-by">
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" class="back-to-top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

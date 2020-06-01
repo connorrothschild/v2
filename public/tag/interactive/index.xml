@@ -1,0 +1,1917 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>interactive | Connor Rothschild</title>
+    <link>/tag/interactive/</link>
+      <atom:link href="/tag/interactive/index.xml" rel="self" type="application/rss+xml" />
+    <description>interactive</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Mon, 18 May 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/img/static/img/avatar.jpg</url>
+      <title>interactive</title>
+      <link>/tag/interactive/</link>
+    </image>
+    
+    <item>
+      <title>Recreating a Table by The Economist Using Reactable</title>
+      <link>/post/economist-table-replication-using-reactable/</link>
+      <pubDate>Mon, 18 May 2020 00:00:00 +0000</pubDate>
+      <guid>/post/economist-table-replication-using-reactable/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/core-js/shim.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/react/react.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/react/react-dom.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/reactwidget/react-tools.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/reactable-binding/reactable.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;&lt;em&gt;The Economist&lt;/em&gt; recently released a series of country-level &lt;a href=&#34;https://twitter.com/J_CD_T/status/1261625814854045696&#34;&gt;datasets&lt;/a&gt; on ‘excess mortality’, a term used to &lt;a href=&#34;https://www.economist.com/graphic-detail/2020/04/16/tracking-covid-19-excess-deaths-across-countries&#34;&gt;describe&lt;/a&gt; ‘the gap between the total number of people who died from any cause, and the historical average for the same place and time of year.’ In simpler terms, the measure captures how many deaths &lt;em&gt;are&lt;/em&gt; happening that &lt;em&gt;shouldn’t be&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;In the (free!) articles accompanying that data, I came across the following table:&lt;/p&gt;
+&lt;div style=&#34;text-align:center&#34;&gt;
+&lt;p&gt;&lt;img width = 100% src = img/econ-table.png&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;I thought the table was clean and sent a clear message. The addition of inline barcharts is not intrusive but still helps the reader takeaway insights about the data. It’s a rather pretty table. Having recently &lt;a href=&#34;https://twitter.com/dataandme/status/1196552930167599106&#34;&gt;come across&lt;/a&gt; Greg Lin’s package &lt;a href=&#34;https://glin.github.io/reactable/index.html&#34;&gt;&lt;code&gt;reactable&lt;/code&gt;&lt;/a&gt;, I thought this could be a good opportunity to try my hand at recreating the above.&lt;/p&gt;
+&lt;p&gt;(Coincidentally, while I was working on this project, Malcolm Barrett released a similar &lt;a href=&#34;https://malco.io/2020/05/16/replicating-an-nyt-table-of-swedish-covid-deaths-with-gt/&#34;&gt;blog post&lt;/a&gt; documenting his recreation of a NYT table using &lt;code&gt;gt&lt;/code&gt;. Check it out!)&lt;/p&gt;
+&lt;div id=&#34;loading-packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Loading packages&lt;/h2&gt;
+&lt;p&gt;Our process uses standard packages: &lt;code&gt;reactable&lt;/code&gt; (obviously), &lt;code&gt;htmltools&lt;/code&gt; as its buddy, &lt;code&gt;lubridate&lt;/code&gt; for days and times, &lt;code&gt;hrbrthemes&lt;/code&gt; for &lt;em&gt;The Economist’s&lt;/em&gt; font, and &lt;code&gt;tidyverse&lt;/code&gt; for general purpose data wrangling.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(reactable)
+library(htmltools)
+library(lubridate)
+library(hrbrthemes)
+library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;gather-the-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Gather the data&lt;/h2&gt;
+&lt;p&gt;You can definitely skip this step if you’re not interested in the data collection and cleaning process.&lt;/p&gt;
+&lt;p&gt;Unfortunately, one of the more time-consuming steps of this project was getting the data in the same format &lt;em&gt;The Economist&lt;/em&gt; used in their article. The data they released comes in the form of a series of &lt;a href=&#34;https://github.com/TheEconomist/covid-19-excess-deaths-tracker/tree/master/output-data/excess-deaths&#34;&gt;country-level CSVs&lt;/a&gt;; although helpful for country-level analysis, this meant that we have to modify the data into a joined format in order to create a table.&lt;/p&gt;
+&lt;p&gt;Let’s begin by creating a function which reads in &lt;strong&gt;each individual CSV&lt;/strong&gt;, selects relevant columns, and stores that specific dataframe in the global environment.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;create_dataframe &amp;lt;- function(country) {
+  ## for URL (below)
+  country &amp;lt;- str_replace(country, &amp;quot; &amp;quot;, &amp;quot;_&amp;quot;)
+  
+  ## read in CSV, given country parameter
+  data &amp;lt;-
+    readr::read_csv(
+      paste0(
+        &amp;#39;https://raw.githubusercontent.com/TheEconomist/covid-19-excess-deaths-tracker/master/output-data/excess-deaths/&amp;#39;, country, &amp;#39;_excess_deaths.csv&amp;#39;
+      )
+    )
+  
+  ## select relevant columns
+  data &amp;lt;- data %&amp;gt;%
+    select(
+      country,
+      region,
+      start_date,
+      end_date,
+      population,
+      total_deaths,
+      covid_deaths,
+      expected_deaths,
+      excess_deaths,
+      non_covid_deaths
+    )
+  
+  assign(country, rbind(data), envir = .GlobalEnv)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With that function created, we then want to loop it with each country &lt;em&gt;The Economist&lt;/em&gt; has included.&lt;/p&gt;
+&lt;p&gt;To do so, we grab their list of sources from GitHub and pull each country into a list:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;country_names &amp;lt;-
+  readr::read_csv(
+    &amp;#39;https://raw.githubusercontent.com/TheEconomist/covid-19-excess-deaths-tracker/master/source-data/list_of_sources.csv&amp;#39;
+  ) %&amp;gt;%
+  select(country) %&amp;gt;%
+  distinct() %&amp;gt;%
+  mutate(country = stringr::str_to_lower(country)) %&amp;gt;%
+  filter(country != &amp;#39;all&amp;#39;) %&amp;gt;%
+  pull()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then, we loop!&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;for (country in country_names) {
+  create_dataframe(country)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, we have a list of dataframes, with each containing one country’s data on excess mortality.&lt;/p&gt;
+&lt;p&gt;Finally, we merge each of these new dataframes into one master dataset. Here, we are defining in &lt;code&gt;dfs&lt;/code&gt; a list of all objects in the global environment that are of the structure data frame. Then, we &lt;code&gt;rbind&lt;/code&gt; them all together!&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dfs = sapply(.GlobalEnv, is.data.frame)
+
+data &amp;lt;- do.call(rbind, mget(names(dfs)[dfs]))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But unfortunately, that’s not all. We need to filter our data to only include the places that are in &lt;em&gt;The Economist’s&lt;/em&gt; table. To make matters more difficult, the table’s identifying row is titled ‘Region/Country’, and includes data from two &lt;em&gt;separate&lt;/em&gt; rows in the CSVs.&lt;/p&gt;
+&lt;p&gt;Let’s begin by manually defining and filtering according to the countries and regions that &lt;em&gt;The Economist&lt;/em&gt; includes. (This selection does not seem to have an order to it; as such, it has to be manual).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;good_countries &amp;lt;-
+  c(&amp;quot;Britain&amp;quot;,
+    &amp;quot;Spain&amp;quot;,
+    &amp;quot;Italy&amp;quot;,
+    &amp;quot;France&amp;quot;,
+    &amp;quot;Netherlands&amp;quot;,
+    &amp;quot;Belgium&amp;quot;,
+    &amp;quot;Sweden&amp;quot;,
+    &amp;quot;Austria&amp;quot;)
+
+good_regions &amp;lt;- c(&amp;quot;New York City&amp;quot;, &amp;quot;Istanbul&amp;quot;, &amp;quot;Jakarta&amp;quot;)
+
+data_filtered_countries &amp;lt;- data %&amp;gt;%
+  filter(country %in% good_countries) %&amp;gt;%
+  filter(country == region)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Because the table only has one row for country/region, and groups them accordingly, we can go ahead and replace the &lt;code&gt;country&lt;/code&gt; variable in the &lt;code&gt;data_filtered_regions&lt;/code&gt; dataframe with &lt;code&gt;region&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_filtered_regions &amp;lt;- data %&amp;gt;%
+  filter(region %in% good_regions) %&amp;gt;%
+  # replace for the sake of the table
+  mutate(country = region)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And merge:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_filtered &amp;lt;-
+  rbind(data_filtered_countries, data_filtered_regions)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next, we notice that the table title says ‘Excess mortality &lt;em&gt;since region/country’s first 50 covid deaths&lt;/em&gt;.’ This means we need to exclude counts of excess deaths &lt;em&gt;before&lt;/em&gt; a region had 50 COVID deaths.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_filtered &amp;lt;- data_filtered %&amp;gt;%
+  group_by(country) %&amp;gt;%
+  mutate(csum = cumsum(covid_deaths))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;At this point (after only selecting our relevant columns), our data looks like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_filtered %&amp;gt;% 
+  select(country, start_date, end_date, covid_deaths, excess_deaths, covid_deaths, csum) %&amp;gt;% 
+  reactable()&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;htmlwidget-1&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-1&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Britain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Spain&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Sweden&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Netherlands&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;Italy&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;France&#34;,&#34;Belgium&#34;,&#34;Belgium&#34;,&#34;Belgium&#34;,&#34;Belgium&#34;,&#34;Belgium&#34;,&#34;Belgium&#34;,&#34;Belgium&#34;,&#34;Belgium&#34;,&#34;Belgium&#34;,&#34;Austria&#34;,&#34;Austria&#34;,&#34;Austria&#34;,&#34;Austria&#34;,&#34;Austria&#34;,&#34;Austria&#34;,&#34;Austria&#34;,&#34;Austria&#34;,&#34;Austria&#34;,&#34;Austria&#34;,&#34;Jakarta&#34;,&#34;Jakarta&#34;,&#34;Jakarta&#34;,&#34;Jakarta&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;New York City&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;,&#34;Istanbul&#34;],&#34;start_date&#34;:[&#34;2020-01-04&#34;,&#34;2020-01-11&#34;,&#34;2020-01-18&#34;,&#34;2020-01-25&#34;,&#34;2020-02-01&#34;,&#34;2020-02-08&#34;,&#34;2020-02-15&#34;,&#34;2020-02-22&#34;,&#34;2020-02-29&#34;,&#34;2020-03-07&#34;,&#34;2020-03-14&#34;,&#34;2020-03-21&#34;,&#34;2020-03-28&#34;,&#34;2020-04-04&#34;,&#34;2020-04-11&#34;,&#34;2020-04-18&#34;,&#34;2020-04-25&#34;,&#34;2020-05-02&#34;,&#34;2020-01-01&#34;,&#34;2020-01-08&#34;,&#34;2020-01-15&#34;,&#34;2020-01-22&#34;,&#34;2020-01-29&#34;,&#34;2020-02-05&#34;,&#34;2020-02-12&#34;,&#34;2020-02-19&#34;,&#34;2020-02-26&#34;,&#34;2020-03-04&#34;,&#34;2020-03-11&#34;,&#34;2020-03-18&#34;,&#34;2020-03-25&#34;,&#34;2020-04-01&#34;,&#34;2020-04-08&#34;,&#34;2020-04-15&#34;,&#34;2020-04-22&#34;,&#34;2020-04-29&#34;,&#34;2020-01-01&#34;,&#34;2020-01-08&#34;,&#34;2020-01-15&#34;,&#34;2020-01-22&#34;,&#34;2020-01-29&#34;,&#34;2020-02-05&#34;,&#34;2020-02-12&#34;,&#34;2020-02-19&#34;,&#34;2020-02-26&#34;,&#34;2020-03-04&#34;,&#34;2020-03-11&#34;,&#34;2020-03-18&#34;,&#34;2020-03-25&#34;,&#34;2020-04-01&#34;,&#34;2020-04-08&#34;,&#34;2020-04-15&#34;,&#34;2020-04-22&#34;,&#34;2020-01-06&#34;,&#34;2020-01-13&#34;,&#34;2020-01-20&#34;,&#34;2020-01-27&#34;,&#34;2020-02-03&#34;,&#34;2020-02-10&#34;,&#34;2020-02-17&#34;,&#34;2020-02-24&#34;,&#34;2020-03-02&#34;,&#34;2020-03-09&#34;,&#34;2020-03-16&#34;,&#34;2020-03-23&#34;,&#34;2020-03-30&#34;,&#34;2020-04-06&#34;,&#34;2020-04-13&#34;,&#34;2020-04-20&#34;,&#34;2020-04-27&#34;,&#34;2020-05-04&#34;,&#34;2020-01-01&#34;,&#34;2020-01-08&#34;,&#34;2020-01-15&#34;,&#34;2020-01-22&#34;,&#34;2020-01-29&#34;,&#34;2020-02-05&#34;,&#34;2020-02-12&#34;,&#34;2020-02-19&#34;,&#34;2020-02-26&#34;,&#34;2020-03-04&#34;,&#34;2020-03-11&#34;,&#34;2020-03-18&#34;,&#34;2020-03-25&#34;,&#34;2020-01-01&#34;,&#34;2020-01-08&#34;,&#34;2020-01-15&#34;,&#34;2020-01-22&#34;,&#34;2020-01-29&#34;,&#34;2020-02-05&#34;,&#34;2020-02-12&#34;,&#34;2020-02-19&#34;,&#34;2020-02-26&#34;,&#34;2020-03-04&#34;,&#34;2020-03-11&#34;,&#34;2020-03-18&#34;,&#34;2020-03-25&#34;,&#34;2020-04-01&#34;,&#34;2020-04-08&#34;,&#34;2020-04-15&#34;,&#34;2020-04-22&#34;,&#34;2020-02-24&#34;,&#34;2020-03-02&#34;,&#34;2020-03-09&#34;,&#34;2020-03-16&#34;,&#34;2020-03-23&#34;,&#34;2020-03-30&#34;,&#34;2020-04-06&#34;,&#34;2020-04-13&#34;,&#34;2020-04-20&#34;,&#34;2020-01-27&#34;,&#34;2020-02-03&#34;,&#34;2020-02-10&#34;,&#34;2020-02-17&#34;,&#34;2020-02-24&#34;,&#34;2020-03-02&#34;,&#34;2020-03-09&#34;,&#34;2020-03-16&#34;,&#34;2020-03-23&#34;,&#34;2020-03-30&#34;,&#34;2020-01-01&#34;,&#34;2020-02-01&#34;,&#34;2020-03-01&#34;,&#34;2020-04-01&#34;,&#34;2019-12-29&#34;,&#34;2020-01-05&#34;,&#34;2020-01-12&#34;,&#34;2020-01-19&#34;,&#34;2020-01-26&#34;,&#34;2020-02-02&#34;,&#34;2020-02-09&#34;,&#34;2020-02-16&#34;,&#34;2020-02-23&#34;,&#34;2020-03-01&#34;,&#34;2020-03-08&#34;,&#34;2020-03-15&#34;,&#34;2020-03-22&#34;,&#34;2020-03-29&#34;,&#34;2020-04-05&#34;,&#34;2020-04-12&#34;,&#34;2020-04-19&#34;,&#34;2020-01-01&#34;,&#34;2020-01-08&#34;,&#34;2020-01-15&#34;,&#34;2020-01-22&#34;,&#34;2020-01-29&#34;,&#34;2020-02-05&#34;,&#34;2020-02-12&#34;,&#34;2020-02-19&#34;,&#34;2020-02-26&#34;,&#34;2020-03-04&#34;,&#34;2020-03-11&#34;,&#34;2020-03-18&#34;,&#34;2020-03-25&#34;,&#34;2020-04-01&#34;,&#34;2020-04-08&#34;,&#34;2020-04-15&#34;,&#34;2020-04-22&#34;,&#34;2020-04-29&#34;,&#34;2020-05-06&#34;],&#34;end_date&#34;:[&#34;2020-01-10&#34;,&#34;2020-01-17&#34;,&#34;2020-01-24&#34;,&#34;2020-01-31&#34;,&#34;2020-02-07&#34;,&#34;2020-02-14&#34;,&#34;2020-02-21&#34;,&#34;2020-02-28&#34;,&#34;2020-03-06&#34;,&#34;2020-03-13&#34;,&#34;2020-03-20&#34;,&#34;2020-03-27&#34;,&#34;2020-04-03&#34;,&#34;2020-04-10&#34;,&#34;2020-04-17&#34;,&#34;2020-04-24&#34;,&#34;2020-05-01&#34;,&#34;2020-05-08&#34;,&#34;2020-01-07&#34;,&#34;2020-01-14&#34;,&#34;2020-01-21&#34;,&#34;2020-01-28&#34;,&#34;2020-02-04&#34;,&#34;2020-02-11&#34;,&#34;2020-02-18&#34;,&#34;2020-02-25&#34;,&#34;2020-03-03&#34;,&#34;2020-03-10&#34;,&#34;2020-03-17&#34;,&#34;2020-03-24&#34;,&#34;2020-03-31&#34;,&#34;2020-04-07&#34;,&#34;2020-04-14&#34;,&#34;2020-04-21&#34;,&#34;2020-04-28&#34;,&#34;2020-05-05&#34;,&#34;2020-01-07&#34;,&#34;2020-01-14&#34;,&#34;2020-01-21&#34;,&#34;2020-01-28&#34;,&#34;2020-02-04&#34;,&#34;2020-02-11&#34;,&#34;2020-02-18&#34;,&#34;2020-02-25&#34;,&#34;2020-03-03&#34;,&#34;2020-03-10&#34;,&#34;2020-03-17&#34;,&#34;2020-03-24&#34;,&#34;2020-03-31&#34;,&#34;2020-04-07&#34;,&#34;2020-04-14&#34;,&#34;2020-04-21&#34;,&#34;2020-04-28&#34;,&#34;2020-01-12&#34;,&#34;2020-01-19&#34;,&#34;2020-01-26&#34;,&#34;2020-02-02&#34;,&#34;2020-02-09&#34;,&#34;2020-02-16&#34;,&#34;2020-02-23&#34;,&#34;2020-03-01&#34;,&#34;2020-03-08&#34;,&#34;2020-03-15&#34;,&#34;2020-03-22&#34;,&#34;2020-03-29&#34;,&#34;2020-04-05&#34;,&#34;2020-04-12&#34;,&#34;2020-04-19&#34;,&#34;2020-04-26&#34;,&#34;2020-05-03&#34;,&#34;2020-05-10&#34;,&#34;2020-01-07&#34;,&#34;2020-01-14&#34;,&#34;2020-01-21&#34;,&#34;2020-01-28&#34;,&#34;2020-02-04&#34;,&#34;2020-02-11&#34;,&#34;2020-02-18&#34;,&#34;2020-02-25&#34;,&#34;2020-03-03&#34;,&#34;2020-03-10&#34;,&#34;2020-03-17&#34;,&#34;2020-03-24&#34;,&#34;2020-03-31&#34;,&#34;2020-01-07&#34;,&#34;2020-01-14&#34;,&#34;2020-01-21&#34;,&#34;2020-01-28&#34;,&#34;2020-02-04&#34;,&#34;2020-02-11&#34;,&#34;2020-02-18&#34;,&#34;2020-02-25&#34;,&#34;2020-03-03&#34;,&#34;2020-03-10&#34;,&#34;2020-03-17&#34;,&#34;2020-03-24&#34;,&#34;2020-03-31&#34;,&#34;2020-04-07&#34;,&#34;2020-04-14&#34;,&#34;2020-04-21&#34;,&#34;2020-04-28&#34;,&#34;2020-03-01&#34;,&#34;2020-03-08&#34;,&#34;2020-03-15&#34;,&#34;2020-03-22&#34;,&#34;2020-03-29&#34;,&#34;2020-04-05&#34;,&#34;2020-04-12&#34;,&#34;2020-04-19&#34;,&#34;2020-04-26&#34;,&#34;2020-02-02&#34;,&#34;2020-02-09&#34;,&#34;2020-02-16&#34;,&#34;2020-02-23&#34;,&#34;2020-03-01&#34;,&#34;2020-03-08&#34;,&#34;2020-03-15&#34;,&#34;2020-03-22&#34;,&#34;2020-03-29&#34;,&#34;2020-04-05&#34;,&#34;2020-01-31&#34;,&#34;2020-02-29&#34;,&#34;2020-03-31&#34;,&#34;2020-04-30&#34;,&#34;2020-01-04&#34;,&#34;2020-01-11&#34;,&#34;2020-01-18&#34;,&#34;2020-01-25&#34;,&#34;2020-02-01&#34;,&#34;2020-02-08&#34;,&#34;2020-02-15&#34;,&#34;2020-02-22&#34;,&#34;2020-02-29&#34;,&#34;2020-03-07&#34;,&#34;2020-03-14&#34;,&#34;2020-03-21&#34;,&#34;2020-03-28&#34;,&#34;2020-04-04&#34;,&#34;2020-04-11&#34;,&#34;2020-04-18&#34;,&#34;2020-04-25&#34;,&#34;2020-01-07&#34;,&#34;2020-01-14&#34;,&#34;2020-01-21&#34;,&#34;2020-01-28&#34;,&#34;2020-02-04&#34;,&#34;2020-02-11&#34;,&#34;2020-02-18&#34;,&#34;2020-02-25&#34;,&#34;2020-03-03&#34;,&#34;2020-03-10&#34;,&#34;2020-03-17&#34;,&#34;2020-03-24&#34;,&#34;2020-03-31&#34;,&#34;2020-04-07&#34;,&#34;2020-04-14&#34;,&#34;2020-04-21&#34;,&#34;2020-04-28&#34;,&#34;2020-05-05&#34;,&#34;2020-05-12&#34;],&#34;covid_deaths&#34;:[0,0,0,0,0,0,0,0,0,5,114,610,3812,6899,9509,9024,6684,4429,0,0,0,0,0,0,0,0,0,35,461,2211,5026,5486,4372,3691,2540,1797,0,0,0,0,0,0,0,0,0,0,8,73,251,532,668,629,550,0,0,0,0,0,0,0,0,3,17,159,592,995,971,947,791,581,384,0,0,0,0,0,0,0,10,69,552,1857,4238,5462,0,0,0,0,0,0,1,0,3,29,142,925,2423,6805,5401,5067,2864,0,0,0,18,180,745,1550,2125,1717,0,0,0,0,0,0,1,15,70,118,0,0,84,297,0,0,0,0,0,0,0,0,0,0,4,176,1198,3754,5218,4125,2720,0,0,0,0,0,0,0,0,0,0,0,22,85,255.5,339,428,366.5,264,187],&#34;excess_deaths&#34;:[84,-325.6,-1090,-794.6,-942.200000000001,-923,-717.4,-345.799999999999,-724,-187.799999999999,-207,1112.8,7122.2,8979.2,12731.4,12358.2,8457.6,3840.6,-621.25,-41,177.5,282.25,286,-560.5,-728.5,-704,-601.5,-408.5,675,4198.75,8323.25,7937.5,5389,2947.75,1134,546,-109.6,-76,-165.2,-119.6,-114,-128.8,-106,-239,-212.8,-95.5999999999999,-102.4,79.8,258.2,615.6,819.6,675.6,484.2,9,-167.6,-247.8,-163.8,-117.4,-114.6,-385.4,-232.2,-236.4,-108,459.6,1380.4,2107.8,2047.6,1409,1085,612.4,294,-1525.8,-1509,-1294.6,-716.799999999999,-1119,-837,-758.799999999999,-499.4,-224.4,1738.8,5271,8758.8,8487,-563,-623,-766,-787.200000000001,-699,-1008.8,-961.4,-1343.6,-792.4,-308.200000000001,954.200000000001,2401.4,5644.2,7266.2,5523.2,3247.4,1061.8,-108,-122,-81,267,934,1789,2065,1489,853,132,-138,-48,-61,-34,0,8,252,123,207,585.5,-28.5,1375.5,1409.5,-182.2,-84,-22.2,-11,14.4000000000001,-40.2,-7.20000000000005,-49,-1,5,32,339.2,1694.6,4998,6573.6,4550.8,2572,-67.6666666666667,-23.6666666666667,16.3333333333333,26.3333333333333,-20.6666666666667,8.33333333333326,15.3333333333333,-84.3333333333333,-55.3333333333333,-57.3333333333333,88,283,444.333333333333,818.333333333333,782,629.333333333333,481.333333333333,374,287.333333333333],&#34;csum&#34;:[0,0,0,0,0,0,0,0,0,5,119,729,4541,11440,20949,29973,36657,41086,0,0,0,0,0,0,0,0,0,35,496,2707,7733,13219,17591,21282,23822,25619,0,0,0,0,0,0,0,0,0,0,8,81,332,864,1532,2161,2711,0,0,0,0,0,0,0,0,3,20,179,771,1766,2737,3684,4475,5056,5440,0,0,0,0,0,0,0,10,79,631,2488,6726,12188,0,0,0,0,0,0,1,1,4,33,175,1100,3523,10328,15729,20796,23660,0,0,0,18,198,943,2493,4618,6335,0,0,0,0,0,0,1,16,86,204,0,0,84,381,0,0,0,0,0,0,0,0,0,0,4,180,1378,5132,10350,14475,17195,0,0,0,0,0,0,0,0,0,0,0,22,107,362.5,701.5,1129.5,1496,1760,1947]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;country&#34;,&#34;type&#34;:&#34;character&#34;},{&#34;accessor&#34;:&#34;start_date&#34;,&#34;name&#34;:&#34;start_date&#34;,&#34;type&#34;:&#34;Date&#34;},{&#34;accessor&#34;:&#34;end_date&#34;,&#34;name&#34;:&#34;end_date&#34;,&#34;type&#34;:&#34;Date&#34;},{&#34;accessor&#34;:&#34;covid_deaths&#34;,&#34;name&#34;:&#34;covid_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;},{&#34;accessor&#34;:&#34;excess_deaths&#34;,&#34;name&#34;:&#34;excess_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;},{&#34;accessor&#34;:&#34;csum&#34;,&#34;name&#34;:&#34;csum&#34;,&#34;type&#34;:&#34;numeric&#34;}],&#34;defaultPageSize&#34;:10,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;dataKey&#34;:&#34;5845fe168655e5f6a72e9b9f636d6082&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;p&gt;We need to group each country according to its total deaths related to COVID-19, and excess deaths. Then, using those two numbers, we calculate the percentage of excess deaths attributable to COVID-19. This can be used as a metric for underreporting of COVID-19 cases in a country.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_for_table &amp;lt;- data_filtered %&amp;gt;%
+  filter(excess_deaths &amp;gt; 0) %&amp;gt;%
+  group_by(country) %&amp;gt;%
+  summarise(
+    excess_deaths = round(sum(excess_deaths)),
+    covid_deaths = round(sum(covid_deaths)),
+    perc = covid_deaths / excess_deaths
+  ) %&amp;gt;%
+  select(country, covid_deaths, excess_deaths, perc)
+
+reactable(data_for_table, pagination = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;htmlwidget-2&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-2&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Austria&#34;,&#34;Belgium&#34;,&#34;Britain&#34;,&#34;France&#34;,&#34;Istanbul&#34;,&#34;Italy&#34;,&#34;Jakarta&#34;,&#34;Netherlands&#34;,&#34;New York City&#34;,&#34;Spain&#34;,&#34;Sweden&#34;],&#34;covid_deaths&#34;:[204,6335,40967,23627,1947,12109,381,5420,17195,25584,2703],&#34;excess_deaths&#34;:[722,7397,54686,26098,4254,24256,3370,9405,20780,31897,2933],&#34;perc&#34;:[0.282548476454294,0.856428281735839,0.749131404747102,0.90531841520423,0.457686882933709,0.499216688654354,0.113056379821958,0.576289207868155,0.827478344562079,0.802081700473399,0.921581997954313]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;country&#34;,&#34;type&#34;:&#34;character&#34;},{&#34;accessor&#34;:&#34;covid_deaths&#34;,&#34;name&#34;:&#34;covid_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;},{&#34;accessor&#34;:&#34;excess_deaths&#34;,&#34;name&#34;:&#34;excess_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;},{&#34;accessor&#34;:&#34;perc&#34;,&#34;name&#34;:&#34;perc&#34;,&#34;type&#34;:&#34;numeric&#34;}],&#34;defaultPageSize&#34;:11,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;dataKey&#34;:&#34;249cb3ef37824d809949c55e67461087&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;p&gt;The only thing missing at this point is the date range. In order to find and display the dates, we need to find the &lt;em&gt;first date after a given country/region hit 50 COVID-19 cases&lt;/em&gt; and the &lt;em&gt;last date in the data&lt;/em&gt; for that country/region.&lt;/p&gt;
+&lt;p&gt;How do we do this? First, we’ll create a &lt;a href=&#34;https://stackoverflow.com/questions/40039903/r-add-th-rd-and-nd-to-dates&#34;&gt;function&lt;/a&gt; called &lt;code&gt;append_date_suffix&lt;/code&gt; which, according to a given day, appends the appropriate suffix.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;append_date_suffix &amp;lt;- function(dates) {
+  suff &amp;lt;- case_when(
+    dates %in% c(11, 12, 13) ~ &amp;quot;th&amp;quot;,
+    dates %% 10 == 1 ~ &amp;#39;st&amp;#39;,
+    dates %% 10 == 2 ~ &amp;#39;nd&amp;#39;,
+    dates %% 10 == 3 ~ &amp;#39;rd&amp;#39;,
+    TRUE ~ &amp;quot;th&amp;quot;
+  )
+  paste0(dates, suff)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We’ll then group by the &lt;code&gt;country&lt;/code&gt; variable and find the min and max date (with the minimum only appearing after a country has seen 50 COVID deaths). Then, we do a lot of formatting of individual days and months, and append them all together with dashes in &lt;em&gt;The Economist’s&lt;/em&gt; style. Sorry, there’s a lot going on here.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dates_data &amp;lt;-
+  data_filtered %&amp;gt;%
+  # only looking at date ranges starting post-50 deaths
+  filter(csum &amp;gt; 50) %&amp;gt;%
+  group_by(country) %&amp;gt;%
+  summarise(start_date = min(start_date),
+            end_date = max(end_date)) %&amp;gt;%
+  mutate(
+    clean_start_day = format(start_date, &amp;quot;%d&amp;quot;),
+    clean_start_day = append_date_suffix(as.numeric(clean_start_day)),
+    clean_start_month = format(start_date, &amp;quot;%b&amp;quot;),
+    clean_end_day = format(end_date, &amp;quot;%d&amp;quot;),
+    clean_end_day = append_date_suffix(as.numeric(clean_end_day)),
+    clean_end_month = format(end_date, &amp;quot;%b&amp;quot;)
+  ) %&amp;gt;%
+  mutate(
+    clean_range = paste0(
+      clean_start_month,&amp;quot; &amp;quot;, ## Mar
+      clean_start_day, &amp;quot;-&amp;quot;, ## 6-
+      clean_end_month, &amp;quot; &amp;quot;, ## May
+      clean_end_day ## 18
+    )
+  ) %&amp;gt;%
+  select(country, clean_range)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This creates date ranges that look like this:&lt;/p&gt;
+&lt;div id=&#34;htmlwidget-3&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-3&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Austria&#34;,&#34;Belgium&#34;,&#34;Britain&#34;,&#34;France&#34;,&#34;Istanbul&#34;,&#34;Italy&#34;,&#34;Jakarta&#34;,&#34;Netherlands&#34;,&#34;New York City&#34;,&#34;Spain&#34;,&#34;Sweden&#34;],&#34;clean_range&#34;:[&#34;Mar 23rd-Apr 5th&#34;,&#34;Mar 23rd-Apr 26th&#34;,&#34;Mar 14th-May 8th&#34;,&#34;Mar 11th-Apr 28th&#34;,&#34;Mar 25th-May 12th&#34;,&#34;Feb 26th-Mar 31st&#34;,&#34;Mar 1st-Apr 30th&#34;,&#34;Mar 16th-May 10th&#34;,&#34;Mar 15th-Apr 25th&#34;,&#34;Mar 11th-May 5th&#34;,&#34;Mar 18th-Apr 28th&#34;]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;country&#34;,&#34;type&#34;:&#34;character&#34;},{&#34;accessor&#34;:&#34;clean_range&#34;,&#34;name&#34;:&#34;clean_range&#34;,&#34;type&#34;:&#34;character&#34;}],&#34;defaultPageSize&#34;:11,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;dataKey&#34;:&#34;944cb010b09fbd5dbf1363c55bf203a7&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;p&gt;Join these dates with our existing data…&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_for_table &amp;lt;- data_filtered %&amp;gt;%
+  filter(excess_deaths &amp;gt; 0) %&amp;gt;%
+  group_by(country) %&amp;gt;%
+  summarise(
+    excess_deaths = round(sum(excess_deaths)),
+    covid_deaths = round(sum(covid_deaths)),
+    perc = covid_deaths / excess_deaths
+  ) %&amp;gt;%
+  left_join(dates_data, by = &amp;#39;country&amp;#39;) %&amp;gt;%
+  select(country, clean_range, covid_deaths, excess_deaths, perc)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and we get our finalized dataset:&lt;/p&gt;
+&lt;div id=&#34;htmlwidget-4&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-4&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Austria&#34;,&#34;Belgium&#34;,&#34;Britain&#34;,&#34;France&#34;,&#34;Istanbul&#34;,&#34;Italy&#34;,&#34;Jakarta&#34;,&#34;Netherlands&#34;,&#34;New York City&#34;,&#34;Spain&#34;,&#34;Sweden&#34;],&#34;clean_range&#34;:[&#34;Mar 23rd-Apr 5th&#34;,&#34;Mar 23rd-Apr 26th&#34;,&#34;Mar 14th-May 8th&#34;,&#34;Mar 11th-Apr 28th&#34;,&#34;Mar 25th-May 12th&#34;,&#34;Feb 26th-Mar 31st&#34;,&#34;Mar 1st-Apr 30th&#34;,&#34;Mar 16th-May 10th&#34;,&#34;Mar 15th-Apr 25th&#34;,&#34;Mar 11th-May 5th&#34;,&#34;Mar 18th-Apr 28th&#34;],&#34;covid_deaths&#34;:[204,6335,40967,23627,1947,12109,381,5420,17195,25584,2703],&#34;excess_deaths&#34;:[722,7397,54686,26098,4254,24256,3370,9405,20780,31897,2933],&#34;perc&#34;:[0.282548476454294,0.856428281735839,0.749131404747102,0.90531841520423,0.457686882933709,0.499216688654354,0.113056379821958,0.576289207868155,0.827478344562079,0.802081700473399,0.921581997954313]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;country&#34;,&#34;type&#34;:&#34;character&#34;},{&#34;accessor&#34;:&#34;clean_range&#34;,&#34;name&#34;:&#34;clean_range&#34;,&#34;type&#34;:&#34;character&#34;},{&#34;accessor&#34;:&#34;covid_deaths&#34;,&#34;name&#34;:&#34;covid_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;},{&#34;accessor&#34;:&#34;excess_deaths&#34;,&#34;name&#34;:&#34;excess_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;},{&#34;accessor&#34;:&#34;perc&#34;,&#34;name&#34;:&#34;perc&#34;,&#34;type&#34;:&#34;numeric&#34;}],&#34;defaultPageSize&#34;:11,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;dataKey&#34;:&#34;87a9a93568ca457a61d4bc6661464513&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;/div&gt;
+&lt;div id=&#34;creating-the-table&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Creating the table&lt;/h2&gt;
+&lt;p&gt;Finally, we’re ready to take that dataset and create our table. We can begin by defining some parameters that make the table easier to use and more aesthetically pleasing. Here, we sort according to excess deaths (but don’t include an arrow), make it compact, and show all results on one page.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;reactable(
+  data_for_table,
+  defaultSortOrder = &amp;#39;desc&amp;#39;,
+  defaultSorted = &amp;#39;excess_deaths&amp;#39;,
+  showSortIcon = FALSE,
+  compact = TRUE,
+  pagination = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;htmlwidget-5&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-5&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Austria&#34;,&#34;Belgium&#34;,&#34;Britain&#34;,&#34;France&#34;,&#34;Istanbul&#34;,&#34;Italy&#34;,&#34;Jakarta&#34;,&#34;Netherlands&#34;,&#34;New York City&#34;,&#34;Spain&#34;,&#34;Sweden&#34;],&#34;clean_range&#34;:[&#34;Mar 23rd-Apr 5th&#34;,&#34;Mar 23rd-Apr 26th&#34;,&#34;Mar 14th-May 8th&#34;,&#34;Mar 11th-Apr 28th&#34;,&#34;Mar 25th-May 12th&#34;,&#34;Feb 26th-Mar 31st&#34;,&#34;Mar 1st-Apr 30th&#34;,&#34;Mar 16th-May 10th&#34;,&#34;Mar 15th-Apr 25th&#34;,&#34;Mar 11th-May 5th&#34;,&#34;Mar 18th-Apr 28th&#34;],&#34;covid_deaths&#34;:[204,6335,40967,23627,1947,12109,381,5420,17195,25584,2703],&#34;excess_deaths&#34;:[722,7397,54686,26098,4254,24256,3370,9405,20780,31897,2933],&#34;perc&#34;:[0.282548476454294,0.856428281735839,0.749131404747102,0.90531841520423,0.457686882933709,0.499216688654354,0.113056379821958,0.576289207868155,0.827478344562079,0.802081700473399,0.921581997954313]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;country&#34;,&#34;type&#34;:&#34;character&#34;},{&#34;accessor&#34;:&#34;clean_range&#34;,&#34;name&#34;:&#34;clean_range&#34;,&#34;type&#34;:&#34;character&#34;},{&#34;accessor&#34;:&#34;covid_deaths&#34;,&#34;name&#34;:&#34;covid_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;},{&#34;accessor&#34;:&#34;excess_deaths&#34;,&#34;name&#34;:&#34;excess_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;},{&#34;accessor&#34;:&#34;perc&#34;,&#34;name&#34;:&#34;perc&#34;,&#34;type&#34;:&#34;numeric&#34;}],&#34;defaultSortDesc&#34;:true,&#34;defaultSorted&#34;:[{&#34;id&#34;:&#34;excess_deaths&#34;,&#34;desc&#34;:true}],&#34;defaultPageSize&#34;:11,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;compact&#34;:true,&#34;showSortIcon&#34;:false,&#34;dataKey&#34;:&#34;87a9a93568ca457a61d4bc6661464513&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;div id=&#34;style-headers&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Style headers&lt;/h3&gt;
+&lt;p&gt;Next, let’s make the column headers stylistically similar to &lt;em&gt;The Economist&lt;/em&gt;. We do so with reactable’s &lt;code&gt;defaultColDef&lt;/code&gt;, where we define a &lt;code&gt;colDef&lt;/code&gt; with styles for the header and regular cells. Here, we can include CSS (which you can find by inspecting the table at hand). Throughout this post, you’ll notice my constant references to &lt;code&gt;font_es&lt;/code&gt;. This is from &lt;a href=&#34;https://github.com/hrbrmstr/hrbrthemes&#34;&gt;Bob Rudis’s &lt;code&gt;hrbrthemes&lt;/code&gt;&lt;/a&gt;. It contains the font name for Economist Sans Condensed, which is the font that &lt;em&gt;The Economist&lt;/em&gt; uses!&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;reactable(
+  data_for_table,
+  defaultSortOrder = &amp;#39;desc&amp;#39;,
+  defaultSorted = &amp;#39;excess_deaths&amp;#39;,
+  showSortIcon = FALSE,
+  compact = TRUE,
+  pagination = FALSE,
+  ######## NEW ########
+  defaultColDef = colDef(
+    ### define header styling
+    headerStyle = list(
+      textAlign = &amp;quot;left&amp;quot;,
+      fontSize = &amp;quot;11px&amp;quot;,
+      lineHeight = &amp;quot;14px&amp;quot;,
+      textTransform = &amp;quot;uppercase&amp;quot;,
+      color = &amp;quot;#0c0c0c&amp;quot;,
+      fontWeight = &amp;quot;500&amp;quot;,
+      borderBottom = &amp;quot;2px solid #e9edf0&amp;quot;,
+      paddingBottom = &amp;quot;3px&amp;quot;,
+      verticalAlign = &amp;quot;bottom&amp;quot;,
+      fontFamily = font_es
+    ),
+    ### define default column styling
+    style = list(
+      fontFamily = font_es,
+      fontSize = &amp;quot;14px&amp;quot;,
+      verticalAlign = &amp;quot;center&amp;quot;,
+      align = &amp;quot;left&amp;quot;
+    )
+  )
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;htmlwidget-6&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-6&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Austria&#34;,&#34;Belgium&#34;,&#34;Britain&#34;,&#34;France&#34;,&#34;Istanbul&#34;,&#34;Italy&#34;,&#34;Jakarta&#34;,&#34;Netherlands&#34;,&#34;New York City&#34;,&#34;Spain&#34;,&#34;Sweden&#34;],&#34;clean_range&#34;:[&#34;Mar 23rd-Apr 5th&#34;,&#34;Mar 23rd-Apr 26th&#34;,&#34;Mar 14th-May 8th&#34;,&#34;Mar 11th-Apr 28th&#34;,&#34;Mar 25th-May 12th&#34;,&#34;Feb 26th-Mar 31st&#34;,&#34;Mar 1st-Apr 30th&#34;,&#34;Mar 16th-May 10th&#34;,&#34;Mar 15th-Apr 25th&#34;,&#34;Mar 11th-May 5th&#34;,&#34;Mar 18th-Apr 28th&#34;],&#34;covid_deaths&#34;:[204,6335,40967,23627,1947,12109,381,5420,17195,25584,2703],&#34;excess_deaths&#34;:[722,7397,54686,26098,4254,24256,3370,9405,20780,31897,2933],&#34;perc&#34;:[0.282548476454294,0.856428281735839,0.749131404747102,0.90531841520423,0.457686882933709,0.499216688654354,0.113056379821958,0.576289207868155,0.827478344562079,0.802081700473399,0.921581997954313]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;country&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;clean_range&#34;,&#34;name&#34;:&#34;clean_range&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;covid_deaths&#34;,&#34;name&#34;:&#34;covid_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;excess_deaths&#34;,&#34;name&#34;:&#34;excess_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;perc&#34;,&#34;name&#34;:&#34;perc&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}}],&#34;defaultSortDesc&#34;:true,&#34;defaultSorted&#34;:[{&#34;id&#34;:&#34;excess_deaths&#34;,&#34;desc&#34;:true}],&#34;defaultPageSize&#34;:11,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;compact&#34;:true,&#34;showSortIcon&#34;:false,&#34;dataKey&#34;:&#34;8ad8706dfbeacfc7871563a2bd901bf3&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;/div&gt;
+&lt;div id=&#34;format-columns&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Format columns&lt;/h3&gt;
+&lt;p&gt;Now, we can start to format the specific columns appropriately. The three easiest columns are &lt;strong&gt;Region/Country&lt;/strong&gt;, &lt;strong&gt;Time Period&lt;/strong&gt;, &lt;strong&gt;COVID-19 as % of Total&lt;/strong&gt;. In each of these columns, we create a &lt;code&gt;colDef&lt;/code&gt; which defines the column name, as well as some styling.&lt;/p&gt;
+&lt;p&gt;You’ll notice the addition of &lt;code&gt;JS&lt;/code&gt; in our percent column. This allows us to include JavaScript in our columns and column headers. I use it to do something simple, like a line break. You can use JS for plenty of more complex purposes, &lt;a href=&#34;https://glin.github.io/reactable/articles/examples.html&#34;&gt;some of which are documented here&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;reactable(
+  data_for_table,
+  defaultSortOrder = &amp;#39;desc&amp;#39;,
+  defaultSorted = &amp;#39;excess_deaths&amp;#39;,
+  showSortIcon = FALSE,
+  compact = TRUE,
+  pagination = FALSE,
+  defaultColDef = colDef(
+    headerStyle = list(
+      textAlign = &amp;quot;left&amp;quot;,
+      fontSize = &amp;quot;11px&amp;quot;,
+      lineHeight = &amp;quot;14px&amp;quot;,
+      textTransform = &amp;quot;uppercase&amp;quot;,
+      color = &amp;quot;#0c0c0c&amp;quot;,
+      fontWeight = &amp;quot;500&amp;quot;,
+      borderBottom = &amp;quot;2px solid #e9edf0&amp;quot;,
+      paddingBottom = &amp;quot;3px&amp;quot;,
+      verticalAlign = &amp;quot;bottom&amp;quot;,
+      fontFamily = font_es
+    ),
+    style = list(
+      fontFamily = font_es,
+      fontSize = &amp;quot;14px&amp;quot;,
+      verticalAlign = &amp;quot;center&amp;quot;,
+      align = &amp;quot;left&amp;quot;
+    )
+  ),
+  ####### NEW #######
+  columns = list(
+    country = colDef(
+      name = &amp;quot;Region / Country&amp;quot;,
+      style = list(fontFamily = font_es,
+                   fontWeight = &amp;quot;400&amp;quot;)
+    ),
+    perc = colDef(
+      html = TRUE,
+      header = JS(&amp;quot;
+      function(colInfo) {
+        return &amp;#39;COVID-19 as&amp;lt;br&amp;gt;% of total&amp;#39;
+      }&amp;quot;),
+      name = &amp;quot;COVID-19 as % of Total&amp;quot;,
+      align = &amp;quot;right&amp;quot;,
+      maxWidth = 100,
+      format = colFormat(percent = TRUE, digits = 0),
+      style = list(fontFamily =  font_es_bold),
+      headerStyle = list(
+        fontSize = &amp;quot;11px&amp;quot;,
+        lineHeight = &amp;quot;14px&amp;quot;,
+        textTransform = &amp;quot;uppercase&amp;quot;,
+        color = &amp;quot;#0c0c0c&amp;quot;,
+        fontWeight = &amp;quot;500&amp;quot;,
+        borderBottom = &amp;quot;2px solid #e9edf0&amp;quot;,
+        paddingBottom = &amp;quot;3px&amp;quot;,
+        verticalAlign = &amp;quot;bottom&amp;quot;,
+        fontFamily = font_es,
+        textAlign = &amp;quot;right&amp;quot;
+      )
+    ),
+    clean_range = colDef(
+      name = &amp;quot;Time Period&amp;quot;,
+      style = list(
+        color = &amp;#39;#3f5661&amp;#39;,
+        fontSize = &amp;#39;12px&amp;#39;,
+        fontFamily = font_es
+      )
+    )
+  )
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;htmlwidget-7&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-7&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Austria&#34;,&#34;Belgium&#34;,&#34;Britain&#34;,&#34;France&#34;,&#34;Istanbul&#34;,&#34;Italy&#34;,&#34;Jakarta&#34;,&#34;Netherlands&#34;,&#34;New York City&#34;,&#34;Spain&#34;,&#34;Sweden&#34;],&#34;clean_range&#34;:[&#34;Mar 23rd-Apr 5th&#34;,&#34;Mar 23rd-Apr 26th&#34;,&#34;Mar 14th-May 8th&#34;,&#34;Mar 11th-Apr 28th&#34;,&#34;Mar 25th-May 12th&#34;,&#34;Feb 26th-Mar 31st&#34;,&#34;Mar 1st-Apr 30th&#34;,&#34;Mar 16th-May 10th&#34;,&#34;Mar 15th-Apr 25th&#34;,&#34;Mar 11th-May 5th&#34;,&#34;Mar 18th-Apr 28th&#34;],&#34;covid_deaths&#34;:[204,6335,40967,23627,1947,12109,381,5420,17195,25584,2703],&#34;excess_deaths&#34;:[722,7397,54686,26098,4254,24256,3370,9405,20780,31897,2933],&#34;perc&#34;:[0.282548476454294,0.856428281735839,0.749131404747102,0.90531841520423,0.457686882933709,0.499216688654354,0.113056379821958,0.576289207868155,0.827478344562079,0.802081700473399,0.921581997954313]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;Region / Country&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontWeight&#34;:&#34;400&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;clean_range&#34;,&#34;name&#34;:&#34;Time Period&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;color&#34;:&#34;#3f5661&#34;,&#34;fontSize&#34;:&#34;12px&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;covid_deaths&#34;,&#34;name&#34;:&#34;covid_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;excess_deaths&#34;,&#34;name&#34;:&#34;excess_deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;perc&#34;,&#34;name&#34;:&#34;COVID-19 as % of Total&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndBol&#34;},&#34;headerStyle&#34;:{&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;textAlign&#34;:&#34;right&#34;},&#34;format&#34;:{&#34;cell&#34;:{&#34;digits&#34;:0,&#34;percent&#34;:true},&#34;aggregated&#34;:{&#34;digits&#34;:0,&#34;percent&#34;:true}},&#34;header&#34;:&#34;\n      function(colInfo) {\n        return &#39;COVID-19 as&lt;br&gt;% of total&#39;\n      }&#34;,&#34;html&#34;:true,&#34;maxWidth&#34;:100,&#34;align&#34;:&#34;right&#34;}],&#34;defaultSortDesc&#34;:true,&#34;defaultSorted&#34;:[{&#34;id&#34;:&#34;excess_deaths&#34;,&#34;desc&#34;:true}],&#34;defaultPageSize&#34;:11,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;compact&#34;:true,&#34;showSortIcon&#34;:false,&#34;dataKey&#34;:&#34;a9245ac4442c2fd989f596473fa410d5&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[&#34;tag.attribs.columns.4.header&#34;],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;/div&gt;
+&lt;div id=&#34;add-the-barcharts&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Add the barcharts&lt;/h3&gt;
+&lt;p&gt;We can now create the ‘deaths’ columns, which include barcharts.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;reactable&lt;/code&gt; makes the addition of barcharts to tables quite easy, thanks to its integration of JavaScript. Here, I pull from one &lt;a href=&#34;https://glin.github.io/reactable/articles/twitter-followers/twitter-followers.html&#34;&gt;example&lt;/a&gt; on &lt;code&gt;reactable&lt;/code&gt;’s website, and use the following code:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;reactable(
+  data_for_table,
+  defaultSortOrder = &amp;#39;desc&amp;#39;,
+  defaultSorted = &amp;#39;excess_deaths&amp;#39;,
+  showSortIcon = FALSE,
+  compact = TRUE,
+  pagination = FALSE,
+  defaultColDef = colDef(
+    headerStyle = list(
+      textAlign = &amp;quot;left&amp;quot;,
+      fontSize = &amp;quot;11px&amp;quot;,
+      lineHeight = &amp;quot;14px&amp;quot;,
+      textTransform = &amp;quot;uppercase&amp;quot;,
+      color = &amp;quot;#0c0c0c&amp;quot;,
+      fontWeight = &amp;quot;500&amp;quot;,
+      borderBottom = &amp;quot;2px solid #e9edf0&amp;quot;,
+      paddingBottom = &amp;quot;3px&amp;quot;,
+      verticalAlign = &amp;quot;bottom&amp;quot;,
+      fontFamily = font_es
+    ),
+    style = list(
+      fontFamily = font_es,
+      fontSize = &amp;quot;14px&amp;quot;,
+      verticalAlign = &amp;quot;center&amp;quot;,
+      align = &amp;quot;left&amp;quot;
+    )
+  ),
+  columns = list(
+    country = colDef(
+      name = &amp;quot;Region / Country&amp;quot;,
+      style = list(fontFamily = font_es,
+                   fontWeight = &amp;quot;400&amp;quot;)
+    ),
+    perc = colDef(
+      html = TRUE,
+      header = JS(&amp;quot;
+      function(colInfo) {
+        return &amp;#39;COVID-19 as&amp;lt;br&amp;gt;% of total&amp;#39;
+      }&amp;quot;),
+      name = &amp;quot;COVID-19 as % of Total&amp;quot;,
+      align = &amp;quot;right&amp;quot;,
+      maxWidth = 100,
+      format = colFormat(percent = TRUE, digits = 0),
+      style = list(fontFamily =  font_es_bold),
+      headerStyle = list(
+        fontSize = &amp;quot;11px&amp;quot;,
+        lineHeight = &amp;quot;14px&amp;quot;,
+        textTransform = &amp;quot;uppercase&amp;quot;,
+        color = &amp;quot;#0c0c0c&amp;quot;,
+        fontWeight = &amp;quot;500&amp;quot;,
+        borderBottom = &amp;quot;2px solid #e9edf0&amp;quot;,
+        paddingBottom = &amp;quot;3px&amp;quot;,
+        verticalAlign = &amp;quot;bottom&amp;quot;,
+        fontFamily = font_es,
+        textAlign = &amp;quot;right&amp;quot;
+      )
+    ),
+    clean_range = colDef(
+      name = &amp;quot;Time Period&amp;quot;,
+      style = list(
+        color = &amp;#39;#3f5661&amp;#39;,
+        fontSize = &amp;#39;12px&amp;#39;,
+        fontFamily = font_es
+      )
+    ),
+    ###### NEW ######
+    covid_deaths = colDef(
+      name = &amp;quot;COVID-19 Deaths&amp;quot;,
+      cell = function(value) {
+        width &amp;lt;- paste0(value * 100 / max(data_for_table$covid_deaths), &amp;quot;%&amp;quot;)
+        value &amp;lt;- format(value, big.mark = &amp;quot;,&amp;quot;)
+        value &amp;lt;- format(value, width = 10, justify = &amp;quot;right&amp;quot;)
+        bar &amp;lt;- div(
+          class = &amp;quot;bar-chart&amp;quot;,
+          style = list(marginRight = &amp;quot;6px&amp;quot;),
+          div(
+            class = &amp;quot;bar&amp;quot;,
+            style = list(width = width, backgroundColor = &amp;quot;#F15A3F&amp;quot;)
+          )
+        )
+        div(class = &amp;quot;bar-cell&amp;quot;, span(class = &amp;quot;number&amp;quot;, value), bar)
+      }
+    ),
+    excess_deaths = colDef(
+      name = &amp;quot;Total Excess Deaths&amp;quot;,
+      cell = function(value) {
+        width &amp;lt;-
+          paste0(value * 100 / max(data_for_table$excess_deaths), &amp;quot;%&amp;quot;)
+        value &amp;lt;- format(value, big.mark = &amp;quot;,&amp;quot;)
+        value &amp;lt;- format(value, width = 10, justify = &amp;quot;right&amp;quot;)
+        bar &amp;lt;- div(
+          class = &amp;quot;bar-chart&amp;quot;,
+          style = list(marginRight = &amp;quot;6px&amp;quot;),
+          div(
+            class = &amp;quot;bar&amp;quot;,
+            style = list(width = width, backgroundColor = &amp;quot;#3F5661&amp;quot;)
+          )
+        )
+        div(class = &amp;quot;bar-cell&amp;quot;, span(class = &amp;quot;number&amp;quot;, value), bar)
+      }
+    )
+  )
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s break that down step-by-step, with a focus on &lt;code&gt;covid_deaths&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;First, we need to define some CSS. &lt;code&gt;reactable&lt;/code&gt; allows you to easily include CSS is RMarkdown documents, in chunks defined as &lt;code&gt;css&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;css&#34;&gt;&lt;code&gt;.bar-cell {
+  display: flex;
+  align-items: center;
+}
+
+.number {
+  font-size: 13.5px;
+  white-space: pre;
+}
+
+.bar-chart {
+  flex-grow: 1;
+  margin-left: 6px;
+  height: 22px;
+}
+
+.bar {
+  height: 100%;
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;style type=&#34;text/css&#34;&gt;
+.bar-cell {
+  display: flex;
+  align-items: center;
+}
+
+.number {
+  font-size: 13.5px;
+  white-space: pre;
+}
+
+.bar-chart {
+  flex-grow: 1;
+  margin-left: 6px;
+  height: 22px;
+}
+
+.bar {
+  height: 100%;
+}
+&lt;/style&gt;
+&lt;p&gt;Now, let’s look at how we define &lt;code&gt;covid_deaths&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;  covid_deaths = colDef(
+    ### define the name
+    name = &amp;quot;COVID-19 Deaths&amp;quot;,
+    ### create a &amp;#39;cell&amp;#39; function
+    cell = function(value) {
+      ### define the bar width according to the specified value
+      width &amp;lt;- paste0(value * 100 / max(data_for_table$covid_deaths), &amp;quot;%&amp;quot;)
+      ### add a comma to the label
+      value &amp;lt;- format(value, big.mark = &amp;quot;,&amp;quot;)
+      ### justify and provide padding with width
+      value &amp;lt;- format(value, width = 10, justify = &amp;quot;right&amp;quot;)
+      ### create the barchart div
+      bar &amp;lt;- div(
+        ### with a class of &amp;#39;bar-chart&amp;#39;
+        class = &amp;quot;bar-chart&amp;quot;,
+        ### give the bar a margin
+        style = list(marginRight = &amp;quot;6px&amp;quot;),
+        ### create the *actual* bar, with the red economist color
+        div(
+          class = &amp;quot;bar&amp;quot;,
+          style = list(width = width, backgroundColor = &amp;quot;#F15A3F&amp;quot;)
+        )
+      )
+      ### bring it all together, with the &amp;#39;value&amp;#39; (number) preceding the bar itself
+      div(class = &amp;quot;bar-cell&amp;quot;, span(class = &amp;quot;number&amp;quot;, value), bar)
+    }
+  )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This creates a table that looks like this:&lt;/p&gt;
+&lt;div id=&#34;htmlwidget-8&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-8&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Austria&#34;,&#34;Belgium&#34;,&#34;Britain&#34;,&#34;France&#34;,&#34;Istanbul&#34;,&#34;Italy&#34;,&#34;Jakarta&#34;,&#34;Netherlands&#34;,&#34;New York City&#34;,&#34;Spain&#34;,&#34;Sweden&#34;],&#34;clean_range&#34;:[&#34;Mar 23rd-Apr 5th&#34;,&#34;Mar 23rd-Apr 26th&#34;,&#34;Mar 14th-May 8th&#34;,&#34;Mar 11th-Apr 28th&#34;,&#34;Mar 25th-May 12th&#34;,&#34;Feb 26th-Mar 31st&#34;,&#34;Mar 1st-Apr 30th&#34;,&#34;Mar 16th-May 10th&#34;,&#34;Mar 15th-Apr 25th&#34;,&#34;Mar 11th-May 5th&#34;,&#34;Mar 18th-Apr 28th&#34;],&#34;covid_deaths&#34;:[204,6335,40967,23627,1947,12109,381,5420,17195,25584,2703],&#34;excess_deaths&#34;:[722,7397,54686,26098,4254,24256,3370,9405,20780,31897,2933],&#34;perc&#34;:[0.282548476454294,0.856428281735839,0.749131404747102,0.90531841520423,0.457686882933709,0.499216688654354,0.113056379821958,0.576289207868155,0.827478344562079,0.802081700473399,0.921581997954313]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;Region / Country&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontWeight&#34;:&#34;400&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;clean_range&#34;,&#34;name&#34;:&#34;Time Period&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;color&#34;:&#34;#3f5661&#34;,&#34;fontSize&#34;:&#34;12px&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;covid_deaths&#34;,&#34;name&#34;:&#34;COVID-19 Deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;cell&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;       204&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;0.49796177411087%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     6,335&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;15.4636658774135%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    40,967&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;100%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    23,627&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;57.6732492005761%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     1,947&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;4.75260575585227%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    12,109&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;29.5579368760222%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;       381&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;0.930016842824713%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     5,420&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;13.230160861181%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    17,195&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;41.972807381551%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    25,584&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;62.4502648473161%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     2,703&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;6.59799350696902%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]}]},{&#34;accessor&#34;:&#34;excess_deaths&#34;,&#34;name&#34;:&#34;Total Excess Deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;cell&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;       722&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;1.32026478440552%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     7,397&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;13.5263138646089%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    54,686&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;100%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    26,098&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;47.7233661266138%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     4,254&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;7.77895622279925%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    24,256&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;44.3550451669532%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     3,370&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;6.16245474161577%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     9,405&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;17.1981860073876%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    20,780&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;37.9987565373222%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    31,897&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;58.327542698314%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     2,933&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;5.36334710894927%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]}]},{&#34;accessor&#34;:&#34;perc&#34;,&#34;name&#34;:&#34;COVID-19 as % of Total&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndBol&#34;},&#34;headerStyle&#34;:{&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;textAlign&#34;:&#34;right&#34;},&#34;format&#34;:{&#34;cell&#34;:{&#34;digits&#34;:0,&#34;percent&#34;:true},&#34;aggregated&#34;:{&#34;digits&#34;:0,&#34;percent&#34;:true}},&#34;header&#34;:&#34;\n      function(colInfo) {\n        return &#39;COVID-19 as&lt;br&gt;% of total&#39;\n      }&#34;,&#34;html&#34;:true,&#34;maxWidth&#34;:100,&#34;align&#34;:&#34;right&#34;}],&#34;defaultSortDesc&#34;:true,&#34;defaultSorted&#34;:[{&#34;id&#34;:&#34;excess_deaths&#34;,&#34;desc&#34;:true}],&#34;defaultPageSize&#34;:11,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;compact&#34;:true,&#34;showSortIcon&#34;:false,&#34;dataKey&#34;:&#34;7fed8502c33f575f68606f21c78d769a&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[&#34;tag.attribs.columns.4.header&#34;],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;/div&gt;
+&lt;div id=&#34;add-a-title&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Add a title&lt;/h3&gt;
+&lt;p&gt;Finally, we can add the table title and subtitle. We do so by storing the above table in our environment. (This is the final table code!)&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;table &amp;lt;- reactable(
+  data_for_table,
+  defaultSortOrder = &amp;#39;desc&amp;#39;,
+  defaultSorted = &amp;#39;excess_deaths&amp;#39;,
+  showSortIcon = FALSE,
+  compact = TRUE,
+  pagination = FALSE,
+  defaultColDef = colDef(
+    headerStyle = list(
+      textAlign = &amp;quot;left&amp;quot;,
+      fontSize = &amp;quot;11px&amp;quot;,
+      lineHeight = &amp;quot;14px&amp;quot;,
+      textTransform = &amp;quot;uppercase&amp;quot;,
+      color = &amp;quot;#0c0c0c&amp;quot;,
+      fontWeight = &amp;quot;500&amp;quot;,
+      borderBottom = &amp;quot;2px solid #e9edf0&amp;quot;,
+      paddingBottom = &amp;quot;3px&amp;quot;,
+      verticalAlign = &amp;quot;bottom&amp;quot;,
+      fontFamily = font_es
+    ),
+    style = list(
+      fontFamily = font_es,
+      fontSize = &amp;quot;14px&amp;quot;,
+      verticalAlign = &amp;quot;center&amp;quot;,
+      align = &amp;quot;left&amp;quot;
+    )
+  ),
+  
+  columns = list(
+    country = colDef(
+      name = &amp;quot;Region / Country&amp;quot;,
+      style = list(fontFamily = font_es,
+                   fontWeight = &amp;quot;400&amp;quot;)
+    ),
+    covid_deaths = colDef(
+      name = &amp;quot;COVID-19 Deaths&amp;quot;,
+      # align = &amp;quot;left&amp;quot;,
+      cell = function(value) {
+        width &amp;lt;- paste0(value * 100 / max(data_for_table$covid_deaths), &amp;quot;%&amp;quot;)
+        value &amp;lt;- format(value, big.mark = &amp;quot;,&amp;quot;)
+        # value &amp;lt;- str_pad(value, 6, pad = &amp;quot;&amp;quot;)
+        value &amp;lt;- format(value, width = 10, justify = &amp;quot;right&amp;quot;)
+        bar &amp;lt;- div(
+          class = &amp;quot;bar-chart&amp;quot;,
+          style = list(marginRight = &amp;quot;6px&amp;quot;),
+          div(
+            class = &amp;quot;bar&amp;quot;,
+            style = list(width = width, backgroundColor = &amp;quot;#F15A3F&amp;quot;)
+          )
+        )
+        div(class = &amp;quot;bar-cell&amp;quot;, span(class = &amp;quot;number&amp;quot;, value), bar)
+      }
+    ),
+    excess_deaths = colDef(
+      name = &amp;quot;Total Excess Deaths&amp;quot;,
+      # align = &amp;quot;left&amp;quot;,
+      cell = function(value) {
+        width &amp;lt;-
+          paste0(value * 100 / max(data_for_table$excess_deaths), &amp;quot;%&amp;quot;)
+        value &amp;lt;- format(value, big.mark = &amp;quot;,&amp;quot;)
+        value &amp;lt;- format(value, width = 10, justify = &amp;quot;right&amp;quot;)
+        bar &amp;lt;- div(
+          class = &amp;quot;bar-chart&amp;quot;,
+          style = list(marginRight = &amp;quot;6px&amp;quot;),
+          div(
+            class = &amp;quot;bar&amp;quot;,
+            style = list(width = width, backgroundColor = &amp;quot;#3F5661&amp;quot;)
+          )
+        )
+        div(class = &amp;quot;bar-cell&amp;quot;, span(class = &amp;quot;number&amp;quot;, value), bar)
+      }
+    ),
+    perc = colDef(
+      html = TRUE,
+      header = JS(&amp;quot;
+      function(colInfo) {
+        return &amp;#39;COVID-19 as&amp;lt;br&amp;gt;% of total&amp;#39;
+      }&amp;quot;),
+      name = &amp;quot;COVID-19 as % of Total&amp;quot;,
+      align = &amp;quot;right&amp;quot;,
+      maxWidth = 100,
+      format = colFormat(percent = TRUE, digits = 0),
+      style = list(fontFamily =  font_es_bold),
+      headerStyle = list(
+        fontSize = &amp;quot;11px&amp;quot;,
+        lineHeight = &amp;quot;14px&amp;quot;,
+        textTransform = &amp;quot;uppercase&amp;quot;,
+        color = &amp;quot;#0c0c0c&amp;quot;,
+        fontWeight = &amp;quot;500&amp;quot;,
+        borderBottom = &amp;quot;2px solid #e9edf0&amp;quot;,
+        paddingBottom = &amp;quot;3px&amp;quot;,
+        verticalAlign = &amp;quot;bottom&amp;quot;,
+        fontFamily = font_es,
+        textAlign = &amp;quot;right&amp;quot;
+      )
+    ),
+    clean_range = colDef(
+      name = &amp;quot;Time Period&amp;quot;,
+      style = list(
+        color = &amp;#39;#3f5661&amp;#39;,
+        fontSize = &amp;#39;12px&amp;#39;,
+        fontFamily = font_es
+      )
+    )
+  ),
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, we can include a title and subtitle above the table. We use some &lt;code&gt;htmltools&lt;/code&gt; functions to create divs, headers, and paragraphs.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;div(
+    div(
+      h2(&amp;quot;Excess mortality since region/country’s first 50 covid deaths&amp;quot;),
+      p(
+        ### create the &amp;#39;Updated on ...&amp;#39; and make it dynamic
+        paste0(
+          &amp;quot;Updated on &amp;quot;, format(Sys.Date(), &amp;quot;%B &amp;quot;),
+          append_date_suffix(as.numeric(format(Sys.Date(), &amp;quot;%d&amp;quot;))), &amp;quot; &amp;quot;,
+          strftime(Sys.time(), format = &amp;quot;%H:%M&amp;quot;), &amp;quot; UCT&amp;quot;
+        )
+      ),
+    ),
+    table)&lt;/code&gt;&lt;/pre&gt;
+&lt;div&gt;
+&lt;div&gt;
+&lt;h2&gt;Excess mortality since region/country’s first 50 covid deaths&lt;/h2&gt;
+&lt;p&gt;Updated on May 24th 12:25 UCT&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;htmlwidget-9&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-9&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Austria&#34;,&#34;Belgium&#34;,&#34;Britain&#34;,&#34;France&#34;,&#34;Istanbul&#34;,&#34;Italy&#34;,&#34;Jakarta&#34;,&#34;Netherlands&#34;,&#34;New York City&#34;,&#34;Spain&#34;,&#34;Sweden&#34;],&#34;clean_range&#34;:[&#34;Mar 23rd-Apr 5th&#34;,&#34;Mar 23rd-Apr 26th&#34;,&#34;Mar 14th-May 8th&#34;,&#34;Mar 11th-Apr 28th&#34;,&#34;Mar 25th-May 12th&#34;,&#34;Feb 26th-Mar 31st&#34;,&#34;Mar 1st-Apr 30th&#34;,&#34;Mar 16th-May 10th&#34;,&#34;Mar 15th-Apr 25th&#34;,&#34;Mar 11th-May 5th&#34;,&#34;Mar 18th-Apr 28th&#34;],&#34;covid_deaths&#34;:[204,6335,40967,23627,1947,12109,381,5420,17195,25584,2703],&#34;excess_deaths&#34;:[722,7397,54686,26098,4254,24256,3370,9405,20780,31897,2933],&#34;perc&#34;:[0.282548476454294,0.856428281735839,0.749131404747102,0.90531841520423,0.457686882933709,0.499216688654354,0.113056379821958,0.576289207868155,0.827478344562079,0.802081700473399,0.921581997954313]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;Region / Country&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontWeight&#34;:&#34;400&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;clean_range&#34;,&#34;name&#34;:&#34;Time Period&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;color&#34;:&#34;#3f5661&#34;,&#34;fontSize&#34;:&#34;12px&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;covid_deaths&#34;,&#34;name&#34;:&#34;COVID-19 Deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;cell&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;       204&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;0.49796177411087%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     6,335&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;15.4636658774135%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    40,967&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;100%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    23,627&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;57.6732492005761%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     1,947&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;4.75260575585227%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    12,109&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;29.5579368760222%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;       381&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;0.930016842824713%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     5,420&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;13.230160861181%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    17,195&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;41.972807381551%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    25,584&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;62.4502648473161%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     2,703&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;6.59799350696902%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]}]},{&#34;accessor&#34;:&#34;excess_deaths&#34;,&#34;name&#34;:&#34;Total Excess Deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;cell&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;       722&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;1.32026478440552%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     7,397&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;13.5263138646089%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    54,686&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;100%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    26,098&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;47.7233661266138%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     4,254&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;7.77895622279925%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    24,256&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;44.3550451669532%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     3,370&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;6.16245474161577%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     9,405&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;17.1981860073876%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    20,780&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;37.9987565373222%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    31,897&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;58.327542698314%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     2,933&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;5.36334710894927%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]}]},{&#34;accessor&#34;:&#34;perc&#34;,&#34;name&#34;:&#34;COVID-19 as % of Total&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndBol&#34;},&#34;headerStyle&#34;:{&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;textAlign&#34;:&#34;right&#34;},&#34;format&#34;:{&#34;cell&#34;:{&#34;digits&#34;:0,&#34;percent&#34;:true},&#34;aggregated&#34;:{&#34;digits&#34;:0,&#34;percent&#34;:true}},&#34;header&#34;:&#34;\n      function(colInfo) {\n        return &#39;COVID-19 as&lt;br&gt;% of total&#39;\n      }&#34;,&#34;html&#34;:true,&#34;maxWidth&#34;:100,&#34;align&#34;:&#34;right&#34;}],&#34;defaultSortDesc&#34;:true,&#34;defaultSorted&#34;:[{&#34;id&#34;:&#34;excess_deaths&#34;,&#34;desc&#34;:true}],&#34;defaultPageSize&#34;:11,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;compact&#34;:true,&#34;showSortIcon&#34;:false,&#34;dataKey&#34;:&#34;7fed8502c33f575f68606f21c78d769a&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[&#34;tag.attribs.columns.4.header&#34;],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;/div&gt;
+&lt;p&gt;Yikes! Those font sizes don’t quite line up with &lt;em&gt;The Economist&lt;/em&gt;’s. Let’s add classes to our divs to match their style.&lt;/p&gt;
+&lt;pre class=&#34;css&#34;&gt;&lt;code&gt;.table {
+  margin: 0 auto;
+  width: 675px;
+}
+
+.tableTitle {
+  margin: 6px 0;
+  font-size: 16px;
+  font-family: &amp;#39;Econ Sans Cnd&amp;#39;
+}
+
+.tableTitle h2 {
+  font-size: 16px;
+  font-weight: bold;
+  font-family: &amp;#39;Econ Sans Cnd&amp;#39;
+}
+
+.tableTitle p {
+  font-size: 14px;
+  font-weight: 500;
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;style type=&#34;text/css&#34;&gt;
+.table {
+  margin: 0 auto;
+  width: 675px;
+}
+
+.tableTitle {
+  margin: 6px 0;
+  font-size: 16px;
+  font-family: &#39;Econ Sans Cnd&#39;
+}
+
+.tableTitle h2 {
+  font-size: 16px;
+  font-weight: bold;
+  font-family: &#39;Econ Sans Cnd&#39;
+}
+
+.tableTitle p {
+  font-size: 14px;
+  font-weight: 500;
+}
+&lt;/style&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;div(class = &amp;quot;tableTitle&amp;quot;,
+    div(
+      class = &amp;quot;title&amp;quot;,
+      h2(&amp;quot;Excess mortality since region/country’s first 50 covid deaths&amp;quot;),
+      p(
+        paste0(&amp;quot;Updated on &amp;quot;, format(Sys.Date(),&amp;quot;%B &amp;quot;),
+          append_date_suffix(as.numeric(format(Sys.Date(), &amp;quot;%d&amp;quot;))), &amp;quot; &amp;quot;,
+          strftime(Sys.time(), format = &amp;quot;%H:%M&amp;quot;), &amp;quot; UCT&amp;quot;
+        )
+      ),
+    ),
+    table)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;tableTitle&#34;&gt;
+&lt;div class=&#34;title&#34;&gt;
+&lt;h2&gt;Excess mortality since region/country’s first 50 covid deaths&lt;/h2&gt;
+&lt;p&gt;Updated on May 24th 12:25 UCT&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;htmlwidget-10&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-10&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;country&#34;:[&#34;Austria&#34;,&#34;Belgium&#34;,&#34;Britain&#34;,&#34;France&#34;,&#34;Istanbul&#34;,&#34;Italy&#34;,&#34;Jakarta&#34;,&#34;Netherlands&#34;,&#34;New York City&#34;,&#34;Spain&#34;,&#34;Sweden&#34;],&#34;clean_range&#34;:[&#34;Mar 23rd-Apr 5th&#34;,&#34;Mar 23rd-Apr 26th&#34;,&#34;Mar 14th-May 8th&#34;,&#34;Mar 11th-Apr 28th&#34;,&#34;Mar 25th-May 12th&#34;,&#34;Feb 26th-Mar 31st&#34;,&#34;Mar 1st-Apr 30th&#34;,&#34;Mar 16th-May 10th&#34;,&#34;Mar 15th-Apr 25th&#34;,&#34;Mar 11th-May 5th&#34;,&#34;Mar 18th-Apr 28th&#34;],&#34;covid_deaths&#34;:[204,6335,40967,23627,1947,12109,381,5420,17195,25584,2703],&#34;excess_deaths&#34;:[722,7397,54686,26098,4254,24256,3370,9405,20780,31897,2933],&#34;perc&#34;:[0.282548476454294,0.856428281735839,0.749131404747102,0.90531841520423,0.457686882933709,0.499216688654354,0.113056379821958,0.576289207868155,0.827478344562079,0.802081700473399,0.921581997954313]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;country&#34;,&#34;name&#34;:&#34;Region / Country&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontWeight&#34;:&#34;400&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;clean_range&#34;,&#34;name&#34;:&#34;Time Period&#34;,&#34;type&#34;:&#34;character&#34;,&#34;style&#34;:{&#34;color&#34;:&#34;#3f5661&#34;,&#34;fontSize&#34;:&#34;12px&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;}},{&#34;accessor&#34;:&#34;covid_deaths&#34;,&#34;name&#34;:&#34;COVID-19 Deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;cell&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;       204&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;0.49796177411087%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     6,335&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;15.4636658774135%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    40,967&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;100%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    23,627&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;57.6732492005761%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     1,947&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;4.75260575585227%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    12,109&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;29.5579368760222%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;       381&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;0.930016842824713%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     5,420&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;13.230160861181%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    17,195&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;41.972807381551%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    25,584&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;62.4502648473161%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     2,703&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;6.59799350696902%&#34;,&#34;backgroundColor&#34;:&#34;#F15A3F&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]}]},{&#34;accessor&#34;:&#34;excess_deaths&#34;,&#34;name&#34;:&#34;Total Excess Deaths&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;fontSize&#34;:&#34;14px&#34;,&#34;verticalAlign&#34;:&#34;center&#34;,&#34;align&#34;:&#34;left&#34;},&#34;headerStyle&#34;:{&#34;textAlign&#34;:&#34;left&#34;,&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;},&#34;cell&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;       722&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;1.32026478440552%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     7,397&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;13.5263138646089%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    54,686&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;100%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    26,098&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;47.7233661266138%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     4,254&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;7.77895622279925%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    24,256&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;44.3550451669532%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     3,370&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;6.16245474161577%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     9,405&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;17.1981860073876%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    20,780&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;37.9987565373222%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;    31,897&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;58.327542698314%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;bar-cell&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;span&#34;,&#34;attribs&#34;:{&#34;className&#34;:&#34;number&#34;},&#34;children&#34;:[&#34;     2,933&#34;]},{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;marginRight&#34;:&#34;6px&#34;},&#34;className&#34;:&#34;bar-chart&#34;},&#34;children&#34;:[{&#34;name&#34;:&#34;div&#34;,&#34;attribs&#34;:{&#34;style&#34;:{&#34;width&#34;:&#34;5.36334710894927%&#34;,&#34;backgroundColor&#34;:&#34;#3F5661&#34;},&#34;className&#34;:&#34;bar&#34;},&#34;children&#34;:[]}]}]}]},{&#34;accessor&#34;:&#34;perc&#34;,&#34;name&#34;:&#34;COVID-19 as % of Total&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;style&#34;:{&#34;fontFamily&#34;:&#34;EconSansCndBol&#34;},&#34;headerStyle&#34;:{&#34;fontSize&#34;:&#34;11px&#34;,&#34;lineHeight&#34;:&#34;14px&#34;,&#34;textTransform&#34;:&#34;uppercase&#34;,&#34;color&#34;:&#34;#0c0c0c&#34;,&#34;fontWeight&#34;:&#34;500&#34;,&#34;borderBottom&#34;:&#34;2px solid #e9edf0&#34;,&#34;paddingBottom&#34;:&#34;3px&#34;,&#34;verticalAlign&#34;:&#34;bottom&#34;,&#34;fontFamily&#34;:&#34;EconSansCndReg&#34;,&#34;textAlign&#34;:&#34;right&#34;},&#34;format&#34;:{&#34;cell&#34;:{&#34;digits&#34;:0,&#34;percent&#34;:true},&#34;aggregated&#34;:{&#34;digits&#34;:0,&#34;percent&#34;:true}},&#34;header&#34;:&#34;\n      function(colInfo) {\n        return &#39;COVID-19 as&lt;br&gt;% of total&#39;\n      }&#34;,&#34;html&#34;:true,&#34;maxWidth&#34;:100,&#34;align&#34;:&#34;right&#34;}],&#34;defaultSortDesc&#34;:true,&#34;defaultSorted&#34;:[{&#34;id&#34;:&#34;excess_deaths&#34;,&#34;desc&#34;:true}],&#34;defaultPageSize&#34;:11,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;compact&#34;:true,&#34;showSortIcon&#34;:false,&#34;dataKey&#34;:&#34;7fed8502c33f575f68606f21c78d769a&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[&#34;tag.attribs.columns.4.header&#34;],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;/div&gt;
+&lt;p&gt;Let’s compare that to the table we’re attempting to replicate. Note that some of the data has changed in the time between &lt;em&gt;The Economist&lt;/em&gt; published their table and I created mine.&lt;/p&gt;
+&lt;div style=&#34;text-align: center&#34;&gt;
+&lt;p&gt;&lt;img width = 100% src = img/econ-table.png&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How (and Why) to Add a Chart to Your D3.js Tooltip</title>
+      <link>/post/adding-a-chart-to-your-d3-tooltip/</link>
+      <pubDate>Sat, 04 Jan 2020 00:00:00 +0000</pubDate>
+      <guid>/post/adding-a-chart-to-your-d3-tooltip/</guid>
+      <description>&lt;p&gt;I think tooltips are one of the most underrated parts of a visualization. When users are initially confused by a visualization, they often hover over a data point of interest to get more information.&lt;/p&gt;
+&lt;p&gt;Unfortunately, many tooltips fail to really illuminate much about our data. They often recapitulate what is already being presented without clarifying any of the confusing parts of the data. Most frequently, I see (and even create 😦) tooltips which present the most basic information (in a map, a tooltip would present the state name and the value of interest), and nothing else!&lt;/p&gt;
+&lt;p&gt;Of course, there&amp;rsquo;s nothing &lt;em&gt;wrong&lt;/em&gt; with these kinds of tooltips. But they are truly doing the bare minimum, and, as a result, they&amp;rsquo;re missing out on the full potential of tooltips. &lt;strong&gt;If users are actively seeking more information by hovering over data, we ought to reward them with the most helpful and interesting information we can.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;That&amp;rsquo;s why I recently updated one of my tooltips from a static presentation of textual information to a line chart depicting change over time. In other words, I went from this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;figures/old-tooltip.gif&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;to this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;figures/new-tooltip.gif&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;why-did-i-make-that-change&#34;&gt;Why did I make that change?&lt;/h2&gt;
+&lt;p&gt;The former tooltip provided information which was rather uninteresting. Although it clarified the exact &lt;em&gt;rate&lt;/em&gt; of overdose deaths in a given state at a given time, it didn&amp;rsquo;t do much else. It did provide the year currently in view, but this was also visible in the bottom right corner of the visualization! It also provided the state name, but most of my viewers have likely taken US geography in middle school.&lt;/p&gt;
+&lt;p&gt;Thus, this tooltip was rather redundant. At best, it provided the &lt;em&gt;exact&lt;/em&gt; rate, so that a viewer could compare two states, or learn more information about a given state without solely relying on color encoding (
+&lt;a href=&#34;https://courses.cs.washington.edu/courses/cse442/17au/lectures/CSE442-VisualEncoding.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;which can be somewhat unreliable when it comes to quantitative encoding&lt;/a&gt;, as is the case in a choropleth map).&lt;/p&gt;
+&lt;p&gt;The new tooltip shows a trend over time. It also shows the state name (just in case you skipped that day in US geography!), and also the most recent data on overdose deaths. Because this map is meant to show how the opioid crisis &lt;em&gt;has evolved&lt;/em&gt;, showing a line chart for each state in my tooltip allows the user to explore state-by-state trends on hover! This is much easier than hovering on each state during each year and trying to keep track of the trends.&lt;/p&gt;
+&lt;p&gt;For example, hovering on West Virginia, which in 2017 seemed to have the highest opioid-involved overdose death rate (as indicated by it having the darkest shade of red), reveals that its also experienced one of the largest over-time increase in this rate since 1999:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;figures/west-virginia.jpg&#34; alt=&#34;West Virginia Image&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;so-how-do-you-do-it&#34;&gt;So, how do you do it?&lt;/h2&gt;
+&lt;p&gt;Great question! It&amp;rsquo;s thankfully not that hard, but the payoff is huge. The shift from my old, boring tooltip to my new, sexy one took only a couple of hours, thanks to a few 
+&lt;a href=&#34;https://stackoverflow.com/questions/43904643/add-chart-to-tooltip-in-d3&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Stack Overflow answers&lt;/a&gt; and 
+&lt;a href=&#34;https://bl.ocks.org/maelafifi/ee7fecf90bb5060d5f9a7551271f4397&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;online examples&lt;/a&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;step-1-load-d3-tip&#34;&gt;Step 1: Load &lt;code&gt;d3-tip&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;The process mostly relies on &lt;code&gt;d3-tip&lt;/code&gt;, which you can learn more about 
+&lt;a href=&#34;http://labratrevenge.com/d3-tip/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;You can load &lt;code&gt;d3-tip&lt;/code&gt;with the following code:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;&amp;lt;script src=&amp;quot;https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;step-2-create-a-tooltip-object&#34;&gt;Step 2: Create a tooltip object&lt;/h3&gt;
+&lt;p&gt;Next, you initialize your tooltip, give it a class (for CSS styling), and provide the specified &lt;code&gt;offset&lt;/code&gt;. In my example, I define my offset according to the 
+&lt;a href=&#34;https://stackoverflow.com/questions/28536367/in-d3-js-how-to-adjust-tooltip-up-and-down-based-on-the-screen-position&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;user&amp;rsquo;s mouse position&lt;/a&gt;. That way, if a user hovers over an eastern state, the tooltip doesn&amp;rsquo;t disappear off the screen!&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;  // define the tooltip 
+var tool_tip = d3.tip()
+  .attr(&amp;quot;class&amp;quot;, &amp;quot;d3-tip&amp;quot;)
+  // if the mouse position is greater than 650 (~ Kentucky/Missouri), offset tooltip to the left instead of the right
+  .offset(function() {if(current_position[0] &amp;gt; 650) {
+  	return [-20,-120] } 
+  	else { return [20,120]}
+  })
+  // input the title, and include the div
+  .html(
+  	&amp;quot;&amp;lt;p&amp;gt;Opioid-involved deaths over time in&amp;lt;/p&amp;gt;&amp;lt;div id=&#39;tipDiv&#39;&amp;gt;&amp;lt;/div&amp;gt;&amp;quot;
+  );
+
+svg.call(tool_tip);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The most important part here is&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;.html(
+     &amp;quot;&amp;lt;p&amp;gt;Opioid-involved deaths over time in&amp;lt;/p&amp;gt;&amp;lt;div id=&#39;tipDiv&#39;&amp;gt;&amp;lt;/div&amp;gt;&amp;quot;
+);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;where we define the html that creates the tooltip itself. In our case, we provide a title, &amp;ldquo;Opioid-involved deaths over time&amp;rdquo;, and also specify the div that the tooltip should include.&lt;/p&gt;
+&lt;h3 id=&#34;step-3-create-the-tipdiv-object&#34;&gt;Step 3: Create the &lt;code&gt;tipDiv&lt;/code&gt; object&lt;/h3&gt;
+&lt;p&gt;Finally, we can create the &lt;code&gt;tipDiv&lt;/code&gt; object we referenced in the above code. The object will be created on mouseover of the group of interest (in my case, states). Thus, the code will look something like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;states = svg.append(&amp;quot;g&amp;quot;)
+  .attr(&amp;quot;class&amp;quot;, &amp;quot;states&amp;quot;)
+  .selectAll(&amp;quot;path&amp;quot;)
+  .data(topojson.feature(us, us.objects.states).features)
+  .enter()
+  .append(&amp;quot;path&amp;quot;)
+  .attr(&amp;quot;d&amp;quot;, path)
+  .on(&#39;mouseover&#39;, function(d) {
+
+// define and store the mouse position. this is used to define tooltip offset, seen above.
+current_position = d3.mouse(this); 				
+
+// define current state
+current_state = nameById[d.id]
+	
+// show the tooltip
+tool_tip.show();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After that initialization and &lt;code&gt;show&lt;/code&gt; function, we can define the &lt;code&gt;tipDiv&lt;/code&gt; object:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;var tipSVG = d3.select(&amp;quot;#tipDiv&amp;quot;)
+     .append(&amp;quot;svg&amp;quot;)
+     .attr(&amp;quot;width&amp;quot;, 220)
+     .attr(&amp;quot;height&amp;quot;, 55);
+
+tipSVG.append(&amp;quot;path&amp;quot;)
+     .datum(overdoses.filter(function(d) {return nameById[d.id] == current_state}))
+     .style(&amp;quot;stroke&amp;quot;, function() {
+     	if (rateById[d.id] &amp;lt; 10) {
+     		return &amp;quot;grey&amp;quot;
+     	} else {
+     	return color(rateById[d.id])
+     	}
+ 	  })
+     .style(&amp;quot;stroke-width&amp;quot;, 1.5)
+     .style(&amp;quot;fill&amp;quot;, &amp;quot;none&amp;quot;)
+     .attr(&amp;quot;d&amp;quot;, line)
+     
+tipSVG.append(&amp;quot;circle&amp;quot;)
+     .attr(&amp;quot;fill&amp;quot;, function() {
+     	if (rateById[d.id] &amp;lt; 10) {
+     		return &amp;quot;grey&amp;quot;
+     	} else {
+     	return color(rateById[d.id])
+     	}
+ 	  })
+    .attr(&amp;quot;stroke&amp;quot;, &amp;quot;black&amp;quot;)
+    .attr(&amp;quot;cx&amp;quot;, 130)
+    .attr(&amp;quot;cy&amp;quot;, y_tooltip(rateById[d.id]))
+    .attr(&amp;quot;r&amp;quot;, 3)
+
+tipSVG.append(&amp;quot;text&amp;quot;)
+     .text(rateById[d.id] + &amp;quot; deaths&amp;quot;)
+     .attr(&amp;quot;x&amp;quot;, 140)
+     .attr(&amp;quot;y&amp;quot;, function() {
+     	if (y_tooltip(rateById[d.id]) &amp;lt; 15) { return 10 }
+     		else { return y_tooltip(rateById[d.id]) - 7 }
+     	})
+
+tipSVG.append(&amp;quot;text&amp;quot;)
+     .text(&amp;quot;per 100,000&amp;quot;)
+     .attr(&amp;quot;x&amp;quot;, 140)
+     .attr(&amp;quot;y&amp;quot;, function() {
+     	if (y_tooltip(rateById[d.id]) &amp;lt; 15) { return 24 }
+     		else { return y_tooltip(rateById[d.id]) + 7 }
+     	})
+	
+tipSVG.append(&amp;quot;text&amp;quot;)
+     .text(current_state)
+     .attr(&amp;quot;x&amp;quot;, 0)
+     .attr(&amp;quot;y&amp;quot;, 15)
+     .style(&amp;quot;font-size&amp;quot;, 18)
+     .style(&amp;quot;font-weight&amp;quot;, 400)
+ })
+.on(&#39;mouseout&#39;, tool_tip.hide)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What&amp;rsquo;s happening here? Let&amp;rsquo;s look at one piece at a time.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;First&lt;/strong&gt;, we define the object and name it &lt;code&gt;tipSVG&lt;/code&gt;. &lt;code&gt;tipSVG&lt;/code&gt; selects &lt;code&gt;#tipDiv&lt;/code&gt; (defined in our d3-tip) and appends an SVG. We also define the width and height of the tooltip.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;var tipSVG = d3.select(&amp;quot;#tipDiv&amp;quot;)
+	      .append(&amp;quot;svg&amp;quot;)
+	      .attr(&amp;quot;width&amp;quot;, 220)
+	      .attr(&amp;quot;height&amp;quot;, 55);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Next&lt;/strong&gt;, we append a path to that SVG. This could be a circle, or a rectangle, or any other appendable shape. Because I am drawing a simple line, we use &lt;code&gt;path&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;tipSVG.append(&amp;quot;path&amp;quot;)
+  .datum(overdoses.filter(function(d) {return nameById[d.id] == current_state}))
+  .style(&amp;quot;stroke&amp;quot;, function() {
+  	if (rateById[d.id] &amp;lt; 10) {
+  		return &amp;quot;grey&amp;quot;
+  	} else {
+  	return color(rateById[d.id])
+  	}
+	  })
+  .style(&amp;quot;stroke-width&amp;quot;, 1.5)
+  .style(&amp;quot;fill&amp;quot;, &amp;quot;none&amp;quot;)
+  .attr(&amp;quot;d&amp;quot;, line)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In defining the &lt;code&gt;d&lt;/code&gt; attribute, you see I use the phrase &lt;code&gt;line&lt;/code&gt;. This is defined earlier in my code to return the x and y position of each data point, to create the path itself.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;var x_tooltip = d3.scaleLinear()
+  .domain(d3.extent(overdoses, function(d) { return d.year; }))
+  .range([ 0, 130 ]);
+
+var y_tooltip = d3.scaleLinear()
+  .domain([0, 60])
+  .range([ 50, 0 ]);
+
+var line = d3.line()
+  .x(function(d) {
+    return x_tooltip(d.year);
+  })
+  .y(function(d) {
+    return y_tooltip(+d.rate);
+  })
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Lastly&lt;/strong&gt;, we add a circle at the end of the line to signify the final data point. We also add the text label for the year 2017.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;tipSVG.append(&amp;quot;circle&amp;quot;)
+  .attr(&amp;quot;fill&amp;quot;, function() {
+  	if (rateById[d.id] &amp;lt; 10) {
+  		return &amp;quot;grey&amp;quot;
+  	} else {
+  	return color(rateById[d.id])
+  	}
+	  })
+   .attr(&amp;quot;stroke&amp;quot;, &amp;quot;black&amp;quot;)
+  .attr(&amp;quot;cx&amp;quot;, 130)
+  .attr(&amp;quot;cy&amp;quot;, y_tooltip(rateById[d.id]))
+  .attr(&amp;quot;r&amp;quot;, 3)
+
+tipSVG.append(&amp;quot;text&amp;quot;)
+  .text(rateById[d.id] + &amp;quot; deaths&amp;quot;)
+  .attr(&amp;quot;x&amp;quot;, 140)
+  .attr(&amp;quot;y&amp;quot;, function() {
+  	if (y_tooltip(rateById[d.id]) &amp;lt; 15) { return 10 }
+  		else { return y_tooltip(rateById[d.id]) - 7 }
+  	})
+
+tipSVG.append(&amp;quot;text&amp;quot;)
+  .text(&amp;quot;per 100,000&amp;quot;)
+  .attr(&amp;quot;x&amp;quot;, 140)
+  .attr(&amp;quot;y&amp;quot;, function() {
+  	if (y_tooltip(rateById[d.id]) &amp;lt; 15) { return 24 }
+  		else { return y_tooltip(rateById[d.id]) + 7 }
+  	})
+
+tipSVG.append(&amp;quot;text&amp;quot;)
+  .text(current_state)
+  .attr(&amp;quot;x&amp;quot;, 0)
+  .attr(&amp;quot;y&amp;quot;, 15)
+  .style(&amp;quot;font-size&amp;quot;, 18)
+  .style(&amp;quot;font-weight&amp;quot;, 400)
+ })
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And finally, we hide the tooltip on mouseout:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;.on(&#39;mouseout&#39;, tool_tip.hide)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Thanks for reading! You can play around with the visualization and checkout the tooltip for yourself here (find the fullscreen version 
+&lt;a href=&#34;https://connorrothschild.github.io/D3.js/map-overdoses/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;):&lt;/p&gt;
+&lt;div&gt;    
+&lt;svg width=&#34;960&#34; height=&#34;600&#34;&gt;&lt;/svg&gt;
+&lt;/div&gt;
+&lt;style&gt;
+
+@import url(&#39;https://rsms.me/inter/inter.css&#39;);
+html { font-family: &#39;Inter&#39;, sans-serif; }
+@supports (font-variation-settings: normal) {
+  html { font-family: &#39;Inter var&#39;, sans-serif; }
+}
+
+.states :hover {
+  stroke: white;
+  stroke-width: 8px;
+}
+
+.year.label {
+  font: 300 2.5em &#34;Inter&#34;;
+  fill: gray;
+}
+
+.helper.label {
+  font: 150 1em &#34;Inter&#34;;
+  fill: gray;
+}
+
+.overlay {
+  fill: none;
+  pointer-events: all;
+  cursor: ew-resize;
+}
+
+.caption {
+  font: 150 1.1em &#34;Inter&#34;;
+}
+
+.d3-tip {
+  padding-right: 6px;
+  padding-left: 6px;
+  padding-bottom: 6px;
+  padding-top: 0;
+  background: #fff;
+  border: 1px solid black;
+  font-size: 12px;
+  pointer-events: none !important;
+}
+
+/* .my_chart {
+	width: 90%;
+	padding-left: 15%;
+	padding-right: 10%;
+} */
+
+&lt;/style&gt;
+&lt;script src=&#34;https://d3js.org/d3.v4.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://d3js.org/d3-scale-chromatic.v1.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://d3js.org/topojson.v1.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://d3js.org/queue.v1.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js&#34;&gt;&lt;/script&gt;
+&lt;script&gt;
+
+/* This viz was made a lot easier thanks to the following code:
+
+* animation using TweenYear
+http://bl.ocks.org/jgujgu/bfbb41f5e8b90ff09d7805f71ef2538e
+* choropleth map of us states (using json fips state ids)
+https://bl.ocks.org/chucklam/f628765b873d707a3d0e44ffc78deab8
+* another choropleth; although I didn&#39;t end up following its structure it was a helpful introduction
+https://bl.ocks.org/wboykinm/dbbe50d1023f90d4e241712395c27fb3
+
+A special thanks to Robert Hosbach for his viz here (and his willingness to respond to my email!): https://rahosbach.github.io/2018-10-27-d3UnemploymentChoropleth/
+*/  
+
+var svg = d3.select(&#34;svg&#34;)
+  .attr(&#34;class&#34;, &#34;my_chart&#34;)
+  // resize plot when window is resized (see below)
+  .call(responsivefy);
+
+var path = d3.geoPath();
+var format = d3.format(&#34;&#34;);
+var height = 600;
+var width = 960;
+
+// thanks to https://brendansudol.com/writing/responsive-d3 for this function!
+function responsivefy(svg) {
+  // container will be the DOM element
+  // that the svg is appended to
+  // we then measure the container
+  // and find its aspect ratio
+  const container = d3.select(svg.node().parentNode),
+      width = parseInt(svg.style(&#39;width&#39;), 10),
+      height = parseInt(svg.style(&#39;height&#39;), 10),
+      aspect = width / height;
+
+  // set viewBox attribute to the initial size
+  // control scaling with preserveAspectRatio
+  // resize svg on inital page load
+  svg.attr(&#39;viewBox&#39;, `0 0 ${width} ${height}`)
+      .attr(&#39;preserveAspectRatio&#39;, &#39;xMinYMid&#39;)
+      .call(resize);
+
+  // add a listener so the chart will be resized
+  // when the window resizes
+  // multiple listeners for the same event type
+  // requires a namespace, i.e., &#39;click.foo&#39;
+  // api docs: https://goo.gl/F3ZCFr
+  d3.select(window).on(
+      &#39;resize.&#39; + container.attr(&#39;id&#39;), 
+      resize
+  );
+
+  // this is the code that resizes the chart
+  // it will be called on load
+  // and in response to window resizes
+  // gets the width of the container
+  // and resizes the svg to fill it
+  // while maintaining a consistent aspect ratio
+  function resize() {
+      const w = parseInt(container.style(&#39;width&#39;));
+      svg.attr(&#39;width&#39;, w);
+      svg.attr(&#39;height&#39;, Math.round(w / aspect));
+  }
+}
+
+// options for color scheme: https://github.com/d3/d3-scale-chromatic
+var colorScheme = d3.schemeReds[9];
+colorScheme.unshift(&#34;#eee&#34;);
+
+// building the legend at the top
+var color = d3.scaleQuantize()
+  .domain([0, 50])
+  .range(colorScheme);
+var x = d3.scaleLinear()
+  .domain(d3.extent(color.domain()))
+  // the range specifies the x position of the legend
+  .rangeRound([600,860]);
+var g = svg.append(&#34;g&#34;)
+  .attr(&#34;transform&#34;, &#34;translate(0,40)&#34;);
+
+// legend boxes
+g.selectAll(&#34;rect&#34;)
+  .data(color.range().map(function(d){ return color.invertExtent(d); }))
+  .enter()
+  .append(&#34;rect&#34;)
+    .attr(&#34;height&#34;, 8)
+    .attr(&#34;x&#34;, function(d){ return x(d[0]); })
+    .attr(&#34;width&#34;, function(d){ return x(d[1]) - x(d[0]); })
+    .attr(&#34;fill&#34;, function(d){ return color(d[0]); });
+
+// legend title
+g.append(&#34;text&#34;)
+  .attr(&#34;class&#34;, &#34;caption&#34;)
+  .attr(&#34;x&#34;, x.range()[0])
+  .attr(&#34;y&#34;, -6)
+  .attr(&#34;fill&#34;, &#34;#000&#34;)
+  .attr(&#34;text-anchor&#34;, &#34;start&#34;)
+  .attr(&#34;font-weight&#34;, 30)
+  .text(&#34;Overdose Death Rate (Per 100,000)&#34;);
+
+// legend ticks
+g.call(d3.axisBottom(x)
+  .tickSize(13)
+  .tickFormat(format)
+  .tickValues(color.range().slice(1).map(function(d){ return color.invertExtent(d)[0]; })))
+  .select(&#34;.domain&#34;)
+  .remove();
+
+// create tooltip
+var div = d3.select(&#34;body&#34;)
+  .append(&#34;div&#34;)
+  .attr(&#34;class&#34;, &#34;tooltip&#34;)
+  .style(&#34;opacity&#34;, 0);
+
+// label positions
+labely = height - 50
+labelx = width - 280
+
+// Add the year label; the value is set on transition.
+var label = svg.append(&#34;text&#34;)
+  .attr(&#34;class&#34;, &#34;year label&#34;)
+  .attr(&#34;text-anchor&#34;, &#34;middle&#34;)
+  // position the label
+  .attr(&#34;y&#34;, labely)
+  .attr(&#34;x&#34;, labelx)
+  .text(1999);
+
+var helperlabel = svg.append(&#34;text&#34;)
+  .attr(&#34;class&#34;, &#34;helper label&#34;)
+  .attr(&#34;text-anchor&#34;, &#34;middle&#34;)
+  // position the label
+  .attr(&#34;y&#34;, labely + 20)
+  .attr(&#34;x&#34;, labelx)
+  .text(&#34;Hover to change year&#34;);
+
+queue()
+  // read in JSON which includes all of the complicated shape data for states/counties/etc.
+  .defer(d3.json, &#34;https://d3js.org/us-10m.v1.json&#34;)
+  // read in opioid data
+  .defer(d3.csv, &#34;figures/overdoses.csv&#34;)
+  /*
+  NOTE ON OVERDOSE DATA: 
+
+  This CSV file was created via pulling data from CDC&#39;s WONDER database.
+
+  I pulled all deaths from the National Vital Statistics System&#39;s multiple cause-of-death mortality files which had one of the following causes of death: opioids (T40.0, T40.1, T40.2, T40.3, T40.4, or T40.6)**; natural/semisynthetic opioids (T40.2); methadone (T40.3); heroin (T40.1); synthetic opioids other than methadone (T40.4); cocaine (T40.5). I followed the methodology of this paper: https://www.cdc.gov/mmwr/volumes/67/wr/mm675152e1.htm?s_cid=mm675152e1_w. Deaths may include multiple opioids as a cause and thus are not mutually exclusive.
+
+  You can replicate the data pull on CDC WONDER with this link: https://wonder.cdc.gov/mcd-icd10.html
+
+  Source: Multiple Cause of Death 1999–2017 on CDC Wide-ranging Online Data for Epidemiologic Research (CDC WONDER). Atlanta, GA: CDC, National Center for Health Statistics. 2018. Available at http://wonder.cdc.gov. 
+  */
+  .await(ready);
+
+function ready(error, us, overdoses) {
+  if (error) throw error;
+
+    // Initialize data to 1990
+    var currentYear = 1999;
+    var rateById = {};
+    var nameById = {};
+    // var yearById = {};
+    
+    //console.table(overdoses)
+    
+    overdoses.forEach(function(d){
+   	  rateById[d.id] = +d.rate;
+      nameById[d.id] = d.state;
+      d.year = d.year;
+  });
+
+   	console.table(overdoses)
+
+    // Add an overlay for the year label.
+    var box = label.node().getBBox();
+    
+    var overlay = svg.append(&#34;rect&#34;)
+      .attr(&#34;class&#34;, &#34;overlay&#34;)
+      .attr(&#34;x&#34;, box.x)
+      .attr(&#34;y&#34;, box.y)
+      .attr(&#34;width&#34;, box.width)
+      .attr(&#34;height&#34;, box.height)
+      .on(&#34;mouseover&#34;, enableInteraction);
+
+  var x_tooltip = d3.scaleLinear()
+    .domain(d3.extent(overdoses, function(d) { return d.year; }))
+    .range([ 0, 130 ]);
+
+  var y_tooltip = d3.scaleLinear()
+    .domain([0, 60])
+    .range([ 50, 0 ]);
+
+  // define line function
+  var line = d3.line()
+    .x(function(d) {
+      return x_tooltip(d.year);
+    })
+    .y(function(d) {
+      return y_tooltip(+d.rate);
+    })
+
+  var tool_tip = d3.tip()
+  .attr(&#34;class&#34;, &#34;d3-tip&#34;)
+  // if the mouse position is greater than 650 (~ Kentucky/Missouri), 
+  // offset tooltip to the left instead of the right
+  // credit https://stackoverflow.com/questions/28536367/in-d3-js-how-to-adjust-tooltip-up-and-down-based-on-the-screen-position
+  .offset(function() {if(current_position[0] &gt; 650) {
+  	return [-20,-120] } 
+  	else { return [20,120]}
+  })
+  .html(
+  	&#34;&lt;p&gt;Opioid-involved deaths over time in&lt;/p&gt;&lt;div id=&#39;tipDiv&#39;&gt;&lt;/div&gt;&#34;
+  );
+
+	svg.call(tool_tip);
+	
+	// Start a transition that interpolates the data based on year.
+	svg.transition()
+	  .duration(10000)
+	  .ease(d3.easeLinear)
+	  .tween(&#34;year&#34;, tweenYear);
+	
+	states = svg.append(&#34;g&#34;)
+	  .attr(&#34;class&#34;, &#34;states&#34;)
+	  .selectAll(&#34;path&#34;)
+	  .data(topojson.feature(us, us.objects.states).features)
+	  .enter()
+	  .append(&#34;path&#34;)
+	  .attr(&#34;d&#34;, path)
+	  // appending svg inside of tooltip for year by year change.
+	  // h/t https://bl.ocks.org/maelafifi/ee7fecf90bb5060d5f9a7551271f4397
+	  // h/t https://stackoverflow.com/questions/43904643/add-chart-to-tooltip-in-d3
+	   .on(&#39;mouseover&#39;, function(d) {
+	
+	   	// define and store the mouse position. this is used to define
+	   	// tooltip offset, seen above.
+		current_position = d3.mouse(this); 				
+	   	//console.log(current_position[0])
+	
+	   	current_state = nameById[d.id]
+	
+	    tool_tip.show();
+	    var tipSVG = d3.select(&#34;#tipDiv&#34;)
+	      .append(&#34;svg&#34;)
+	      .attr(&#34;width&#34;, 220)
+	      .attr(&#34;height&#34;, 55);
+	
+	    tipSVG.append(&#34;path&#34;)
+	      .datum(overdoses.filter(function(d) {return nameById[d.id] == current_state}))
+	      .style(&#34;stroke&#34;, function() {
+	      	if (rateById[d.id] &lt; 10) {
+	      		return &#34;grey&#34;
+	      	} else {
+	      	return color(rateById[d.id])
+	      	}
+	  	  })
+	      .style(&#34;stroke-width&#34;, 1.5)
+	      .style(&#34;fill&#34;, &#34;none&#34;)
+	      .attr(&#34;d&#34;, line)
+	      
+	    tipSVG.append(&#34;circle&#34;)
+	      .attr(&#34;fill&#34;, function() {
+	      	if (rateById[d.id] &lt; 10) {
+	      		return &#34;grey&#34;
+	      	} else {
+	      	return color(rateById[d.id])
+	      	}
+	  	  })
+	      .attr(&#34;stroke&#34;, &#34;black&#34;)
+	      .attr(&#34;cx&#34;, 130)
+		  .attr(&#34;cy&#34;, y_tooltip(rateById[d.id]))
+		  .attr(&#34;r&#34;, 3)
+	
+	    tipSVG.append(&#34;text&#34;)
+	      .text(rateById[d.id] + &#34; deaths&#34;)
+	      // .transition()
+	      // .duration(1000)
+	      .attr(&#34;x&#34;, 140)
+	      .attr(&#34;y&#34;, function() {
+	      	if (y_tooltip(rateById[d.id]) &lt; 15) { return 10 }
+	      		else { return y_tooltip(rateById[d.id]) - 7 }
+	      	})
+	
+		tipSVG.append(&#34;text&#34;)
+	      .text(&#34;per 100,000&#34;)
+	      // .transition()
+	      // .duration(1000)
+	      .attr(&#34;x&#34;, 140)
+	      .attr(&#34;y&#34;, function() {
+	      	if (y_tooltip(rateById[d.id]) &lt; 15) { return 24 }
+	      		else { return y_tooltip(rateById[d.id]) + 7 }
+	      	})
+	
+	    tipSVG.append(&#34;text&#34;)
+	      .text(current_state)
+	      // .transition()
+	      // .duration(1000)
+	      .attr(&#34;x&#34;, 0)
+	      .attr(&#34;y&#34;, 15)
+	      .style(&#34;font-size&#34;, 18)
+	      .style(&#34;font-weight&#34;, 400)
+
+
+	  })
+  	  .on(&#39;mouseout&#39;, tool_tip.hide)
+      .call(style, currentYear)
+
+ // FOR BAR CHART //
+   //    .on(&#39;mouseover&#39;, function(d) {
+	  //   tool_tip.show();
+	  //   var tipSVG = d3.select(&#34;#tipDiv&#34;)
+	  //     .append(&#34;svg&#34;)
+	  //     .attr(&#34;width&#34;, 200)
+	  //     .attr(&#34;height&#34;, 50);
+
+	  //   tipSVG.append(&#34;rect&#34;)
+	  //     .attr(&#34;fill&#34;, color(rateById[d.id]))
+	  //     .attr(&#34;y&#34;, 10)
+	  //     .attr(&#34;width&#34;, 0)
+	  //     .attr(&#34;height&#34;, 30)
+	  //     .transition()
+	  //     .duration(1000)
+	  //     .attr(&#34;width&#34;, rateById[d.id] * 6);
+	
+	  //   tipSVG.append(&#34;text&#34;)
+	  //     .text(rateById[d.id] + &#34; per 100,000&#34;)
+	  //     .attr(&#34;x&#34;, 10)
+	  //     .attr(&#34;y&#34;, 30)
+	  //     .transition()
+	  //     .duration(1000)
+	  //     .attr(&#34;x&#34;, 6 + rateById[d.id] * 6)
+	  // })
+  	//   .on(&#39;mouseout&#39;, tool_tip.hide)
+   //    .call(style, currentYear)
+
+    function style(states, year){
+      newoverdoses = interpolateData(year);
+    
+    var rateById = {};
+    var nameById = {};
+    
+    newoverdoses.forEach(function(d) {
+    
+      // each state is encoded according to its ANSI/FIPS state code
+      // you can find states and their codes here https://en.wikipedia.org/wiki/List_of_U.S._state_abbreviations#ANSI_standard_INCITS_38:2009
+      rateById[d.id] = +d.rate;
+      nameById[d.id] = d.state;
+      d.year = d.year;
+      
+    });
+    
+    // add fill according to death rates, for each id (state)
+    states.style(&#34;fill&#34;, function(d) { return color(rateById[d.id]); })
+    // OLD TOOLTIP // 
+      // .on(&#34;mouseover&#34;, function(d) {      
+      //     div.transition()        
+      //       .duration(200)      
+      //       .style(&#34;opacity&#34;, .9);  
+    
+      // // add tooltip here    
+      //     div.html(&#39;&lt;strong&gt; State: &lt;/strong&gt;&#39; + nameById[d.id] + 
+      //       &#39;&lt;br&gt;&#39; + 
+      //       &#39;&lt;strong&gt; Year: &lt;/strong&gt;&#39; + Math.round(currentYear) +
+      //       &#39;&lt;br&gt;&#39; + 
+      //       &#39;&lt;strong&gt; Rate: &lt;/strong&gt;&#39; + rateById[d.id] + &#34; per 100,000&#34;)
+      //       .style(&#34;left&#34;, (d3.event.pageX) + &#34;px&#34;)     
+      //       .style(&#34;top&#34;, (d3.event.pageY - 28) + &#34;px&#34;);})   
+      //  // remove tooltip on mouse out               
+      //  .on(&#34;mouseout&#34;, function(d) {       
+      //     div.transition()        
+      //      .duration(500)      
+      //      .style(&#34;opacity&#34;, 0);});
+
+  // create the actual state objects
+  svg.append(&#34;path&#34;)
+    .datum(topojson.mesh(us, us.objects.states, (a, b) =&gt; a !== b))
+    .attr(&#34;fill&#34;, &#34;none&#34;)
+    .attr(&#34;stroke&#34;, &#34;white&#34;)
+    // .attr(&#34;stroke-linejoin&#34;, &#34;round&#34;)
+    .attr(&#34;d&#34;, path)
+   }
+
+  // after the transition finishes, mouseover to change  year.
+  function enableInteraction() {
+    var yearScale = d3.scaleLinear()
+      .domain([1999, 2017])
+      .range([box.x + 10, box.x + box.width - 10])
+      .clamp(true);
+
+    // Cancel the current transition, if any.
+    svg.transition().duration(0);
+    
+    overlay
+      .on(&#34;mouseover&#34;, mouseover)
+      .on(&#34;mouseout&#34;, mouseout)
+      .on(&#34;mousemove&#34;, mousemove)
+      .on(&#34;touchmove&#34;, mousemove);
+    
+    function mouseover() { label.classed(&#34;active&#34;, true); }
+    function mouseout() { label.classed(&#34;active&#34;, false); }
+    function mousemove() { displayYear(yearScale.invert(d3.mouse(this)[0])); }
+  }
+
+  // Tweens the entire chart by first tweening the year, and then the data.
+  // For the interpolated data, the dots and label are redrawn.
+  function tweenYear() {
+    var year = d3.interpolateNumber(1999, 2017);
+    return function(t) { displayYear(year(t)); };
+  }
+
+  // Updates the display to show the specified year.
+  function displayYear(year) {
+    currentYear = year;
+    states.call(style,year)
+    label.text(Math.round(year));
+  }
+
+  // Interpolates the dataset for the given (fractional) year.
+  function interpolateData(year) {
+    return overdoses.filter(function(row) {
+    return row[&#39;year&#39;] == Math.round(year);
+     });
+    }
+};
+    &lt;/script&gt; 
+</description>
+    </item>
+    
+    <item>
+      <title>Who Mentions Who in the Office?</title>
+      <link>/post/who-mentions-who-in-the-office/</link>
+      <pubDate>Mon, 16 Dec 2019 00:00:00 +0000</pubDate>
+      <guid>/post/who-mentions-who-in-the-office/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/d3/d3.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/d3-tip/index.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;/rmarkdown-libs/chorddiag/chorddiag.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;/rmarkdown-libs/chorddiag/chorddiag.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/chorddiag-binding/chorddiag.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;This project explores the relationships between different characters in the classic TV show &lt;strong&gt;The Office&lt;/strong&gt;. Using transcript data newly released in &lt;a href=&#34;https://technistema.com/&#34;&gt;Bradley H. Lindblad&lt;/a&gt;’s &lt;a href=&#34;https://cran.r-project.org/web/packages/schrute/vignettes/theoffice.html&#34;&gt;&lt;code&gt;schrute&lt;/code&gt; package&lt;/a&gt;, I’d like to see &lt;em&gt;who mentions who in the Office&lt;/em&gt;. Is one character more popular than the others?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(schrute)
+library(tidyverse)
+library(cr)
+set_cr_theme()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s take a look at the transcripts:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;transcripts &amp;lt;- schrute::theoffice
+
+knitr::kable(transcripts[1:3,])&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;right&#34;&gt;index&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;season&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;episode&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;episode_name&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;director&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;writer&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;character&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;text&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;text_w_direction&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;imdb_rating&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;total_votes&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;air_date&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Pilot&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ken Kwapis&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ricky Gervais;Stephen Merchant;Greg Daniels&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Michael&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;All right Jim. Your quarterlies look very good. How are things at the library?&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;All right Jim. Your quarterlies look very good. How are things at the library?&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.6&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3706&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2005-03-24&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Pilot&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ken Kwapis&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ricky Gervais;Stephen Merchant;Greg Daniels&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Jim&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Oh, I told you. I couldn’t close it. So…&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Oh, I told you. I couldn’t close it. So…&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.6&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3706&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2005-03-24&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Pilot&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ken Kwapis&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ricky Gervais;Stephen Merchant;Greg Daniels&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Michael&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;So you’ve come to the master for guidance? Is this what you’re saying, grasshopper?&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;So you’ve come to the master for guidance? Is this what you’re saying, grasshopper?&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.6&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3706&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2005-03-24&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;By using &lt;code&gt;tidytext&lt;/code&gt;, we can split the transcripts into their constituent parts (words).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;transcripts_tokenized &amp;lt;- transcripts %&amp;gt;%
+  tidytext::unnest_tokens(word, text)
+
+knitr::kable(transcripts_tokenized[1:3,])&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;right&#34;&gt;index&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;season&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;episode&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;episode_name&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;director&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;writer&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;character&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;text_w_direction&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;imdb_rating&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;total_votes&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;air_date&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;word&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Pilot&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ken Kwapis&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ricky Gervais;Stephen Merchant;Greg Daniels&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Michael&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;All right Jim. Your quarterlies look very good. How are things at the library?&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.6&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3706&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2005-03-24&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;all&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Pilot&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ken Kwapis&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ricky Gervais;Stephen Merchant;Greg Daniels&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Michael&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;All right Jim. Your quarterlies look very good. How are things at the library?&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.6&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3706&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2005-03-24&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;right&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Pilot&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ken Kwapis&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Ricky Gervais;Stephen Merchant;Greg Daniels&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Michael&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;All right Jim. Your quarterlies look very good. How are things at the library?&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.6&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3706&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2005-03-24&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;jim&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;We can now use the text to see who mentions who. But first, let’s construct a vector with a list of characters to keep in the analysis. There are &lt;strong&gt;485 characters&lt;/strong&gt; in the transcripts, so its important we filter only those of relevance:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;keep_characters &amp;lt;- transcripts %&amp;gt;% 
+  group_by(character) %&amp;gt;% 
+  count() %&amp;gt;% 
+  arrange(desc(n)) %&amp;gt;% 
+  head(9) %&amp;gt;% 
+  pull(character)
+
+knitr::kable(keep_characters)&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;x&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Michael&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Dwight&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Jim&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Pam&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Andy&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Angela&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Kevin&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Erin&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Oscar&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;This is an optional decision. One may be interested in seeing which characters talk about Jim most, including those characters who are otherwise less relevant. I decide to filter according to the main cast so that comparisons between characters (e.g., through a chord diagram) is feasible.&lt;/p&gt;
+&lt;div id=&#34;who-mentions-who&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Who Mentions Who?&lt;/h2&gt;
+&lt;div id=&#34;jim-a-case-study&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Jim: A Case Study&lt;/h3&gt;
+&lt;p&gt;Who is talking to who in the Office?&lt;/p&gt;
+&lt;p&gt;Now that we have &lt;code&gt;keep_characters&lt;/code&gt;, we can filter according to it and spit out who mentions who &lt;em&gt;among the most relevant Office characters&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;transcripts_tokenized %&amp;gt;% 
+  filter(character %in% keep_characters) %&amp;gt;% 
+  mutate(jim = ifelse(word == &amp;quot;jim&amp;quot;, 1, 0)) %&amp;gt;% 
+  group_by(character) %&amp;gt;% 
+  summarise(jim = sum(jim)) %&amp;gt;% 
+  arrange(desc(jim)) %&amp;gt;% 
+  mutate(character = reorder(character, jim)) %&amp;gt;% 
+  ggplot(ggplot2::aes(character, jim)) +
+  geom_col() +
+  coord_flip() +
+  fix_bars() +
+  labs(title = &amp;quot;Who Mentions Jim?&amp;quot;,
+       subtitle = &amp;quot;Counts of &amp;#39;Jim&amp;#39; in The Office Transcripts&amp;quot;,
+       x = element_blank(),
+       y = &amp;quot;Mentions&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The takeaway here is that Dwight mentions Jim the most, followed by Michael. No surprise there! What I find interesting is that only three characters &lt;em&gt;really&lt;/em&gt; talk about/to Jim. After Dwight, Michael, and Pam (and Jim referencing himself, apparently), the mention rate for Jim’s name drops from over 200 to only 60 mentions. It seems as if the writers of the Office intentionally made Jim a subject of conversation among only a few characters!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;replicate-for-the-rest-of-the-cast&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Replicate for the rest of the cast&lt;/h3&gt;
+&lt;p&gt;Next, we replicate that process for the rest of the cast. There is probably a better way to do this.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_chord &amp;lt;- transcripts_tokenized %&amp;gt;% 
+  filter(character %in% keep_characters) %&amp;gt;% 
+  mutate(jim = ifelse(word == &amp;quot;jim&amp;quot;, 1, 0)) %&amp;gt;% 
+  mutate(michael = ifelse(word == &amp;quot;michael&amp;quot;, 1, 0)) %&amp;gt;% 
+  mutate(dwight = ifelse(word == &amp;quot;dwight&amp;quot;, 1, 0)) %&amp;gt;% 
+  mutate(pam = ifelse(word == &amp;quot;pam&amp;quot;, 1, 0)) %&amp;gt;% 
+  mutate(andy = ifelse(word == &amp;quot;andy&amp;quot;, 1, 0)) %&amp;gt;% 
+  mutate(angela = ifelse(word == &amp;quot;angela&amp;quot;, 1, 0)) %&amp;gt;% 
+  mutate(kevin = ifelse(word == &amp;quot;kevin&amp;quot;, 1, 0)) %&amp;gt;% 
+  mutate(erin = ifelse(word == &amp;quot;erin&amp;quot;, 1, 0)) %&amp;gt;% 
+  mutate(oscar = ifelse(word == &amp;quot;oscar&amp;quot;, 1, 0)) %&amp;gt;% 
+  # mutate(ryan = ifelse(word == &amp;quot;ryan&amp;quot;, 1, 0)) %&amp;gt;% 
+  # mutate(darryl = ifelse(word == &amp;quot;darryl&amp;quot;, 1, 0)) %&amp;gt;% 
+  # mutate(phyllis = ifelse(word == &amp;quot;phyllis&amp;quot;, 1, 0)) %&amp;gt;% 
+  # mutate(kelly = ifelse(word == &amp;quot;kelly&amp;quot;, 1, 0)) %&amp;gt;% 
+  # mutate(toby = ifelse(word == &amp;quot;toby&amp;quot;, 1, 0)) %&amp;gt;% 
+  group_by(character) %&amp;gt;% 
+  summarise_at(vars(jim:oscar), funs(sum))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualize&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Visualize&lt;/h2&gt;
+&lt;p&gt;Now, let’s make a chord diagram!&lt;/p&gt;
+&lt;p&gt;We first have to convert the data frame into a format &lt;code&gt;chordDiagram&lt;/code&gt; will recognize.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;circlize_data &amp;lt;- as.data.frame(data_chord) %&amp;gt;% 
+  pivot_longer(jim:oscar, names_to = &amp;quot;to&amp;quot;, values_to = &amp;quot;value&amp;quot;) %&amp;gt;% 
+  rename(from = &amp;#39;character&amp;#39;) %&amp;gt;% 
+  mutate(to = str_to_title(to))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This process pivots each row of data into a value-key combination, so that the data looks like this:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;from&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;to&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;value&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Andy&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Jim&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;48&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Andy&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Michael&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;40&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Andy&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Dwight&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;80&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Andy&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Pam&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;34&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Andy&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Andy&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;42&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Andy&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Angela&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;33&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Using that data, we can create a chord diagram quite easily, using a single command from the &lt;code&gt;circlize&lt;/code&gt; library. &lt;a href=&#34;https://jokergoo.github.io/circlize_book/book/the-chorddiagram-function.html&#34;&gt;This chapter is helpful&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(circlize)
+chordDiagram(circlize_data, grid.col = c(&amp;quot;#B997C7&amp;quot;, &amp;quot;#824D99&amp;quot;, &amp;quot;#4E78C4&amp;quot;, &amp;quot;#57A2AC&amp;quot;, &amp;quot;#7EB875&amp;quot;, &amp;quot;#D0B541&amp;quot;, &amp;quot;#E67F33&amp;quot;, &amp;quot;#CE2220&amp;quot;, &amp;quot;#521A13&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;div id=&#34;make-it-interactive&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Make It Interactive&lt;/h3&gt;
+&lt;p&gt;With nine people, some of the data can get easily concealed (how often did Angela mention Michael’s name?). One way to fix this is to make the visualization interactive, so that a user can hover over chords to see relationships between characters.&lt;/p&gt;
+&lt;p&gt;First, we conduct some data cleaning. I found that the rownames and column names have to be of the same order; let’s do a little manipulation to get there:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;int_chord &amp;lt;- as.data.frame(data_chord)
+
+rownames(int_chord) &amp;lt;- int_chord$character
+
+row.order &amp;lt;- c(&amp;quot;Jim&amp;quot;, &amp;quot;Michael&amp;quot;, &amp;quot;Dwight&amp;quot;, &amp;quot;Pam&amp;quot;, &amp;quot;Andy&amp;quot;, &amp;quot;Angela&amp;quot;, &amp;quot;Kevin&amp;quot;, &amp;quot;Erin&amp;quot;, &amp;quot;Oscar&amp;quot;)
+               #, &amp;quot;Ryan&amp;quot;, &amp;quot;Darryl&amp;quot;, &amp;quot;Phyllis&amp;quot;, &amp;quot;Kelly&amp;quot;, &amp;quot;Toby&amp;quot;)
+int_chord &amp;lt;- int_chord[row.order,]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next, we load &lt;a href=&#34;https://github.com/mattflor&#34;&gt;Matt Flor&lt;/a&gt;’s &lt;a href=&#34;https://github.com/mattflor/chorddiag&#34;&gt;&lt;code&gt;chorddiag&lt;/code&gt;&lt;/a&gt; package, and construct a matrix according to its function’s liking:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# devtools::install_github(&amp;quot;mattflor/chorddiag&amp;quot;)
+library(chorddiag)
+
+m &amp;lt;- as.matrix(int_chord[-1])
+
+dimnames(m) &amp;lt;- list(have = int_chord$character,
+                    prefer = str_to_title(colnames(int_chord[-1])))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, we add a color palette and construct the diagram.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;groupColors &amp;lt;- c(&amp;quot;#B997C7&amp;quot;, &amp;quot;#824D99&amp;quot;, &amp;quot;#4E78C4&amp;quot;, &amp;quot;#57A2AC&amp;quot;, &amp;quot;#7EB875&amp;quot;, &amp;quot;#D0B541&amp;quot;, &amp;quot;#E67F33&amp;quot;, &amp;quot;#CE2220&amp;quot;, &amp;quot;#521A13&amp;quot;)
+
+p &amp;lt;- chorddiag(m, 
+               groupColors = groupColors, 
+               groupnamePadding = 35,
+               tickInterval = 50,
+               groupnameFontsize = 12)
+p&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;htmlwidget-1&#34; style=&#34;width:672px;height:480px;&#34; class=&#34;chorddiag html-widget&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-1&#34;&gt;{&#34;x&#34;:{&#34;matrix&#34;:[[47,181,258,189,53,18,19,3,14],[227,171,353,327,66,48,95,44,100],[294,282,106,104,61,59,41,21,29],[182,262,126,58,35,44,34,17,26],[48,40,80,34,42,33,20,78,19],[11,28,81,31,23,10,40,2,26],[39,71,12,39,19,22,23,7,36],[12,37,23,28,92,9,4,15,5],[16,65,22,22,29,37,34,9,6]],&#34;options&#34;:{&#34;type&#34;:&#34;directional&#34;,&#34;width&#34;:null,&#34;height&#34;:null,&#34;margin&#34;:100,&#34;showGroupnames&#34;:true,&#34;groupNames&#34;:[&#34;Jim&#34;,&#34;Michael&#34;,&#34;Dwight&#34;,&#34;Pam&#34;,&#34;Andy&#34;,&#34;Angela&#34;,&#34;Kevin&#34;,&#34;Erin&#34;,&#34;Oscar&#34;],&#34;groupColors&#34;:[&#34;#B997C7&#34;,&#34;#824D99&#34;,&#34;#4E78C4&#34;,&#34;#57A2AC&#34;,&#34;#7EB875&#34;,&#34;#D0B541&#34;,&#34;#E67F33&#34;,&#34;#CE2220&#34;,&#34;#521A13&#34;],&#34;groupThickness&#34;:0.1,&#34;groupPadding&#34;:0.0349065850398866,&#34;groupnamePadding&#34;:[35,35,35,35,35,35,35,35,35],&#34;groupnameFontsize&#34;:12,&#34;groupedgeColor&#34;:null,&#34;chordedgeColor&#34;:&#34;#808080&#34;,&#34;categoryNames&#34;:null,&#34;categorynamePadding&#34;:100,&#34;categorynameFontsize&#34;:28,&#34;showTicks&#34;:true,&#34;tickInterval&#34;:50,&#34;ticklabelFontsize&#34;:10,&#34;fadeLevel&#34;:0.1,&#34;showTooltips&#34;:true,&#34;showZeroTooltips&#34;:true,&#34;tooltipNames&#34;:[&#34;Jim&#34;,&#34;Michael&#34;,&#34;Dwight&#34;,&#34;Pam&#34;,&#34;Andy&#34;,&#34;Angela&#34;,&#34;Kevin&#34;,&#34;Erin&#34;,&#34;Oscar&#34;],&#34;tooltipFontsize&#34;:12,&#34;tooltipUnit&#34;:&#34;&#34;,&#34;tooltipGroupConnector&#34;:&#34; &amp;#x25B6; &#34;,&#34;precision&#34;:&#34;null&#34;,&#34;clickAction&#34;:null,&#34;clickGroupAction&#34;:null}},&#34;evals&#34;:[],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# save the widget
+# library(htmlwidgets)
+# saveWidget(p, file=&amp;quot;chord_interactive.html&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Play around with the diagram &lt;a href=&#34;connorrothschild.github.io/D3.js/the-office/&#34;&gt;here&lt;/a&gt;!&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Building my First Shiny App</title>
+      <link>/post/building-my-first-shiny-app/</link>
+      <pubDate>Sat, 03 Aug 2019 00:00:00 +0000</pubDate>
+      <guid>/post/building-my-first-shiny-app/</guid>
+      <description>
+
+
+&lt;p&gt;I spent some time this weekend playing around with &lt;a href=&#34;https://shiny.rstudio.com&#34;&gt;Shiny&lt;/a&gt;, RStudio’s tool for creating interactive web apps. In a nod to my humble beginnings, I wanted to bring some interactivity to my first R project (&lt;a href=&#34;https://connorrothschild.github.io/r/automation/&#34;&gt;ever!&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;I finished the project roughly a year ago, in the summer between my freshman and sophomore year. It was an exercise in plotting multiple dimensions related to something of personal interest to me: automation and its impact on jobs. I wanted to use ggplot2 to recreate a visualization I came across on Bloomberg graphics. Here’s &lt;a href=&#34;https://www.bloomberg.com/graphics/2017-job-risk/&#34;&gt;Bloomberg’s visualization&lt;/a&gt; and here’s &lt;a href=&#34;https://connorrothschild.github.io/r/automation/&#34;&gt;mine&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;There are some obvious differences in our visualizations (our axes are inverted, they likely used D3.js while I used ggplot2), but for the most part, our visualizations depict the same lesson: lower-paying jobs and less-educated jobs are more susceptible to job displacement from automation.&lt;/p&gt;
+&lt;p&gt;A year later, there are some things about my first visualization I would definitely change (title and axis label size, unnecessary corner labels, a potentially misleading geom_smooth line), but what I really want to work on now is bringing my project closer to the Bloomberg visualization by making it interactive. (I’ve actually already made an &lt;a href=&#34;https://public.tableau.com/profile/connor.rothschild#!/vizhome/JobAutomationRiskintheUnitedStates/Final&#34;&gt;interactive version&lt;/a&gt; of the visualization using Tableau, but I wanted to do it again in R to expand my skillset!)&lt;/p&gt;
+&lt;p&gt;Enter Shiny, RStudio’s tool for creating interactive visualizations. By using Shiny with &lt;a href=&#34;https://ggvis.rstudio.com&#34;&gt;ggvis&lt;/a&gt; (ggplot2’s “successor” with interactive capabilities), I’m able to get pretty close to my initial inspiration.&lt;/p&gt;
+&lt;p&gt;ggvis’s commands are pretty similar to ggplot2, and so the learning curve wasn’t that steep (with the exception of setting the default size parameter for my points, which I finally solved with &lt;a href=&#34;https://stackoverflow.com/questions/43466172/chang-size-of-points-depending-on-one-column-with-ggvis&#34;&gt;this fix&lt;/a&gt;). Shiny was a bit more difficult to learn, but RStudio’s &lt;a href=&#34;https://shiny.rstudio.com/tutorial/&#34;&gt;online video tutorials&lt;/a&gt; make it a lot less daunting. All in all, the project only took one night (~3 hours) to complete. Another example of R’s accessibility and ease of use!&lt;/p&gt;
+&lt;div id=&#34;cleanprepare-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Clean/Prepare Data&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+library(ggthemes)
+library(dplyr)
+library(ggrepel)
+library(tools)
+library(readxl)
+library(tidyverse)
+library(knitr)
+
+options(scipen=999)
+theme_set(theme_minimal())
+
+education &amp;lt;- read_excel(&amp;quot;data/education.xlsx&amp;quot;, skip=1)
+salary &amp;lt;- read_excel(&amp;quot;data/national_M2017_dl.xlsx&amp;quot;)
+automation &amp;lt;- read_excel(&amp;quot;data/raw_state_automation_data.xlsx&amp;quot;)
+
+salary1 &amp;lt;- salary %&amp;gt;% 
+group_by(OCC_TITLE) %&amp;gt;% 
+mutate(natlwage = TOT_EMP * as.numeric(A_MEAN)) %&amp;gt;%
+filter(!is.na(TOT_EMP)) %&amp;gt;%
+filter(!is.na(A_MEAN)) %&amp;gt;%
+filter(!is.na(A_MEDIAN))
+
+salary1$A_MEDIAN = as.numeric(as.character(salary1$A_MEDIAN))
+salary2 &amp;lt;- select(salary1, OCC_TITLE, TOT_EMP, A_MEDIAN, natlwage) %&amp;gt;% 
+distinct()
+
+library(plyr)
+education1 &amp;lt;- education %&amp;gt;% select(-...2)
+
+education1 &amp;lt;- rename(education1, c(&amp;quot;2016 National Employment Matrix title and code&amp;quot; = &amp;quot;occupation&amp;quot;,
+                                   &amp;quot;Less than high school diploma&amp;quot; = &amp;quot;lessthanhs&amp;quot;, 
+                                   &amp;quot;High school diploma or equivalent&amp;quot; = &amp;quot;hsdiploma&amp;quot;,
+                                   &amp;quot;Some college, no degree&amp;quot; = &amp;quot;somecollege&amp;quot;,
+                                   &amp;quot;Associate&amp;#39;s degree&amp;quot; = &amp;quot;associates&amp;quot;,
+                                   &amp;quot;Bachelor&amp;#39;s degree&amp;quot; = &amp;quot;bachelors&amp;quot;,
+                                   &amp;quot;Master&amp;#39;s degree&amp;quot; = &amp;quot;masters&amp;quot;,
+                                   &amp;quot;Doctoral or professional degree&amp;quot; = &amp;quot;professional&amp;quot;))
+
+education2 &amp;lt;- education1 %&amp;gt;% 
+  group_by(occupation) %&amp;gt;%
+  mutate(hsorless = lessthanhs + hsdiploma,
+         somecollegeorassociates = somecollege + associates,
+         postgrad = masters + professional)
+
+education2 &amp;lt;- education2 %&amp;gt;% drop_na()
+
+salary2 &amp;lt;- rename(salary2, c(&amp;quot;OCC_TITLE&amp;quot; = &amp;quot;occupation&amp;quot;))
+salary2$occupation &amp;lt;- tolower(salary2$occupation)
+education2$occupation &amp;lt;- tolower(education2$occupation)
+edsal &amp;lt;- merge(as.data.frame(education2), as.data.frame(salary2), by=&amp;quot;occupation&amp;quot;) %&amp;gt;% drop_na()
+
+  typicaleducation &amp;lt;- read_excel(&amp;quot;data/typicaleducation.xlsx&amp;quot;)
+  typicaleducation2 &amp;lt;- typicaleducation %&amp;gt;% select(occupation,typicaled,workexp)
+  typicaleducation2 &amp;lt;- typicaleducation2 %&amp;gt;% drop_na()
+  typicaleducation2$occupation &amp;lt;- tolower(typicaleducation2$occupation)
+  edsal2 &amp;lt;- merge(as.data.frame(edsal), as.data.frame(typicaleducation2), by=&amp;quot;occupation&amp;quot;)
+
+  detach(package:plyr)
+  edsal3 &amp;lt;- edsal2 %&amp;gt;% 
+  group_by(typicaled) %&amp;gt;% 
+  summarise(medianwage = mean(A_MEDIAN))
+  
+  automationwstates &amp;lt;- automation %&amp;gt;% select(-soc)
+  automation1 &amp;lt;- automationwstates %&amp;gt;% select(occupation,probability,total)
+
+  automation1$occupation &amp;lt;- str_replace_all(automation1$occupation, &amp;quot;;&amp;quot;, &amp;quot;,&amp;quot;)
+  automation1$occupation &amp;lt;- tolower(automation$occupation)
+  data &amp;lt;- merge(as.data.frame(edsal2), as.data.frame(automation1), by=&amp;quot;occupation&amp;quot;)
+
+  data$occupation &amp;lt;- toTitleCase(data$occupation)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bring-in-shiny&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Bring in Shiny&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(shiny)
+
+# Define UI for application 
+ui &amp;lt;- pageWithSidebar(
+  headerPanel(&amp;quot;Automation&amp;quot;),
+  sidebarPanel(
+    wellPanel(
+      h4(&amp;quot;Filter&amp;quot;),
+      sliderInput(&amp;quot;TOT_EMP&amp;quot;, &amp;quot;Number of Workers&amp;quot;,
+                  0, 4450000, 4450000, step = 10000),
+      sliderInput(&amp;quot;A_MEDIAN&amp;quot;, &amp;quot;Median Income&amp;quot;, 
+                  0, 185150, 185150, step = 1000),
+      sliderInput(&amp;quot;probability&amp;quot;, &amp;quot;Probability of Automation&amp;quot;,
+                  0, 1, 1, step = .1),
+      # sliderInput(&amp;quot;boxoffice&amp;quot;, &amp;quot;Dollars at Box Office (millions)&amp;quot;,
+      #             0, 800, c(0, 800), step = 1),
+      selectInput(&amp;quot;typicaled&amp;quot;, &amp;quot;Education Level&amp;quot;,
+                  c(&amp;quot;All&amp;quot;, &amp;quot;Bachelor&amp;#39;s degree&amp;quot;, &amp;quot;High school diploma or equivalent&amp;quot;, &amp;quot;Associate&amp;#39;s degree&amp;quot;, &amp;quot;Postsecondary nondegree award&amp;quot;,
+                    &amp;quot;No formal educational credential&amp;quot;, &amp;quot;Master&amp;#39;s degree&amp;quot;, &amp;quot;Doctoral or professional degree&amp;quot;, &amp;quot;Some college, no degree&amp;quot;)
+      ))
+      #textInput(&amp;quot;occupation&amp;quot;, &amp;quot;Occupation Name&amp;quot;))
+  ),
+  mainPanel(
+    plotOutput(&amp;quot;plot&amp;quot;)
+  )
+)
+
+server &amp;lt;- function(input, output) {
+  
+  # defaultColors &amp;lt;- c(&amp;quot;#3366cc&amp;quot;, &amp;quot;#dc3912&amp;quot;, &amp;quot;#ff9900&amp;quot;, &amp;quot;#109618&amp;quot;, &amp;quot;#990099&amp;quot;, &amp;quot;#0099c6&amp;quot;, &amp;quot;#dd4477&amp;quot;)
+  # series &amp;lt;- structure(
+  #   lapply(defaultColors, function(color) { list(color=color) }),
+  #   names = levels(data$typicaled)
+  # )
+  
+  
+  dfInput &amp;lt;- reactive({
+    if (input$typicaled!=&amp;quot;All&amp;quot;) {
+    data %&amp;gt;% filter(TOT_EMP &amp;lt;= input$TOT_EMP,
+                    A_MEDIAN &amp;lt;= input$A_MEDIAN,
+                    probability &amp;lt;= input$probability,
+                    typicaled %in% input$typicaled)
+    #occupation == input$occupation)
+      } else { 
+    data %&amp;gt;% filter(TOT_EMP &amp;lt;= input$TOT_EMP,
+                    A_MEDIAN &amp;lt;= input$A_MEDIAN,
+                    probability &amp;lt;= input$probability)
+      }
+    })
+
+  
+  output$plot &amp;lt;- renderPlot({
+    
+    data1 &amp;lt;- dfInput()
+    
+    ggplot(data1) +
+      geom_point(mapping = aes(x = A_MEDIAN, y = probability, size = TOT_EMP, alpha=0.05, col = typicaled)) +
+      # #geom_smooth(aes(x=A_MEDIAN, y=probability), method=&amp;quot;lm&amp;quot;, se=FALSE) +
+      scale_size_area(max_size = 20) +
+      scale_alpha(guide = &amp;#39;none&amp;#39;) +
+      guides(size = &amp;quot;none&amp;quot;) +
+      theme(legend.position = &amp;quot;bottom&amp;quot;) +
+      guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+      ylim(-.05,1.05) +
+      xlim(25000,200000) +
+      xlab(&amp;quot;Median Income&amp;quot;) +
+      ylab(&amp;quot;Probability of Automation&amp;quot;) +
+      ggtitle(&amp;quot;Likelihood of Job Automation vs Median Income&amp;quot;) +
+      labs(size=&amp;quot;Total Employment&amp;quot;, col=&amp;quot;Education Level&amp;quot;)
+  })
+}
+
+# shinyApp(ui = ui, server = server)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&#34;https://connorrothschild.shinyapps.io/ggvis/&#34;&gt;You can find the Shiny app here&lt;/a&gt;!&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

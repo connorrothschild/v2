@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>JavaScript | Connor Rothschild</title>
+    <link>/tag/javascript/</link>
+      <atom:link href="/tag/javascript/index.xml" rel="self" type="application/rss+xml" />
+    <description>JavaScript</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Thu, 05 Mar 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/img/static/img/avatar.jpg</url>
+      <title>JavaScript</title>
+      <link>/tag/javascript/</link>
+    </image>
+    
+    <item>
+      <title>Are You Smarter Than a Criminal Justice Algorithm?</title>
+      <link>/project/are-you-smarter-than-compas/</link>
+      <pubDate>Thu, 05 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>/project/are-you-smarter-than-compas/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Let Me Guess What You&#39;re Doing Right Now</title>
+      <link>/project/what-are-you-doing/</link>
+      <pubDate>Sat, 08 Feb 2020 00:00:00 +0000</pubDate>
+      <guid>/project/what-are-you-doing/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

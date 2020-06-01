@@ -1,0 +1,180 @@
+---
+title: "STEMigration: Leaving and Entering STEM Fields During College"
+date: "2019-03-11"
+authors: 
+ - admin
+categories: ["R"]
+image:
+  preview_only: true
+tags: ["r", "visualization"]
+summary: "Are traditionally underrepresented groups more likely to migrate into or out of STEM majors?"
+---
+
+The goal of this project is to explore trends in STEM enrollment for different populations. Specifically, it asks: **Are traditionally underrepresented groups more likely to migrate into or out of STEM majors? What discrepancies are present between different demographic groups?**
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+```{r packages}
+library(readxl)
+library(tidyverse)
+library(tidyr)
+library(knitr)
+library(cr)
+conflicted::conflict_prefer("filter", "dplyr")
+
+set_cr_theme(font = "lato")
+```
+
+### The Data
+
+The dataset for this project comes from [data.world](https://data.world/womens-history-month/womens-history-month-week-2/workspace/file?agentid=nsf&datasetid=undergraduate-enrollment-in-engineering-programs&filename=tab2-9.xlsx) and contains the enrollment numbers for undergraduates nationwide. 
+
+```{r file}
+undergradenrollment <- read_excel("data/undergradenrollment.xlsx")
+```
+
+I modified that data in Excel to make it more suitable for this project. The head of that data:
+
+```{r head}
+head(undergradenrollment) %>% kable()
+```
+
+The following command collapses the "**undergradenrollment**" file into a few summary statistics:
+
+1. The proportion of a class that is of a certain demographic (female, Black, Hispanic)
+2. The change in that proportion between that class's first year (matriculation) and their final year (graduation)
+
+It then uses the gather function to make that data easier to analyze.
+
+```{r readdata}
+data <- undergradenrollment %>%
+  mutate(propfemale = female/undergrads*100, firstyearpropfemale = firstyearfemale/firstyearundergrads*100) %>% 
+  mutate(femalegrowth = propfemale-firstyearpropfemale) %>% 
+  mutate(prophispanic = hispanic/undergrads*100, firstyearprophispanic = firstyearhispanic/firstyearundergrads*100) %>% 
+  mutate(hispanicgrowth = prophispanic-firstyearprophispanic) %>% 
+  mutate(propblack = black/undergrads*100, firstyearpropblack = firstyearblack/firstyearundergrads*100) %>% 
+  mutate(blackgrowth = propblack-firstyearpropblack) %>% 
+  select(year,femalegrowth,blackgrowth,hispanicgrowth,propfemale,prophispanic,propblack)  %>% 
+  gather("type", "growth", 2:4) %>% 
+  gather("proportiontype","proportion",2:4)
+```
+
+The structure of that new dataset:
+
+```{r headdata}
+head(data) %>% kable()
+summary(data) %>% kable()
+```
+
+### Plots and Analysis
+
+I am first curious how enrollment has changed for each group in my analysis. The following plots enrollment for different underrepresented groups as a proportion of overall enrollment in STEM majors at the undergraduate level.
+
+```{r plot2}
+ggplot(data=data, mapping = aes(x=year,y=proportion, colour=proportiontype, group=proportiontype)) +
+  geom_point() +
+  geom_line() +
+  ggtitle("Demographic Proportion of Overall Enrollment in STEM Majors", subtitle="Over time") +
+  xlab("Class") +
+  ylab("Percent of Overall Class") +
+  theme_minimal() +
+  scale_color_discrete(name="Demographic",
+                      breaks=c("propblack","propfemale","prophispanic"),
+                      label=c("Black","Female","Hispanic")) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+Of the traditionally underrepresented groups, women fare the best in STEM. But even at their peak, they only held 19% of seats in STEM classrooms.
+
+Next, I am curious how these shifts vary from one graduation class to another. In other words, **which classes experience the greatest shifts in representation throughout their time in university?**
+
+I explore this by mutating the data to include a new variable: *growth*.
+This variable (which may be more accurately be named "change") examines the difference between the underrepresented proportion of STEM enrollment at the **time of graduation** and the **time of matriculation**. 
+If women were 19% of their class's STEM majors at time of matriculation in 2015 and 17% of their class's STEM majors at time of graduation, *growth* would be 2% (19%-17%).
+
+We can explore these changes by graduation year:
+
+```{r plot3}
+data %>% distinct(year,type,.keep_all=TRUE) %>% 
+ggplot(aes(fill=type, y=growth, x=year)) + 
+  geom_bar(position="dodge", stat="identity") +
+  xlab("Class") +
+  ylab("Percent Change") +
+  theme_minimal() +
+  ggtitle("Percent Change in Proportion of Overall STEM Class", subtitle="Between time of matriculation and time of graduation") +
+  scale_fill_discrete(name="Demographic",
+                      label=c("Black","Female","Hispanic")) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+It seems as if women experience the greatest growth in STEM enrollment during their time as undergraduates, while Black students tend to migrate *out* of STEM majors.
+
+We can break that down group-by-group.
+
+```{r plot4}
+data %>% distinct(year,type,.keep_all=TRUE) %>% 
+  filter(type=="blackgrowth") %>% 
+  ggplot(mapping=aes(x=year,y=growth)) +
+  geom_col(aes(fill=growth)) + 
+  scale_fill_gradient() +
+  ylab("Percent Attrition") +
+  xlab("Class") +
+  ggtitle("Percent Change in Black STEM Undergrads", subtitle = "Between time of matriculation and time of graduation") +
+  labs(fill="Attrition") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r plot5}
+data %>% distinct(year,type,.keep_all=TRUE) %>% 
+  filter(type=="femalegrowth") %>% 
+  ggplot(mapping=aes(x=year,y=growth)) +
+  geom_col(aes(fill=growth)) +
+  scale_fill_gradient() +
+  ylab("Percent Growth") +
+  xlab("Class") +
+  ggtitle("Percent Change in Female STEM Undergrads", subtitle = "Between time of matriculation and time of graduation") +
+  labs(fill="Growth") +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r plot}
+data %>% distinct(year,type,.keep_all=TRUE) %>% 
+  filter(type=="hispanicgrowth") %>% 
+  ggplot(mapping=aes(x=year,y=growth)) +
+  geom_col(aes(fill=growth)) +
+  scale_fill_gradient() +
+  ylab("Percent Growth") +
+  xlab("Class") +
+  ggtitle("Percent Change in Hispanic STEM Undergrads", subtitle = "Between time of matriculation and time of graduation") +
+  labs(fill="Growth") +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+Here are the previous graphs, faceted:
+
+```{r plot6}
+labels <- c(blackgrowth = "Black", femalegrowth = "Female", hispanicgrowth="Hispanic") 
+data %>% distinct(year,type,.keep_all=TRUE) %>% 
+  ggplot(mapping=aes(x=year,y=growth)) +
+  geom_col(aes(fill=growth)) +
+  ylab("Percent Change") +
+  xlab("Class") +
+  ggtitle("Percent Change in Proportion of STEM Undergrads", subtitle = "Between time of matriculation and time of graduation") +
+  labs(fill="Percent\nChange") +
+  facet_grid(. ~ type, labeller=labeller(type = labels)) +
+  scale_x_discrete(labels = c("Class of 2006" = "2006", "Class of 2007" = "2007", "Class of 2008" = "2008", "Class of 2009" = "2009", "Class of 2010" = "2010", "Class of 2011" = "2011", "Class of 2012" = "2012", "Class of 2013" = "2013")) +
+  theme(axis.text.x = element_text(angle = 90))
+```  
+
+### Summaries and Takeaways
+
+The decision to migrate into or out of STEM majors is both an individual choice and one shaped by institutional factors. In the face of demographic discrepancies, universities may or may not make changes to make STEM fields more accessible to underrepresented groups. 
+
+The data paint a neutral picture of trends in STEM. This analysis may suggest something about individual choices; it may also suggest that universities are not doing enough to make STEM majors accessible to Black students. However, it is promising that women and Hispanic students are able to, and often choose to, migrate into STEM majors. 
+
+There does not seem to be a temporal dynamic to these decisions. Although some classes (the Class of 2009) were more than others likely to migrate into STEM majors, no trend makes itself apparent year-by-year.
+
+This analysis may suggest that more can be done to bring women and racial minorities into STEM, or it may simply present the product of individual decisions on the part of underrepresented groups.

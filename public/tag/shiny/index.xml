@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>shiny | Connor Rothschild</title>
+    <link>/tag/shiny/</link>
+      <atom:link href="/tag/shiny/index.xml" rel="self" type="application/rss+xml" />
+    <description>shiny</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sat, 03 Aug 2019 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/img/static/img/avatar.jpg</url>
+      <title>shiny</title>
+      <link>/tag/shiny/</link>
+    </image>
+    
+    <item>
+      <title>Building my First Shiny App</title>
+      <link>/post/building-my-first-shiny-app/</link>
+      <pubDate>Sat, 03 Aug 2019 00:00:00 +0000</pubDate>
+      <guid>/post/building-my-first-shiny-app/</guid>
+      <description>
+
+
+&lt;p&gt;I spent some time this weekend playing around with &lt;a href=&#34;https://shiny.rstudio.com&#34;&gt;Shiny&lt;/a&gt;, RStudio’s tool for creating interactive web apps. In a nod to my humble beginnings, I wanted to bring some interactivity to my first R project (&lt;a href=&#34;https://connorrothschild.github.io/r/automation/&#34;&gt;ever!&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;I finished the project roughly a year ago, in the summer between my freshman and sophomore year. It was an exercise in plotting multiple dimensions related to something of personal interest to me: automation and its impact on jobs. I wanted to use ggplot2 to recreate a visualization I came across on Bloomberg graphics. Here’s &lt;a href=&#34;https://www.bloomberg.com/graphics/2017-job-risk/&#34;&gt;Bloomberg’s visualization&lt;/a&gt; and here’s &lt;a href=&#34;https://connorrothschild.github.io/r/automation/&#34;&gt;mine&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;There are some obvious differences in our visualizations (our axes are inverted, they likely used D3.js while I used ggplot2), but for the most part, our visualizations depict the same lesson: lower-paying jobs and less-educated jobs are more susceptible to job displacement from automation.&lt;/p&gt;
+&lt;p&gt;A year later, there are some things about my first visualization I would definitely change (title and axis label size, unnecessary corner labels, a potentially misleading geom_smooth line), but what I really want to work on now is bringing my project closer to the Bloomberg visualization by making it interactive. (I’ve actually already made an &lt;a href=&#34;https://public.tableau.com/profile/connor.rothschild#!/vizhome/JobAutomationRiskintheUnitedStates/Final&#34;&gt;interactive version&lt;/a&gt; of the visualization using Tableau, but I wanted to do it again in R to expand my skillset!)&lt;/p&gt;
+&lt;p&gt;Enter Shiny, RStudio’s tool for creating interactive visualizations. By using Shiny with &lt;a href=&#34;https://ggvis.rstudio.com&#34;&gt;ggvis&lt;/a&gt; (ggplot2’s “successor” with interactive capabilities), I’m able to get pretty close to my initial inspiration.&lt;/p&gt;
+&lt;p&gt;ggvis’s commands are pretty similar to ggplot2, and so the learning curve wasn’t that steep (with the exception of setting the default size parameter for my points, which I finally solved with &lt;a href=&#34;https://stackoverflow.com/questions/43466172/chang-size-of-points-depending-on-one-column-with-ggvis&#34;&gt;this fix&lt;/a&gt;). Shiny was a bit more difficult to learn, but RStudio’s &lt;a href=&#34;https://shiny.rstudio.com/tutorial/&#34;&gt;online video tutorials&lt;/a&gt; make it a lot less daunting. All in all, the project only took one night (~3 hours) to complete. Another example of R’s accessibility and ease of use!&lt;/p&gt;
+&lt;div id=&#34;cleanprepare-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Clean/Prepare Data&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+library(ggthemes)
+library(dplyr)
+library(ggrepel)
+library(tools)
+library(readxl)
+library(tidyverse)
+library(knitr)
+
+options(scipen=999)
+theme_set(theme_minimal())
+
+education &amp;lt;- read_excel(&amp;quot;data/education.xlsx&amp;quot;, skip=1)
+salary &amp;lt;- read_excel(&amp;quot;data/national_M2017_dl.xlsx&amp;quot;)
+automation &amp;lt;- read_excel(&amp;quot;data/raw_state_automation_data.xlsx&amp;quot;)
+
+salary1 &amp;lt;- salary %&amp;gt;% 
+group_by(OCC_TITLE) %&amp;gt;% 
+mutate(natlwage = TOT_EMP * as.numeric(A_MEAN)) %&amp;gt;%
+filter(!is.na(TOT_EMP)) %&amp;gt;%
+filter(!is.na(A_MEAN)) %&amp;gt;%
+filter(!is.na(A_MEDIAN))
+
+salary1$A_MEDIAN = as.numeric(as.character(salary1$A_MEDIAN))
+salary2 &amp;lt;- select(salary1, OCC_TITLE, TOT_EMP, A_MEDIAN, natlwage) %&amp;gt;% 
+distinct()
+
+library(plyr)
+education1 &amp;lt;- education %&amp;gt;% select(-...2)
+
+education1 &amp;lt;- rename(education1, c(&amp;quot;2016 National Employment Matrix title and code&amp;quot; = &amp;quot;occupation&amp;quot;,
+                                   &amp;quot;Less than high school diploma&amp;quot; = &amp;quot;lessthanhs&amp;quot;, 
+                                   &amp;quot;High school diploma or equivalent&amp;quot; = &amp;quot;hsdiploma&amp;quot;,
+                                   &amp;quot;Some college, no degree&amp;quot; = &amp;quot;somecollege&amp;quot;,
+                                   &amp;quot;Associate&amp;#39;s degree&amp;quot; = &amp;quot;associates&amp;quot;,
+                                   &amp;quot;Bachelor&amp;#39;s degree&amp;quot; = &amp;quot;bachelors&amp;quot;,
+                                   &amp;quot;Master&amp;#39;s degree&amp;quot; = &amp;quot;masters&amp;quot;,
+                                   &amp;quot;Doctoral or professional degree&amp;quot; = &amp;quot;professional&amp;quot;))
+
+education2 &amp;lt;- education1 %&amp;gt;% 
+  group_by(occupation) %&amp;gt;%
+  mutate(hsorless = lessthanhs + hsdiploma,
+         somecollegeorassociates = somecollege + associates,
+         postgrad = masters + professional)
+
+education2 &amp;lt;- education2 %&amp;gt;% drop_na()
+
+salary2 &amp;lt;- rename(salary2, c(&amp;quot;OCC_TITLE&amp;quot; = &amp;quot;occupation&amp;quot;))
+salary2$occupation &amp;lt;- tolower(salary2$occupation)
+education2$occupation &amp;lt;- tolower(education2$occupation)
+edsal &amp;lt;- merge(as.data.frame(education2), as.data.frame(salary2), by=&amp;quot;occupation&amp;quot;) %&amp;gt;% drop_na()
+
+  typicaleducation &amp;lt;- read_excel(&amp;quot;data/typicaleducation.xlsx&amp;quot;)
+  typicaleducation2 &amp;lt;- typicaleducation %&amp;gt;% select(occupation,typicaled,workexp)
+  typicaleducation2 &amp;lt;- typicaleducation2 %&amp;gt;% drop_na()
+  typicaleducation2$occupation &amp;lt;- tolower(typicaleducation2$occupation)
+  edsal2 &amp;lt;- merge(as.data.frame(edsal), as.data.frame(typicaleducation2), by=&amp;quot;occupation&amp;quot;)
+
+  detach(package:plyr)
+  edsal3 &amp;lt;- edsal2 %&amp;gt;% 
+  group_by(typicaled) %&amp;gt;% 
+  summarise(medianwage = mean(A_MEDIAN))
+  
+  automationwstates &amp;lt;- automation %&amp;gt;% select(-soc)
+  automation1 &amp;lt;- automationwstates %&amp;gt;% select(occupation,probability,total)
+
+  automation1$occupation &amp;lt;- str_replace_all(automation1$occupation, &amp;quot;;&amp;quot;, &amp;quot;,&amp;quot;)
+  automation1$occupation &amp;lt;- tolower(automation$occupation)
+  data &amp;lt;- merge(as.data.frame(edsal2), as.data.frame(automation1), by=&amp;quot;occupation&amp;quot;)
+
+  data$occupation &amp;lt;- toTitleCase(data$occupation)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bring-in-shiny&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Bring in Shiny&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(shiny)
+
+# Define UI for application 
+ui &amp;lt;- pageWithSidebar(
+  headerPanel(&amp;quot;Automation&amp;quot;),
+  sidebarPanel(
+    wellPanel(
+      h4(&amp;quot;Filter&amp;quot;),
+      sliderInput(&amp;quot;TOT_EMP&amp;quot;, &amp;quot;Number of Workers&amp;quot;,
+                  0, 4450000, 4450000, step = 10000),
+      sliderInput(&amp;quot;A_MEDIAN&amp;quot;, &amp;quot;Median Income&amp;quot;, 
+                  0, 185150, 185150, step = 1000),
+      sliderInput(&amp;quot;probability&amp;quot;, &amp;quot;Probability of Automation&amp;quot;,
+                  0, 1, 1, step = .1),
+      # sliderInput(&amp;quot;boxoffice&amp;quot;, &amp;quot;Dollars at Box Office (millions)&amp;quot;,
+      #             0, 800, c(0, 800), step = 1),
+      selectInput(&amp;quot;typicaled&amp;quot;, &amp;quot;Education Level&amp;quot;,
+                  c(&amp;quot;All&amp;quot;, &amp;quot;Bachelor&amp;#39;s degree&amp;quot;, &amp;quot;High school diploma or equivalent&amp;quot;, &amp;quot;Associate&amp;#39;s degree&amp;quot;, &amp;quot;Postsecondary nondegree award&amp;quot;,
+                    &amp;quot;No formal educational credential&amp;quot;, &amp;quot;Master&amp;#39;s degree&amp;quot;, &amp;quot;Doctoral or professional degree&amp;quot;, &amp;quot;Some college, no degree&amp;quot;)
+      ))
+      #textInput(&amp;quot;occupation&amp;quot;, &amp;quot;Occupation Name&amp;quot;))
+  ),
+  mainPanel(
+    plotOutput(&amp;quot;plot&amp;quot;)
+  )
+)
+
+server &amp;lt;- function(input, output) {
+  
+  # defaultColors &amp;lt;- c(&amp;quot;#3366cc&amp;quot;, &amp;quot;#dc3912&amp;quot;, &amp;quot;#ff9900&amp;quot;, &amp;quot;#109618&amp;quot;, &amp;quot;#990099&amp;quot;, &amp;quot;#0099c6&amp;quot;, &amp;quot;#dd4477&amp;quot;)
+  # series &amp;lt;- structure(
+  #   lapply(defaultColors, function(color) { list(color=color) }),
+  #   names = levels(data$typicaled)
+  # )
+  
+  
+  dfInput &amp;lt;- reactive({
+    if (input$typicaled!=&amp;quot;All&amp;quot;) {
+    data %&amp;gt;% filter(TOT_EMP &amp;lt;= input$TOT_EMP,
+                    A_MEDIAN &amp;lt;= input$A_MEDIAN,
+                    probability &amp;lt;= input$probability,
+                    typicaled %in% input$typicaled)
+    #occupation == input$occupation)
+      } else { 
+    data %&amp;gt;% filter(TOT_EMP &amp;lt;= input$TOT_EMP,
+                    A_MEDIAN &amp;lt;= input$A_MEDIAN,
+                    probability &amp;lt;= input$probability)
+      }
+    })
+
+  
+  output$plot &amp;lt;- renderPlot({
+    
+    data1 &amp;lt;- dfInput()
+    
+    ggplot(data1) +
+      geom_point(mapping = aes(x = A_MEDIAN, y = probability, size = TOT_EMP, alpha=0.05, col = typicaled)) +
+      # #geom_smooth(aes(x=A_MEDIAN, y=probability), method=&amp;quot;lm&amp;quot;, se=FALSE) +
+      scale_size_area(max_size = 20) +
+      scale_alpha(guide = &amp;#39;none&amp;#39;) +
+      guides(size = &amp;quot;none&amp;quot;) +
+      theme(legend.position = &amp;quot;bottom&amp;quot;) +
+      guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+      ylim(-.05,1.05) +
+      xlim(25000,200000) +
+      xlab(&amp;quot;Median Income&amp;quot;) +
+      ylab(&amp;quot;Probability of Automation&amp;quot;) +
+      ggtitle(&amp;quot;Likelihood of Job Automation vs Median Income&amp;quot;) +
+      labs(size=&amp;quot;Total Employment&amp;quot;, col=&amp;quot;Education Level&amp;quot;)
+  })
+}
+
+# shinyApp(ui = ui, server = server)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&#34;https://connorrothschild.shinyapps.io/ggvis/&#34;&gt;You can find the Shiny app here&lt;/a&gt;!&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

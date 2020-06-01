@@ -1,0 +1,926 @@
+---
+title: "Automation and Its Impact on Jobs"
+date: "2018-05-10"
+authors: 
+ - admin
+categories: ["R"]
+# featuredImage: "featured.png"
+tags: ["r", "visualization"]
+summary: "Automation and its impact on jobs."
+---
+
+
+
+<p>The goal of this project is to understand the relationship between income, education, and automation. It asks the following: <strong>Is a given job’s income correlated to its likelihood of automation? Are jobs which are predominantly less educated more or less likely to be automated? How many workers are in the industries that will be automated?</strong></p>
+<pre class="r"><code>library(ggplot2)
+library(ggthemes)
+library(dplyr)
+library(ggrepel)
+library(tools)
+library(readxl)
+library(tidyverse)
+library(knitr)
+library(cr)
+conflicted::conflict_prefer(&quot;filter&quot;, &quot;dplyr&quot;)
+
+options(scipen=999)
+set_cr_theme(font = &quot;lato&quot;)</code></pre>
+<div id="load-datasets" class="section level3">
+<h3>Load datasets:</h3>
+<p>There are three datasets for this project.</p>
+<ol style="list-style-type: decimal">
+<li><p>Educational attainment broke down by occupation, provided by BLS <a href="https://www.bls.gov/emp/ep_education_training_system.htm">here</a></p></li>
+<li><p>Salaries, median hourly/annual wages broke down by occupation, provided by BLS <a href="https://www.bls.gov/oes/current/oes_nat.htm#11-0000">here</a></p></li>
+<li><p>Risk of automation broken down by occupation, provided by Carl Benedikt Frey and Michael A. Osborne (but compiled <a href="https://data.world/wnedds/occupations-by-state-and-likelihood-of-automation">here</a>)</p></li>
+</ol>
+<pre class="r"><code>education &lt;- read_excel(&quot;data/education.xlsx&quot;, skip=1)
+salary &lt;- read_excel(&quot;data/national_M2017_dl.xlsx&quot;)
+automation &lt;- read_excel(&quot;data/raw_state_automation_data.xlsx&quot;)</code></pre>
+</div>
+<div id="analysis" class="section level2">
+<h2>Analysis</h2>
+<p>I’ll begin by finding which occupations contribute most to the American economy (in USD).</p>
+<pre class="r"><code>salary1 &lt;- salary %&gt;% 
+  group_by(OCC_TITLE) %&gt;% 
+  mutate(natlwage = TOT_EMP * as.numeric(A_MEAN)) %&gt;%
+  filter(!is.na(TOT_EMP)) %&gt;%
+  filter(!is.na(A_MEAN)) %&gt;%
+  filter(!is.na(A_MEDIAN))
+  
+salary1$A_MEDIAN = as.numeric(as.character(salary1$A_MEDIAN))
+salary2 &lt;- select(salary1, OCC_TITLE, TOT_EMP, A_MEDIAN, natlwage) %&gt;% 
+  distinct()
+
+options(scipen=999)
+salary2 %&gt;%
+  arrange(desc(natlwage)) %&gt;% 
+  head() %&gt;% kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">OCC_TITLE</th>
+<th align="right">TOT_EMP</th>
+<th align="right">A_MEDIAN</th>
+<th align="right">natlwage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">All Occupations</td>
+<td align="right">142549250</td>
+<td align="right">37690</td>
+<td align="right">7215843035000</td>
+</tr>
+<tr class="even">
+<td align="left">Management Occupations</td>
+<td align="right">7280330</td>
+<td align="right">102590</td>
+<td align="right">872984370300</td>
+</tr>
+<tr class="odd">
+<td align="left">Office and Administrative Support Occupations</td>
+<td align="right">21965480</td>
+<td align="right">34740</td>
+<td align="right">833589966000</td>
+</tr>
+<tr class="even">
+<td align="left">Healthcare Practitioners and Technical Occupations</td>
+<td align="right">8506740</td>
+<td align="right">64770</td>
+<td align="right">687004322400</td>
+</tr>
+<tr class="odd">
+<td align="left">Sales and Related Occupations</td>
+<td align="right">14522580</td>
+<td align="right">27020</td>
+<td align="right">590778554400</td>
+</tr>
+<tr class="even">
+<td align="left">Business and Financial Operations Occupations</td>
+<td align="right">7472750</td>
+<td align="right">67710</td>
+<td align="right">570395007500</td>
+</tr>
+</tbody>
+</table>
+<p>Management occupations contribute the most, followed by office and administrative support, healthcare practictioners and technical occupations.</p>
+<p>This is a quick vizualization which represents the relationship between a job’s median wage and the number of Americans which have that job.</p>
+<pre class="r"><code>salary2 %&gt;% filter(TOT_EMP &lt; 15000000) %&gt;%
+  ggplot(mapping=aes(x=TOT_EMP, y=A_MEDIAN)) +
+  geom_point(alpha=1/3, col=&quot;red&quot;) +
+  theme_bw() +
+  ggtitle(&quot;Median Wage vs Total Employment&quot;) +
+  xlab(&quot;Number of Americans in a Given Job&quot;) +
+  ylab(&quot;Median Wage of a Given Job&quot;) </code></pre>
+<p><img src="/post/automation/index_files/figure-html/wagevsemployment-1.png" width="672" /></p>
+<p>We now have three data points:</p>
+<ol style="list-style-type: decimal">
+<li><p>The name of an occupation</p></li>
+<li><p>The annual median wage of that occupation</p></li>
+<li><p>The amount it contributes to the American economy (or, more specifically, the amount workers are paid as an entire occupation for their work, annually)</p></li>
+</ol>
+<p>Next, I want to cross-reference the salary data with the education data.</p>
+<pre class="r"><code>education1 &lt;- education %&gt;% select(-...2)
+  
+education1 &lt;- plyr::rename(education1, c(&quot;2016 National Employment Matrix title and code&quot; = &quot;occupation&quot;,
+                     &quot;Less than high school diploma&quot; = &quot;lessthanhs&quot;, 
+                     &quot;High school diploma or equivalent&quot; = &quot;hsdiploma&quot;,
+                     &quot;Some college, no degree&quot; = &quot;somecollege&quot;,
+                     &quot;Associate&#39;s degree&quot; = &quot;associates&quot;,
+                     &quot;Bachelor&#39;s degree&quot; = &quot;bachelors&quot;,
+                     &quot;Master&#39;s degree&quot; = &quot;masters&quot;,
+                     &quot;Doctoral or professional degree&quot; = &quot;professional&quot;))
+
+education2 &lt;- education1 %&gt;% 
+  group_by(occupation) %&gt;%
+  mutate(hsorless = lessthanhs + hsdiploma,
+         somecollegeorassociates = somecollege + associates,
+         postgrad = masters + professional)
+
+education2 &lt;- education2 %&gt;% drop_na()</code></pre>
+<p>Next, I want to join education2 and salary2 to start analysis of education’s effect on salary.</p>
+<pre class="r"><code>salary2 &lt;- plyr::rename(salary2, c(&quot;OCC_TITLE&quot; = &quot;occupation&quot;))
+salary2$occupation &lt;- tolower(salary2$occupation)
+education2$occupation &lt;- tolower(education2$occupation)
+edsal &lt;- merge(as.data.frame(education2), as.data.frame(salary2), by=&quot;occupation&quot;) %&gt;% drop_na()
+
+head(edsal) %&gt;% kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="left">occupation</th>
+<th align="right">lessthanhs</th>
+<th align="right">hsdiploma</th>
+<th align="right">somecollege</th>
+<th align="right">associates</th>
+<th align="right">bachelors</th>
+<th align="right">masters</th>
+<th align="right">professional</th>
+<th align="right">hsorless</th>
+<th align="right">somecollegeorassociates</th>
+<th align="right">postgrad</th>
+<th align="right">TOT_EMP</th>
+<th align="right">A_MEDIAN</th>
+<th align="right">natlwage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td align="left">accountants and auditors</td>
+<td align="right">0.0</td>
+<td align="right">4.0</td>
+<td align="right">7.6</td>
+<td align="right">9.2</td>
+<td align="right">55.6</td>
+<td align="right">20.8</td>
+<td align="right">2.8</td>
+<td align="right">4.0</td>
+<td align="right">16.8</td>
+<td align="right">23.6</td>
+<td align="right">1241000</td>
+<td align="right">69350</td>
+<td align="right">96698720000</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td align="left">actuaries</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">1.2</td>
+<td align="right">1.5</td>
+<td align="right">62.1</td>
+<td align="right">24.9</td>
+<td align="right">10.3</td>
+<td align="right">0.0</td>
+<td align="right">2.7</td>
+<td align="right">35.2</td>
+<td align="right">19210</td>
+<td align="right">101560</td>
+<td align="right">2206268500</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td align="left">adhesive bonding machine operators and tenders</td>
+<td align="right">21.6</td>
+<td align="right">49.2</td>
+<td align="right">21.5</td>
+<td align="right">2.2</td>
+<td align="right">4.9</td>
+<td align="right">0.5</td>
+<td align="right">0.0</td>
+<td align="right">70.8</td>
+<td align="right">23.7</td>
+<td align="right">0.5</td>
+<td align="right">15860</td>
+<td align="right">32710</td>
+<td align="right">549231800</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td align="left">administrative law judges, adjudicators, and hearing officers</td>
+<td align="right">0.2</td>
+<td align="right">0.4</td>
+<td align="right">0.6</td>
+<td align="right">0.5</td>
+<td align="right">5.0</td>
+<td align="right">4.4</td>
+<td align="right">88.9</td>
+<td align="right">0.6</td>
+<td align="right">1.1</td>
+<td align="right">93.3</td>
+<td align="right">14480</td>
+<td align="right">94790</td>
+<td align="right">1423094400</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td align="left">administrative services managers</td>
+<td align="right">2.1</td>
+<td align="right">17.9</td>
+<td align="right">26.1</td>
+<td align="right">12.1</td>
+<td align="right">29.7</td>
+<td align="right">10.3</td>
+<td align="right">1.7</td>
+<td align="right">20.0</td>
+<td align="right">38.2</td>
+<td align="right">12.0</td>
+<td align="right">270100</td>
+<td align="right">94020</td>
+<td align="right">27922938000</td>
+</tr>
+<tr class="even">
+<td>7</td>
+<td align="left">adult basic and secondary education and literacy teachers and instructors</td>
+<td align="right">1.8</td>
+<td align="right">10.2</td>
+<td align="right">18.4</td>
+<td align="right">8.5</td>
+<td align="right">35.9</td>
+<td align="right">20.5</td>
+<td align="right">4.7</td>
+<td align="right">12.0</td>
+<td align="right">26.9</td>
+<td align="right">25.2</td>
+<td align="right">60670</td>
+<td align="right">52100</td>
+<td align="right">3446056000</td>
+</tr>
+</tbody>
+</table>
+<p>At this point I’m realizing that having the educational breakdown (# of Bachelor’s degrees, PhD’s, etc.) per job is interesting but may not be able to reveal a lot of key insights.</p>
+<p>So, I’m going to introduce a fourth dataset: the <em>typical</em> education of a worker in a given occupation, also provided by BLS and found <a href="https://www.bls.gov/emp/tables/education-and-training-by-occupation.htm">here</a>.</p>
+<pre class="r"><code>typicaleducation &lt;- read_excel(&quot;data/typicaleducation.xlsx&quot;)
+typicaleducation2 &lt;- typicaleducation %&gt;% select(occupation,typicaled,workexp)
+typicaleducation2 &lt;- typicaleducation2 %&gt;% drop_na()
+typicaleducation2$occupation &lt;- tolower(typicaleducation2$occupation)
+edsal2 &lt;- merge(as.data.frame(edsal), as.data.frame(typicaleducation2), by=&quot;occupation&quot;)
+
+head(edsal2) %&gt;% kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">occupation</th>
+<th align="right">lessthanhs</th>
+<th align="right">hsdiploma</th>
+<th align="right">somecollege</th>
+<th align="right">associates</th>
+<th align="right">bachelors</th>
+<th align="right">masters</th>
+<th align="right">professional</th>
+<th align="right">hsorless</th>
+<th align="right">somecollegeorassociates</th>
+<th align="right">postgrad</th>
+<th align="right">TOT_EMP</th>
+<th align="right">A_MEDIAN</th>
+<th align="right">natlwage</th>
+<th align="left">typicaled</th>
+<th align="left">workexp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">accountants and auditors</td>
+<td align="right">0.0</td>
+<td align="right">4.0</td>
+<td align="right">7.6</td>
+<td align="right">9.2</td>
+<td align="right">55.6</td>
+<td align="right">20.8</td>
+<td align="right">2.8</td>
+<td align="right">4.0</td>
+<td align="right">16.8</td>
+<td align="right">23.6</td>
+<td align="right">1241000</td>
+<td align="right">69350</td>
+<td align="right">96698720000</td>
+<td align="left">Bachelor’s degree</td>
+<td align="left">None</td>
+</tr>
+<tr class="even">
+<td align="left">actuaries</td>
+<td align="right">0.0</td>
+<td align="right">0.0</td>
+<td align="right">1.2</td>
+<td align="right">1.5</td>
+<td align="right">62.1</td>
+<td align="right">24.9</td>
+<td align="right">10.3</td>
+<td align="right">0.0</td>
+<td align="right">2.7</td>
+<td align="right">35.2</td>
+<td align="right">19210</td>
+<td align="right">101560</td>
+<td align="right">2206268500</td>
+<td align="left">Bachelor’s degree</td>
+<td align="left">None</td>
+</tr>
+<tr class="odd">
+<td align="left">adhesive bonding machine operators and tenders</td>
+<td align="right">21.6</td>
+<td align="right">49.2</td>
+<td align="right">21.5</td>
+<td align="right">2.2</td>
+<td align="right">4.9</td>
+<td align="right">0.5</td>
+<td align="right">0.0</td>
+<td align="right">70.8</td>
+<td align="right">23.7</td>
+<td align="right">0.5</td>
+<td align="right">15860</td>
+<td align="right">32710</td>
+<td align="right">549231800</td>
+<td align="left">High school diploma or equivalent</td>
+<td align="left">None</td>
+</tr>
+<tr class="even">
+<td align="left">administrative law judges, adjudicators, and hearing officers</td>
+<td align="right">0.2</td>
+<td align="right">0.4</td>
+<td align="right">0.6</td>
+<td align="right">0.5</td>
+<td align="right">5.0</td>
+<td align="right">4.4</td>
+<td align="right">88.9</td>
+<td align="right">0.6</td>
+<td align="right">1.1</td>
+<td align="right">93.3</td>
+<td align="right">14480</td>
+<td align="right">94790</td>
+<td align="right">1423094400</td>
+<td align="left">Doctoral or professional degree</td>
+<td align="left">5 years or more</td>
+</tr>
+<tr class="odd">
+<td align="left">administrative services managers</td>
+<td align="right">2.1</td>
+<td align="right">17.9</td>
+<td align="right">26.1</td>
+<td align="right">12.1</td>
+<td align="right">29.7</td>
+<td align="right">10.3</td>
+<td align="right">1.7</td>
+<td align="right">20.0</td>
+<td align="right">38.2</td>
+<td align="right">12.0</td>
+<td align="right">270100</td>
+<td align="right">94020</td>
+<td align="right">27922938000</td>
+<td align="left">Bachelor’s degree</td>
+<td align="left">Less than 5 years</td>
+</tr>
+<tr class="even">
+<td align="left">adult basic and secondary education and literacy teachers and instructors</td>
+<td align="right">1.8</td>
+<td align="right">10.2</td>
+<td align="right">18.4</td>
+<td align="right">8.5</td>
+<td align="right">35.9</td>
+<td align="right">20.5</td>
+<td align="right">4.7</td>
+<td align="right">12.0</td>
+<td align="right">26.9</td>
+<td align="right">25.2</td>
+<td align="right">60670</td>
+<td align="right">52100</td>
+<td align="right">3446056000</td>
+<td align="left">Bachelor’s degree</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p>This data allows us to ask: <strong>What is the median wage for each typical level of education?</strong></p>
+<pre class="r"><code>edsal3 &lt;- edsal2 %&gt;% 
+  group_by(typicaled) %&gt;% 
+  summarise(medianwage = mean(A_MEDIAN))
+
+legend_ord &lt;- levels(with(edsal3, reorder(typicaled, medianwage)))
+
+ggplot(data=edsal3, aes(x = reorder(typicaled, medianwage), y = medianwage)) +
+  geom_col(aes(fill=typicaled)) +
+  ggtitle(&quot;Median Annual Income by Education Level&quot;) +
+  xlab(&quot;Education Level&quot;)+
+  ylab(&quot;Median Annual Income&quot;) +
+  labs(fill=&quot;Education Level&quot;) +
+  scale_fill_discrete(breaks=legend_ord) +
+  theme_minimal() +
+  theme(axis.text.x=element_blank())</code></pre>
+<p><img src="/post/automation/index_files/figure-html/wagebyedu-1.png" width="672" /></p>
+<p>The results are unsurpising: more educated people on average earn more.</p>
+<p>Lastly, I bring in the automation data.</p>
+<pre class="r"><code>automationwstates &lt;- automation %&gt;% select(-soc)
+automation1 &lt;- automationwstates %&gt;% select(occupation,probability,total)
+head(automation) %&gt;% kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">soc</th>
+<th align="left">occupation</th>
+<th align="right">probability</th>
+<th align="right">alabama</th>
+<th align="right">alaska</th>
+<th align="right">arizona</th>
+<th align="right">arkansas</th>
+<th align="right">california</th>
+<th align="right">colorado</th>
+<th align="right">connecticut</th>
+<th align="right">delaware</th>
+<th align="right">district_of_columbia</th>
+<th align="right">florida</th>
+<th align="right">georgia</th>
+<th align="right">hawaii</th>
+<th align="right">idaho</th>
+<th align="right">illinois</th>
+<th align="right">indiana</th>
+<th align="right">iowa</th>
+<th align="right">kansas</th>
+<th align="right">kentucky</th>
+<th align="right">louisiana</th>
+<th align="right">maine</th>
+<th align="right">maryland</th>
+<th align="right">massachusetts</th>
+<th align="right">michigan</th>
+<th align="right">minnesota</th>
+<th align="right">mississippi</th>
+<th align="right">missouri</th>
+<th align="right">montana</th>
+<th align="right">nebraska</th>
+<th align="right">nevada</th>
+<th align="right">new_hampshire</th>
+<th align="right">new_jersey</th>
+<th align="right">new_mexico</th>
+<th align="right">new_york</th>
+<th align="right">north_carolina</th>
+<th align="right">north_dakota</th>
+<th align="right">ohio</th>
+<th align="right">oklahoma</th>
+<th align="right">oregon</th>
+<th align="right">pennsylvania</th>
+<th align="right">rhode_island</th>
+<th align="right">south_carolina</th>
+<th align="right">south_dakota</th>
+<th align="right">tennessee</th>
+<th align="right">texas</th>
+<th align="right">utah</th>
+<th align="right">vermont</th>
+<th align="right">virginia</th>
+<th align="right">washington</th>
+<th align="right">west_virginia</th>
+<th align="right">wisconsin</th>
+<th align="right">wyoming</th>
+<th align="right">total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">11-1011</td>
+<td align="left">Chief Executives</td>
+<td align="right">0.015</td>
+<td align="right">1030</td>
+<td align="right">760</td>
+<td align="right">5750</td>
+<td align="right">2710</td>
+<td align="right">31150</td>
+<td align="right">880</td>
+<td align="right">1410</td>
+<td align="right">340</td>
+<td align="right">2840</td>
+<td align="right">14120</td>
+<td align="right">6750</td>
+<td align="right">1840</td>
+<td align="right">1400</td>
+<td align="right">17440</td>
+<td align="right">4950</td>
+<td align="right">2050</td>
+<td align="right">4410</td>
+<td align="right">3440</td>
+<td align="right">1010</td>
+<td align="right">920</td>
+<td align="right">1800</td>
+<td align="right">11020</td>
+<td align="right">6260</td>
+<td align="right">7490</td>
+<td align="right">940</td>
+<td align="right">5180</td>
+<td align="right">600</td>
+<td align="right">690</td>
+<td align="right">1410</td>
+<td align="right">940</td>
+<td align="right">700</td>
+<td align="right">70</td>
+<td align="right">15410</td>
+<td align="right">4310</td>
+<td align="right">920</td>
+<td align="right">5340</td>
+<td align="right">6370</td>
+<td align="right">2650</td>
+<td align="right">9230</td>
+<td align="right">390</td>
+<td align="right">3400</td>
+<td align="right">560</td>
+<td align="right">5460</td>
+<td align="right">5890</td>
+<td align="right">3650</td>
+<td align="right">280</td>
+<td align="right">6320</td>
+<td align="right">5910</td>
+<td align="right">980</td>
+<td align="right">3740</td>
+<td align="right">160</td>
+<td align="right">223270</td>
+</tr>
+<tr class="even">
+<td align="left">11-1021</td>
+<td align="left">General and Operations Managers</td>
+<td align="right">0.160</td>
+<td align="right">26930</td>
+<td align="right">6490</td>
+<td align="right">43300</td>
+<td align="right">20680</td>
+<td align="right">261780</td>
+<td align="right">41540</td>
+<td align="right">33280</td>
+<td align="right">4080</td>
+<td align="right">26610</td>
+<td align="right">77340</td>
+<td align="right">90520</td>
+<td align="right">11070</td>
+<td align="right">12250</td>
+<td align="right">121040</td>
+<td align="right">49210</td>
+<td align="right">25900</td>
+<td align="right">19620</td>
+<td align="right">26190</td>
+<td align="right">29920</td>
+<td align="right">12360</td>
+<td align="right">47850</td>
+<td align="right">71880</td>
+<td align="right">58040</td>
+<td align="right">41480</td>
+<td align="right">24110</td>
+<td align="right">41440</td>
+<td align="right">4490</td>
+<td align="right">14420</td>
+<td align="right">17480</td>
+<td align="right">11030</td>
+<td align="right">44800</td>
+<td align="right">15550</td>
+<td align="right">162870</td>
+<td align="right">53770</td>
+<td align="right">7010</td>
+<td align="right">64710</td>
+<td align="right">27400</td>
+<td align="right">32350</td>
+<td align="right">70430</td>
+<td align="right">6640</td>
+<td align="right">31780</td>
+<td align="right">3730</td>
+<td align="right">44400</td>
+<td align="right">168610</td>
+<td align="right">36200</td>
+<td align="right">2760</td>
+<td align="right">52380</td>
+<td align="right">43760</td>
+<td align="right">10200</td>
+<td align="right">32350</td>
+<td align="right">4840</td>
+<td align="right">2188870</td>
+</tr>
+<tr class="odd">
+<td align="left">2011-11-01</td>
+<td align="left">Advertising and Promotions Managers</td>
+<td align="right">0.039</td>
+<td align="right">50</td>
+<td align="right">40</td>
+<td align="right">470</td>
+<td align="right">110</td>
+<td align="right">3760</td>
+<td align="right">480</td>
+<td align="right">300</td>
+<td align="right">0</td>
+<td align="right">220</td>
+<td align="right">750</td>
+<td align="right">820</td>
+<td align="right">200</td>
+<td align="right">160</td>
+<td align="right">3670</td>
+<td align="right">290</td>
+<td align="right">230</td>
+<td align="right">230</td>
+<td align="right">270</td>
+<td align="right">320</td>
+<td align="right">130</td>
+<td align="right">460</td>
+<td align="right">1290</td>
+<td align="right">650</td>
+<td align="right">610</td>
+<td align="right">150</td>
+<td align="right">390</td>
+<td align="right">30</td>
+<td align="right">80</td>
+<td align="right">280</td>
+<td align="right">150</td>
+<td align="right">630</td>
+<td align="right">190</td>
+<td align="right">5130</td>
+<td align="right">450</td>
+<td align="right">70</td>
+<td align="right">460</td>
+<td align="right">200</td>
+<td align="right">0</td>
+<td align="right">570</td>
+<td align="right">100</td>
+<td align="right">270</td>
+<td align="right">0</td>
+<td align="right">670</td>
+<td align="right">1210</td>
+<td align="right">380</td>
+<td align="right">40</td>
+<td align="right">240</td>
+<td align="right">640</td>
+<td align="right">40</td>
+<td align="right">200</td>
+<td align="right">0</td>
+<td align="right">28080</td>
+</tr>
+<tr class="even">
+<td align="left">2021-11-01</td>
+<td align="left">Marketing Managers</td>
+<td align="right">0.014</td>
+<td align="right">530</td>
+<td align="right">200</td>
+<td align="right">4790</td>
+<td align="right">1090</td>
+<td align="right">33390</td>
+<td align="right">3060</td>
+<td align="right">4970</td>
+<td align="right">590</td>
+<td align="right">1280</td>
+<td align="right">7600</td>
+<td align="right">7140</td>
+<td align="right">540</td>
+<td align="right">860</td>
+<td align="right">14030</td>
+<td align="right">2870</td>
+<td align="right">1920</td>
+<td align="right">1470</td>
+<td align="right">1490</td>
+<td align="right">920</td>
+<td align="right">810</td>
+<td align="right">2980</td>
+<td align="right">11790</td>
+<td align="right">3870</td>
+<td align="right">7800</td>
+<td align="right">470</td>
+<td align="right">2590</td>
+<td align="right">130</td>
+<td align="right">1060</td>
+<td align="right">1640</td>
+<td align="right">1170</td>
+<td align="right">11260</td>
+<td align="right">350</td>
+<td align="right">16500</td>
+<td align="right">5650</td>
+<td align="right">310</td>
+<td align="right">5350</td>
+<td align="right">1420</td>
+<td align="right">4830</td>
+<td align="right">6250</td>
+<td align="right">550</td>
+<td align="right">1710</td>
+<td align="right">60</td>
+<td align="right">3400</td>
+<td align="right">9570</td>
+<td align="right">2320</td>
+<td align="right">380</td>
+<td align="right">3840</td>
+<td align="right">5830</td>
+<td align="right">260</td>
+<td align="right">2980</td>
+<td align="right">30</td>
+<td align="right">205900</td>
+</tr>
+<tr class="odd">
+<td align="left">2022-11-01</td>
+<td align="left">Sales Managers</td>
+<td align="right">0.013</td>
+<td align="right">2510</td>
+<td align="right">400</td>
+<td align="right">10650</td>
+<td align="right">2650</td>
+<td align="right">69180</td>
+<td align="right">4570</td>
+<td align="right">7040</td>
+<td align="right">860</td>
+<td align="right">1180</td>
+<td align="right">13560</td>
+<td align="right">15460</td>
+<td align="right">2470</td>
+<td align="right">2200</td>
+<td align="right">24150</td>
+<td align="right">5770</td>
+<td align="right">3350</td>
+<td align="right">3250</td>
+<td align="right">3420</td>
+<td align="right">3560</td>
+<td align="right">980</td>
+<td align="right">5230</td>
+<td align="right">14860</td>
+<td align="right">10090</td>
+<td align="right">12590</td>
+<td align="right">1460</td>
+<td align="right">5480</td>
+<td align="right">190</td>
+<td align="right">1930</td>
+<td align="right">3350</td>
+<td align="right">1750</td>
+<td align="right">12840</td>
+<td align="right">1200</td>
+<td align="right">20170</td>
+<td align="right">6750</td>
+<td align="right">710</td>
+<td align="right">11410</td>
+<td align="right">3890</td>
+<td align="right">6220</td>
+<td align="right">8930</td>
+<td align="right">850</td>
+<td align="right">3540</td>
+<td align="right">300</td>
+<td align="right">8890</td>
+<td align="right">22310</td>
+<td align="right">3360</td>
+<td align="right">480</td>
+<td align="right">5360</td>
+<td align="right">7390</td>
+<td align="right">600</td>
+<td align="right">5730</td>
+<td align="right">180</td>
+<td align="right">365250</td>
+</tr>
+<tr class="even">
+<td align="left">2031-11-01</td>
+<td align="left">Public Relations and Fundraising Managers</td>
+<td align="right">0.015</td>
+<td align="right">400</td>
+<td align="right">150</td>
+<td align="right">1240</td>
+<td align="right">300</td>
+<td align="right">7010</td>
+<td align="right">960</td>
+<td align="right">980</td>
+<td align="right">210</td>
+<td align="right">4360</td>
+<td align="right">1710</td>
+<td align="right">1470</td>
+<td align="right">360</td>
+<td align="right">200</td>
+<td align="right">3830</td>
+<td align="right">870</td>
+<td align="right">960</td>
+<td align="right">480</td>
+<td align="right">630</td>
+<td align="right">310</td>
+<td align="right">420</td>
+<td align="right">1350</td>
+<td align="right">4200</td>
+<td align="right">1300</td>
+<td align="right">1880</td>
+<td align="right">270</td>
+<td align="right">1020</td>
+<td align="right">140</td>
+<td align="right">580</td>
+<td align="right">470</td>
+<td align="right">470</td>
+<td align="right">1900</td>
+<td align="right">180</td>
+<td align="right">6040</td>
+<td align="right">1100</td>
+<td align="right">170</td>
+<td align="right">1790</td>
+<td align="right">720</td>
+<td align="right">1470</td>
+<td align="right">1640</td>
+<td align="right">260</td>
+<td align="right">520</td>
+<td align="right">0</td>
+<td align="right">870</td>
+<td align="right">3680</td>
+<td align="right">380</td>
+<td align="right">210</td>
+<td align="right">1250</td>
+<td align="right">2100</td>
+<td align="right">130</td>
+<td align="right">1010</td>
+<td align="right">0</td>
+<td align="right">63950</td>
+</tr>
+</tbody>
+</table>
+<p>Next, I visualize the probability of automation vs total employment:</p>
+<pre class="r"><code>automation1 %&gt;%
+  ggplot(mapping=aes(x=total, y=probability)) +
+  geom_point(alpha=1/3, col=&quot;blue&quot;) +
+  theme_bw() +
+  ggtitle(&quot;Probability of Automation vs Total Employment&quot;) +
+  xlab(&quot;Number of Americans in a Given Job&quot;) +
+  ylab(&quot;Probability of Automation&quot;) +
+  geom_label_repel(data=subset(automation1, total &gt; 4000000),
+                   aes(total, probability,label=occupation), label.size=.5, label.r=.05, size=2.5, nudge_y = .05, nudge_x= -10000)</code></pre>
+<p><img src="/post/automation/index_files/figure-html/autoviz-1.png" width="672" /></p>
+<p>There doesn’t seem to be a huge relationship between automation and number of employees, however there is some concentration at each of the poles.</p>
+<p>Some final data cleaning, and the merge of the final dataset:</p>
+<pre class="r"><code>automation1$occupation &lt;- str_replace_all(automation1$occupation, &quot;;&quot;, &quot;,&quot;)
+automation1$occupation &lt;- tolower(automation$occupation)
+data &lt;- merge(as.data.frame(edsal2), as.data.frame(automation1), by=&quot;occupation&quot;)</code></pre>
+<p>We can create an initial visualization of the relationship between automation risk and education level.</p>
+<pre class="r"><code>autovsedu &lt;- data %&gt;% 
+  group_by(typicaled) %&gt;% 
+  summarise(medianwage = mean(A_MEDIAN),
+            averageprobability = mean(probability))
+
+legend_ord2 &lt;- levels(with(autovsedu, reorder(typicaled, -averageprobability)))
+
+ggplot(data=autovsedu, aes(x = reorder(typicaled, -averageprobability), y = averageprobability)) +
+  geom_col(aes(fill=typicaled)) +
+  ggtitle(&quot;Likelihood of Job Automation by Education Level&quot;) +
+  xlab(&quot;Education Level&quot;)+
+  ylab(&quot;Likelihood of Job Automation&quot;) +
+  labs(fill=&quot;Education Level&quot;) +
+  scale_fill_discrete(breaks=legend_ord2) +
+  theme_minimal() +
+  theme(axis.text.x=element_blank())</code></pre>
+<p><img src="/post/automation/index_files/figure-html/firstlook-1.png" width="672" /></p>
+<p>There is a rather clear correlation between level of education and automation risk: those who are more educated are better protected from automation.</p>
+<p>We can then visualize this relationship by individual occupation:</p>
+<pre class="r"><code>ggplot(data=data) +
+  geom_point(mapping=aes(x=A_MEDIAN, y=probability, size=TOT_EMP, alpha=1/10, col=typicaled))+
+  scale_size(range = c(1, 20)) +
+  ylim(-.01,1) +
+  xlab(&quot;Median Income&quot;) +
+  ylab(&quot;Probability of Automation&quot;) +
+  ggtitle(&quot;Likelihood of Job Automation vs Median Income&quot;) +
+  labs(size=&quot;Total Employment&quot;, col=&quot;Education Level&quot;) +
+  labs(alpha=NULL) +
+  guides(alpha=FALSE) +
+  theme(legend.text = element_text(colour=&quot;black&quot;, size = 10)) +
+  guides(col = guide_legend(override.aes = list(size=5))) +
+  theme_minimal()</code></pre>
+<p><img src="/post/automation/index_files/figure-html/viz2-1.png" width="672" /></p>
+<p>With labels, a final look:</p>
+<pre class="r"><code>data$occupation &lt;- toTitleCase(data$occupation)
+
+ggplot(data=data) +
+  geom_point(mapping=aes(x=A_MEDIAN, y=probability, size=TOT_EMP, alpha=0.05, col=typicaled))+
+  geom_smooth(aes(x=A_MEDIAN, y=probability), method=&quot;lm&quot;, se=FALSE) +
+  scale_size(range = c(1, 20)) +
+  ylim(-.05,1.05) +
+  xlim(25000,200000) +
+  xlab(&quot;Median Income&quot;) +
+  ylab(&quot;Probability of Automation&quot;) +
+  ggtitle(&quot;Likelihood of Job Automation vs Median Income&quot;) +
+  labs(size=&quot;Total Employment&quot;, col=&quot;Typical Education Level&quot;) +
+  labs(alpha=NULL) +
+  guides(alpha=FALSE) +
+  theme(legend.text = element_text(colour=&quot;black&quot;, size = 10)) +
+  guides(col = guide_legend(override.aes = list(size=5))) +
+  theme_minimal() +
+  geom_label_repel(aes(A_MEDIAN,probability,label=occupation),subset(data, A_MEDIAN &gt; 175000 &amp; probability &lt; .05), label.size=.5, label.r=.05, size=2.5, nudge_y = .05, nudge_x= -10000) +
+  geom_label_repel(aes(A_MEDIAN,probability,label=occupation),subset(data, A_MEDIAN == 21030), label.size=.1, label.r=.01, size=1, nudge_y = 0,nudge_x=0) +
+  geom_label_repel(aes(A_MEDIAN,probability,label=occupation),subset(data, A_MEDIAN == 24540), label.size=.1, label.r=.01, size=1, nudge_y = 0,nudge_x=0) +
+  geom_label_repel(aes(A_MEDIAN,probability,label=occupation),subset(data, A_MEDIAN &gt; 100000 &amp; probability &gt; .90), label.size=.5, label.r=.05, size=2.5, nudge_y = -.05,nudge_x=10000) +
+  annotate(&quot;text&quot;, x = 165000, y = 1.03, label = &quot;Highest salary,\n highest automation risk&quot;, size=3, fontface=2) +
+  annotate(&quot;text&quot;, x = 165000, y = -0.035, label = &quot;Highest salary,\n lowest automation risk&quot;, size=3, fontface=2) +
+  annotate(&quot;text&quot;, x = 45000, y = -0.035, label = &quot;Lowest salary,\n lowest automation risk&quot;, size=3, fontface=2) +
+  annotate(&quot;text&quot;, x = 45000, y = 1.03, label = &quot;Lowest salary,\n highest automation risk&quot;, size=3, fontface=2)</code></pre>
+<p><img src="/post/automation/index_files/figure-html/finalviz-1.png" width="672" /></p>
+<div id="conclusions" class="section level3">
+<h3>Conclusions</h3>
+<p>Using the dataset I’ve used in this project, researchers Carl Frey and Michael Osborne <a href="https://www.oxfordmartin.ox.ac.uk/downloads/academic/The_Future_of_Employment.pdf">predicted</a> that 47% of jobs are at risk of automation over the next couple decades.</p>
+<p>The visuals above suggest that the ills of automation may not be evenly distributed across jobs.</p>
+<p>Less educated workers are more likely to face job loss as a product of automation. Those with high school diplomas or less (green bubbles) find themself concentrated near the top of the y-axis, while those with Bachelor’s degrees or higher on average face a lower risk of automation.</p>
+<p>A job’s salary is also predictive of automation probability. As the median income of a profession increases, the likelihood of automation displacing its workers decreases.</p>
+<p>Automation’s impact on work necessitates a policy response. The fact that automation will differentially impact different industries reminds us that this public policy will have to be strategic and thoughtful.</p>
+</div>
+</div>

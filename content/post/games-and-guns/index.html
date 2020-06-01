@@ -1,0 +1,148 @@
+---
+title: "Games and Guns"
+authors: 
+ - admin
+date: "2019-08-12"
+categories: ["R"]
+image:
+  preview_only: true
+tags: ["r", "visualization"]
+summary: "Is there a connection between video games and gun violence, as Republicans suggest?"
+---
+
+
+
+<p>Is there a connection between video games and gun violence, as Republicans suggest?</p>
+<div id="load-packages" class="section level3">
+<h3>Load Packages</h3>
+<pre class="r"><code>library(readr)
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+library(showtext)
+library(emojifont)
+library(cr)
+conflicted::conflict_prefer(&quot;filter&quot;, &quot;dplyr&quot;)
+conflicted::conflict_prefer(&quot;scale_colour_discrete&quot;, &quot;cr&quot;)
+
+set_cr_theme(font = &quot;lato&quot;)</code></pre>
+</div>
+<div id="load-data" class="section level3">
+<h3>Load Data</h3>
+<p>Data regarding gun deaths per capita comes from the <a href="https://vizhub.healthdata.org/gbd-compare/">Institute for Health Metrics and Evaluation</a></p>
+<pre class="r"><code>guns &lt;- read_csv(&quot;data/IHME-guns.csv&quot;)
+
+guns &lt;- guns %&gt;% select(Location, Value)</code></pre>
+<p>Data regarding video game sales per capita comes from this <a href="https://docs.google.com/spreadsheets/d/1n7VPylBiHov7gWwM4F070m5JZsB7fGOMMQsoAOIh5RA/edit?usp=sharing">Google Spreadsheet</a> which was pulled from NewZoo, a gaming analytics company.</p>
+<pre class="r"><code>games &lt;- read_excel(&quot;data/GameRevenueByCountry.xlsx&quot;)
+
+games &lt;- games %&gt;% 
+  rename(revenue = `PER CAPITA REVENUE`) %&gt;% 
+  select(Country, revenue)</code></pre>
+</div>
+<div id="merge-and-clean-data" class="section level3">
+<h3>Merge and Clean Data</h3>
+<pre class="r"><code>joined &lt;- left_join(games, guns, by = c(&quot;Country&quot; = &quot;Location&quot;))</code></pre>
+<p>Next, we clean <code>games</code> dataset so that <code>Country</code> matches the <code>Location</code> column from <code>guns</code>.</p>
+<pre class="r"><code>games &lt;- games %&gt;% 
+  mutate(Country = case_when(Country == &quot;Republic of Korea&quot; ~ &quot;South Korea&quot;,
+                             Country == &quot;Brunei Darussalam&quot; ~ &quot;Brunei&quot;,
+                             #Country == &quot;Macao&quot; ~ ,
+                             #Country == &quot;Hong Kong, China&quot; ~ ,
+                             Country == &quot;Lucembourg&quot; ~ &quot;Luxembourg&quot;,
+                             Country == &quot;Kuwair&quot; ~ &quot;Kuwait&quot;,
+                             Country == &quot;UAE&quot; ~ &quot;United Arab Emirates&quot;,
+                             Country == &quot;TFYR Macedonia&quot; ~ &quot;Macedonia&quot;,
+                             Country == &quot;Joran&quot; ~ &quot;Jordan&quot;,
+                             Country == &quot;Republic of Moldova&quot; ~ &quot;Moldova&quot;,
+                             TRUE ~ as.character(Country)))</code></pre>
+<pre class="r"><code>joined &lt;- left_join(games, guns, by = c(&quot;Country&quot; = &quot;Location&quot;))</code></pre>
+<p>There are 98 countries with full data present.</p>
+<p>We should also create a dummy variable for each country depending on whether it is an OECD country or not.</p>
+<pre class="r"><code>Country &lt;- c(
+&quot;Austria&quot;,
+&quot;Belgium&quot;,
+&quot;Canada&quot;,
+&quot;Denmark&quot;,
+&quot;France&quot;,
+&quot;Greece&quot;,
+&quot;Iceland&quot;,
+&quot;Ireland&quot;,
+&quot;Italy&quot;,
+&quot;Luxembourg&quot;,
+&quot;Netherlands&quot;,
+&quot;Norway&quot;,
+&quot;Portugal&quot;,
+&quot;Spain&quot;,
+&quot;Sweden&quot;,
+&quot;Switzerland&quot;,
+&quot;Turkey&quot;,
+&quot;United Kingdom&quot;,
+&quot;United States&quot;,
+&quot;West Germany&quot;,
+&quot;Australia&quot;,
+&quot;Finland&quot;,
+&quot;Japan&quot;,
+&quot;New Zealand&quot;)
+
+OECD &lt;- &quot;OECD&quot;
+
+oecd &lt;- data.frame(Country, OECD)</code></pre>
+<pre class="r"><code>oecd_joined &lt;- left_join(joined, oecd, by = &quot;Country&quot;)
+
+oecd_joined &lt;- oecd_joined %&gt;% 
+  mutate(OECD = ifelse(is.na(OECD), &quot;Not OECD&quot;, &quot;OECD&quot;))</code></pre>
+</div>
+<div id="visualize" class="section level3">
+<h3>Visualize</h3>
+<p>This allows us to plot each country in a scatterplot, with point colour corresponding to OECD status:</p>
+<pre class="r"><code>oecd_joined %&gt;% 
+  ggplot(aes(x = revenue, y = Value, colour = factor(OECD))) +
+  geom_point() +
+  geom_text(aes(label = ifelse(Country == &quot;United States&quot;, as.character(Country),&#39;&#39;), vjust = -1), show.legend = FALSE) +
+  geom_text(aes(label = ifelse(Value &gt; 40, as.character(Country),&#39;&#39;), vjust = -1), show.legend = FALSE) +
+  geom_text(aes(label = ifelse(revenue &gt; 150, as.character(Country),&#39;&#39;), vjust = -1), show.legend = FALSE) +
+  labs(x = &quot;Video Game Revenue per Capita (US $)&quot;,
+       y = &quot;Violent Gun Deaths per 100k&quot;,
+       title = &quot;Gun Deaths vs Game Sales&quot;,
+       colour = element_blank(),
+       caption = &quot;\nSources: Institute for Health Metrics and Evaluation, NewZoo&quot;) +
+  scale_y_continuous(limits = c(0, 45)) +
+  theme(plot.caption = element_text(face = &quot;italic&quot;, hjust = 0), 
+        legend.position = &quot;top&quot;, legend.direction = &quot;horizontal&quot;) +
+  drop_axis(axis = &quot;y&quot;)</code></pre>
+<p><img src="/post/games-and-guns/index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Finally, we can focus on only OECD countries:</p>
+<pre class="r"><code>oecd_joined %&gt;% 
+  dplyr::filter(OECD == &quot;OECD&quot;) %&gt;% 
+  ggplot(aes(x = revenue, y = Value)) +
+  geom_point() +
+  #geom_smooth() +
+  geom_text(aes(label = ifelse(Country == &quot;United States&quot;, as.character(Country),&#39;&#39;), vjust = -1)) +
+  labs(x = &quot;Video Game Revenue per Capita (US $)&quot;,
+       y = &quot;Violent Gun Deaths per 100k&quot;,
+       title = &quot;Gun Deaths vs Game Sales&quot;,
+       subtitle = &quot;OECD Countries&quot;,
+       caption = &quot;\nSources: Institute for Health Metrics and Evaluation, NewZoo&quot;) +
+  scale_y_continuous(limits = c(0, 5)) +
+  theme(plot.caption = element_text(face = &quot;italic&quot;, hjust = 0)) +
+  drop_axis(axis = &quot;y&quot;)</code></pre>
+<p><img src="/post/games-and-guns/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>To conclude, let’s add an emoji to fully capture our skepticism with the <a href="https://www.cnn.com/2019/08/05/politics/kevin-mccarthy-mass-shootings-video-games/index.html">newfound argument</a> linking video games to violence.</p>
+<pre class="r"><code>oecd_joined %&gt;% 
+  dplyr::filter(OECD == &quot;OECD&quot;) %&gt;% 
+  ggplot(aes(x = revenue, y = Value)) +
+  geom_point() +
+  #geom_smooth() +
+  geom_text(aes(label = ifelse(Country == &quot;United States&quot;, as.character(Country),&#39;&#39;), vjust = -1)) +
+  labs(x = &quot;Video Game Revenue per Capita (US $)&quot;,
+       y = &quot;Violent Gun Deaths per 100k&quot;,
+       title = &quot;Gun Deaths vs Game Sales&quot;,
+       subtitle = &quot;OECD Countries&quot;,
+       caption = &quot;\nSources: Institute for Health Metrics and Evaluation, NewZoo&quot;) +
+  scale_y_continuous(limits = c(0, 5)) +
+  theme(plot.caption = element_text(face = &quot;italic&quot;, hjust = 0)) +
+  drop_axis(axis = &quot;y&quot;) +
+  geom_text(y = 4.85, x = 107.5, size = 7, label = emoji(&#39;thinking&#39;), family = &quot;EmojiOne&quot;)</code></pre>
+<p><img src="/post/games-and-guns/index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+</div>

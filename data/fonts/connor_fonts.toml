@@ -1,0 +1,11 @@
+# Font style metadata
+name = "connor_fonts"
+
+# Optional Google font URL
+google_fonts = "Muli:400,500,600,700|Lato|Roboto+Mono"
+
+# Font families
+heading_font = "Muli"
+body_font = "Lato"
+nav_font = "Muli"
+mono_font = "Roboto Mono"
