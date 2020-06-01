@@ -4,7 +4,7 @@ authors:
 bio: I'm a senior at Rice University interested in public policy, data science and their intersection. I'm most passionate about translating complex data into informative and entertaining visualizations.
 education:
   courses:
-  - course: Bachelor of Arts in Social Policy Analysis, GPA: 3.85
+  - course: Bachelor of Arts in Social Policy Analysis
     institution: Rice University
     year: 2021
 email: "connor@connorrothschild.com"
