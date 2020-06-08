@@ -54,7 +54,9 @@ Awarded the Marian Fox Martel Scholar Award for the 2019-2020 academic year. The
   date_start = "2020-03-15"
   date_end = ""
   description = """
-Awarded first place (out of 13 teams) at Rice University’s 2020 Houston Policy Challenge. Judged by Harris County Sheriff Ed Gonzalez, Harris County District Attorney Kim Ogg, U.S. Magistrate Judge Andrew Edison, Southern District of Texas, and Judge Franklin Bynum, Harris County Criminal Court at Law No. 8 My partner and I proposed a pre-trial diversion program for pregnant women and mothers of young children. Awarded prize money and seed money for implementation.
+Awarded first place (out of 13 teams) at Rice University’s 2020 Houston Policy Challenge. Judged by Harris County Sheriff Ed Gonzalez, Harris County District Attorney Kim Ogg, U.S. Magistrate Judge Andrew Edison, Southern District of Texas, and Judge Franklin Bynum, Harris County Criminal Court at Law No. 8.
+
+My partner and I proposed a pre-trial diversion program for pregnant women and mothers of young children. Awarded prize money and seed money for implementation.
 
 See media [here](https://news.rice.edu/2020/03/02/rice-students-tackle-criminal-justice-reform-at-houston-policy-challenge/).
   """
