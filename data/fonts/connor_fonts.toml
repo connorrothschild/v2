@@ -2,7 +2,7 @@
 name = "connor_fonts"
 
 # Optional Google font URL
-google_fonts = "Muli:400,500,600,700|Lato|Roboto+Mono"
+google_fonts = "Muli:400,500,600,700|Lato|Roboto+Mono|Khula:400,500,600,700"
 
 # Font families
 heading_font = "Muli"

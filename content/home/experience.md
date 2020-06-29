@@ -62,4 +62,17 @@ Under the direction of Dr. Elaine Howard Ecklund, I worked as one of three under
 Under the direction of Dr. Ed Egan, I helped create a comprehensive database of startups and accelerators in the United States. I matched and organized 13,000 companies from a spreadsheet to public data using SQL and Excel. I assisted in the strategic development of web crawlers to detect and classify the industry of a company.
   """
   
+[design.background]
+  # Apply a background color, gradient, or image.
+  #   Uncomment (by removing `#`) an option to apply it.
+  #   Choose a light or dark text color by setting `text_color_light`.
+  #   Any HTML color name or Hex value is valid.
+
+  # Background color.
+  # color = "navy"
+  
+  # Background gradient.
+  gradient_start = "white"
+  gradient_end = "#ECCCC2"
+
 +++

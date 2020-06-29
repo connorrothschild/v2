@@ -25,13 +25,13 @@ subtitle = ""
     name = "All"
     tag = "*" 
   
-  [[content.filter_button]]
-    name = "For Work"
-    tag = "For Work"
+  # [[content.filter_button]]
+  #  name = "For Work"
+  #  tag = "For Work"
 
-  [[content.filter_button]]
-    name = "For Fun"
-    tag = "For Fun"
+  # [[content.filter_button]]
+  #  name = "For Fun"
+  #  tag = "For Fun"
     
   [[content.filter_button]]
     name = "R"
@@ -58,7 +58,7 @@ subtitle = ""
   #   2 = Compact
   #   3 = Card
   #   5 = Showcase
-  view = 5
+  view = 3
 
   # For Showcase view, flip alternate rows?
   flip_alt_rows = true
@@ -70,11 +70,11 @@ subtitle = ""
   #   Any HTML color name or Hex value is valid.
   
   # Background color.
-  color = "white"
+  # color = "white"
   
   # Background gradient.
-  # gradient_start = "DeepSkyBlue"
-  # gradient_end = "SkyBlue"
+  gradient_start = "lightgrey"
+  gradient_end = "#CBE9F6"
   
   # Background image.
   # image = "background.jpg"  # Name of image in `static/img/`.

@@ -165,5 +165,17 @@ National Champion in International Extemporaneous Speaking. Sponsored by the Cou
 See media [here](http://www.news-leader.com/story/news/business/2017/06/28/kickapoo-high-school-senior-earns-accolades-national-speech-and-debate-tournament/435570001/). Find the speech [here](https://www.youtube.com/watch?v=lzoUu1fDmWE).
   """
 
+[design.background]
+  # Apply a background color, gradient, or image.
+  #   Uncomment (by removing `#`) an option to apply it.
+  #   Choose a light or dark text color by setting `text_color_light`.
+  #   Any HTML color name or Hex value is valid.
+
+  # Background color.
+  # color = "navy"
+  
+  # Background gradient.
+  gradient_start = "#ECCCC2"
+  gradient_end = "lightgrey"
 
 +++
