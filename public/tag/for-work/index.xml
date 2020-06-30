@@ -2,37 +2,37 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>For Work | Connor Rothschild</title>
-    <link>https://connorrothschild.com/tag/for-work/</link>
-      <atom:link href="https://connorrothschild.com/tag/for-work/index.xml" rel="self" type="application/rss+xml" />
+    <link>/tag/for-work/</link>
+      <atom:link href="/tag/for-work/index.xml" rel="self" type="application/rss+xml" />
     <description>For Work</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2020</copyright><lastBuildDate>Wed, 22 Apr 2020 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>https://connorrothschild.com/img/social.png</url>
+      <url>/img/social.jpg</url>
       <title>For Work</title>
-      <link>https://connorrothschild.com/tag/for-work/</link>
+      <link>/tag/for-work/</link>
     </image>
     
     <item>
       <title>Mapping Police Violence</title>
-      <link>https://connorrothschild.com/project/mapping-police-violence/</link>
+      <link>/project/mapping-police-violence/</link>
       <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/mapping-police-violence/</guid>
+      <guid>/project/mapping-police-violence/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Mobility and Predictors of Movement During COVID-19</title>
-      <link>https://connorrothschild.com/project/coronavirus-houston-response-projects/</link>
+      <link>/project/coronavirus-houston-response-projects/</link>
       <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/coronavirus-houston-response-projects/</guid>
+      <guid>/project/coronavirus-houston-response-projects/</guid>
       <description></description>
     </item>
     
     <item>
       <title>TPL Themes</title>
-      <link>https://connorrothschild.com/project/tpl-theme/</link>
+      <link>/project/tpl-theme/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/tpl-theme/</guid>
+      <guid>/project/tpl-theme/</guid>
       <description></description>
     </item>
     

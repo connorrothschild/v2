@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>shiny | Connor Rothschild</title>
-    <link>https://connorrothschild.com/tag/shiny/</link>
-      <atom:link href="https://connorrothschild.com/tag/shiny/index.xml" rel="self" type="application/rss+xml" />
+    <link>/tag/shiny/</link>
+      <atom:link href="/tag/shiny/index.xml" rel="self" type="application/rss+xml" />
     <description>shiny</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2020</copyright><lastBuildDate>Sat, 03 Aug 2019 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>https://connorrothschild.com/img/social.png</url>
+      <url>/img/social.jpg</url>
       <title>shiny</title>
-      <link>https://connorrothschild.com/tag/shiny/</link>
+      <link>/tag/shiny/</link>
     </image>
     
     <item>
       <title>Building my First Shiny App</title>
-      <link>https://connorrothschild.com/post/building-my-first-shiny-app/</link>
+      <link>/post/building-my-first-shiny-app/</link>
       <pubDate>Sat, 03 Aug 2019 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/post/building-my-first-shiny-app/</guid>
+      <guid>/post/building-my-first-shiny-app/</guid>
       <description>
 
 

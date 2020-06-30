@@ -2,213 +2,213 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Projects | Connor Rothschild</title>
-    <link>https://connorrothschild.com/project/</link>
-      <atom:link href="https://connorrothschild.com/project/index.xml" rel="self" type="application/rss+xml" />
+    <link>/project/</link>
+      <atom:link href="/project/index.xml" rel="self" type="application/rss+xml" />
     <description>Projects</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2020</copyright><lastBuildDate>Tue, 19 May 2020 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>https://connorrothschild.com/img/social.png</url>
+      <url>/img/social.jpg</url>
       <title>Projects</title>
-      <link>https://connorrothschild.com/project/</link>
+      <link>/project/</link>
     </image>
     
     <item>
       <title>Recreating a Table by the Economist Using Reactable</title>
-      <link>https://connorrothschild.com/project/economist-table-replication/</link>
+      <link>/project/economist-table-replication/</link>
       <pubDate>Tue, 19 May 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/economist-table-replication/</guid>
+      <guid>/project/economist-table-replication/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Mapping Police Violence</title>
-      <link>https://connorrothschild.com/project/mapping-police-violence/</link>
+      <link>/project/mapping-police-violence/</link>
       <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/mapping-police-violence/</guid>
+      <guid>/project/mapping-police-violence/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Mobility and Predictors of Movement During COVID-19</title>
-      <link>https://connorrothschild.com/project/coronavirus-houston-response-projects/</link>
+      <link>/project/coronavirus-houston-response-projects/</link>
       <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/coronavirus-houston-response-projects/</guid>
+      <guid>/project/coronavirus-houston-response-projects/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Multiple Views: Recorded COVID-19 Cases, by County</title>
-      <link>https://connorrothschild.com/project/multiple-views-covid-19/</link>
+      <link>/project/multiple-views-covid-19/</link>
       <pubDate>Sat, 28 Mar 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/multiple-views-covid-19/</guid>
+      <guid>/project/multiple-views-covid-19/</guid>
       <description></description>
     </item>
     
     <item>
       <title>COVID-19 Has Become a Partisan Issue</title>
-      <link>https://connorrothschild.com/project/covid-has-become-a-partisan-issue/</link>
+      <link>/project/covid-has-become-a-partisan-issue/</link>
       <pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/covid-has-become-a-partisan-issue/</guid>
+      <guid>/project/covid-has-become-a-partisan-issue/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Are You Smarter Than a Criminal Justice Algorithm?</title>
-      <link>https://connorrothschild.com/project/are-you-smarter-than-compas/</link>
+      <link>/project/are-you-smarter-than-compas/</link>
       <pubDate>Thu, 05 Mar 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/are-you-smarter-than-compas/</guid>
+      <guid>/project/are-you-smarter-than-compas/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Let Me Guess What You&#39;re Doing Right Now</title>
-      <link>https://connorrothschild.com/project/what-are-you-doing/</link>
+      <link>/project/what-are-you-doing/</link>
       <pubDate>Sat, 08 Feb 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/what-are-you-doing/</guid>
+      <guid>/project/what-are-you-doing/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Trends in Refugee Acceptance, 2002 to 2019</title>
-      <link>https://connorrothschild.com/project/refugee-trends/</link>
+      <link>/project/refugee-trends/</link>
       <pubDate>Sat, 01 Feb 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/refugee-trends/</guid>
+      <guid>/project/refugee-trends/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Automation and Its Impact on Jobs</title>
-      <link>https://connorrothschild.com/project/automation-d3/</link>
+      <link>/project/automation-d3/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/automation-d3/</guid>
+      <guid>/project/automation-d3/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Bible Babies</title>
-      <link>https://connorrothschild.com/project/bible-babies/</link>
+      <link>/project/bible-babies/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/bible-babies/</guid>
+      <guid>/project/bible-babies/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Build Your Own Streetmap in R</title>
-      <link>https://connorrothschild.com/project/map-springfield/</link>
+      <link>/project/map-springfield/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/map-springfield/</guid>
+      <guid>/project/map-springfield/</guid>
       <description></description>
     </item>
     
     <item>
       <title>How Much Does Your State Spend on the Police?</title>
-      <link>https://connorrothschild.com/project/state-police-spending/</link>
+      <link>/project/state-police-spending/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/state-police-spending/</guid>
+      <guid>/project/state-police-spending/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Kanye West&#39;s Rebirth: How Being Reborn has Changed Kanye&#39;s Music</title>
-      <link>https://connorrothschild.com/project/born-again-kanye/</link>
+      <link>/project/born-again-kanye/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/born-again-kanye/</guid>
+      <guid>/project/born-again-kanye/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Mapping Houston Homicides</title>
-      <link>https://connorrothschild.com/project/map-houston-homicides/</link>
+      <link>/project/map-houston-homicides/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/map-houston-homicides/</guid>
+      <guid>/project/map-houston-homicides/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Mapping Missing Migrants</title>
-      <link>https://connorrothschild.com/project/map-missing-migrants/</link>
+      <link>/project/map-missing-migrants/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/map-missing-migrants/</guid>
+      <guid>/project/map-missing-migrants/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Mapping Opioid-Involved Overdose Deaths</title>
-      <link>https://connorrothschild.com/project/map-opioids/</link>
+      <link>/project/map-opioids/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/map-opioids/</guid>
+      <guid>/project/map-opioids/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Police Killings in the United States, 2013-2018.</title>
-      <link>https://connorrothschild.com/project/police-killings-waffle/</link>
+      <link>/project/police-killings-waffle/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/police-killings-waffle/</guid>
+      <guid>/project/police-killings-waffle/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Replicating Plots in R (Tidy Tuesday)</title>
-      <link>https://connorrothschild.com/project/tt-replication/</link>
+      <link>/project/tt-replication/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/tt-replication/</guid>
+      <guid>/project/tt-replication/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Scrollytelling in R: Automation and Its Impact on Jobs</title>
-      <link>https://connorrothschild.com/project/r-scrollytell/</link>
+      <link>/project/r-scrollytell/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/r-scrollytell/</guid>
+      <guid>/project/r-scrollytell/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Texas Vaccination Rates</title>
-      <link>https://connorrothschild.com/project/tx-vaccination-rates/</link>
+      <link>/project/tx-vaccination-rates/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/tx-vaccination-rates/</guid>
+      <guid>/project/tx-vaccination-rates/</guid>
       <description></description>
     </item>
     
     <item>
       <title>The Birth, Death, and Rebirth of Kanye West</title>
-      <link>https://connorrothschild.com/project/death-rebirth-kanye/</link>
+      <link>/project/death-rebirth-kanye/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/death-rebirth-kanye/</guid>
+      <guid>/project/death-rebirth-kanye/</guid>
       <description></description>
     </item>
     
     <item>
       <title>The Race for Media Attention</title>
-      <link>https://connorrothschild.com/project/race-for-media-attention/</link>
+      <link>/project/race-for-media-attention/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/race-for-media-attention/</guid>
+      <guid>/project/race-for-media-attention/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tidy Tuesday: Powerlifting</title>
-      <link>https://connorrothschild.com/project/tt-powerlifting/</link>
+      <link>/project/tt-powerlifting/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/tt-powerlifting/</guid>
+      <guid>/project/tt-powerlifting/</guid>
       <description></description>
     </item>
     
     <item>
       <title>TPL Themes</title>
-      <link>https://connorrothschild.com/project/tpl-theme/</link>
+      <link>/project/tpl-theme/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/tpl-theme/</guid>
+      <guid>/project/tpl-theme/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Who is the Most Popular Character in The Office?</title>
-      <link>https://connorrothschild.com/project/the-office/</link>
+      <link>/project/the-office/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/project/the-office/</guid>
+      <guid>/project/the-office/</guid>
       <description></description>
     </item>
     

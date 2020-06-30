@@ -25,7 +25,7 @@ date_format = "Jan 2006"
   date_start = "2020-05-30"
   date_end = ""
   description = """
-Through a fellowship with [Coding It Forward](https://www.codingitforward.com/), I am working as a data science intern with US Special Operations Command. Along with another intern, I am assisting in the creation of an algorithm geared toward the predictive maintenance of helicopters.
+Through a fellowship with [Coding It Forward](https://www.codingitforward.com/), I am working as a data science intern with the US Special Operations Command. Along with another intern, I am assisting in the creation of an algorithm geared toward the predictive maintenance of helicopters.
   """
 
 [[experience]]

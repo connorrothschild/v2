@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tidy Tuesday | Connor Rothschild</title>
-    <link>https://connorrothschild.com/tag/tidy-tuesday/</link>
-      <atom:link href="https://connorrothschild.com/tag/tidy-tuesday/index.xml" rel="self" type="application/rss+xml" />
+    <link>/tag/tidy-tuesday/</link>
+      <atom:link href="/tag/tidy-tuesday/index.xml" rel="self" type="application/rss+xml" />
     <description>Tidy Tuesday</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2020</copyright><lastBuildDate>Tue, 10 Dec 2019 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>https://connorrothschild.com/img/social.png</url>
+      <url>/img/social.jpg</url>
       <title>Tidy Tuesday</title>
-      <link>https://connorrothschild.com/tag/tidy-tuesday/</link>
+      <link>/tag/tidy-tuesday/</link>
     </image>
     
     <item>
       <title>Tidy Tuesday: Replication</title>
-      <link>https://connorrothschild.com/post/tidy-tuesday-replication/</link>
+      <link>/post/tidy-tuesday-replication/</link>
       <pubDate>Tue, 10 Dec 2019 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/post/tidy-tuesday-replication/</guid>
+      <guid>/post/tidy-tuesday-replication/</guid>
       <description>
 
 
@@ -297,9 +297,9 @@ hoverlabel = list(bgcolor = &amp;#39;white&amp;#39;, color = &amp;#39;black&amp;
     
     <item>
       <title>TidyTuesday: Powerlifting</title>
-      <link>https://connorrothschild.com/post/tidy-tuesday-powerlifting/</link>
+      <link>/post/tidy-tuesday-powerlifting/</link>
       <pubDate>Tue, 08 Oct 2019 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/post/tidy-tuesday-powerlifting/</guid>
+      <guid>/post/tidy-tuesday-powerlifting/</guid>
       <description>
 
 
@@ -387,7 +387,7 @@ max_lifts_final &amp;lt;- max_lifts %&amp;gt;%
   geom_text(aes(label=diff, y=lift, x=450), fontface=&amp;quot;bold&amp;quot;, size=4) +
   geom_text(aes(x=450, y=3, label=&amp;quot;Difference&amp;quot;),
             color=&amp;quot;grey20&amp;quot;, size=4, vjust=-3, fontface=&amp;quot;bold&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Finally, we animate, using Thomas Pedersen’s wonderful &lt;a href=&#34;https://github.com/thomasp85/gganimate&#34;&gt;gganimate package&lt;/a&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animation &amp;lt;- max_lifts_final %&amp;gt;% 
   ggplot() + 
@@ -417,7 +417,7 @@ a_gif &amp;lt;- animate(animation,
                  renderer = gifski_renderer(&amp;quot;outputs/animation.gif&amp;quot;))
 
 a_gif&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-9-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-9-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;p&gt;I’d like to include another GIF: a line chart of differences over time&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animation2 &amp;lt;- max_lifts_final %&amp;gt;% 
   ungroup %&amp;gt;% 
@@ -445,7 +445,7 @@ b_gif &amp;lt;- animate(animation2,
         renderer = gifski_renderer(&amp;quot;outputs/animation2.gif&amp;quot;))
 
 b_gif&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-10-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-10-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;p&gt;Next, combine them using &lt;code&gt;magick&lt;/code&gt; (thanks to &lt;a href=&#34;https://github.com/thomasp85/gganimate/wiki/Animation-Composition&#34;&gt;this post&lt;/a&gt;):&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(magick)
 a_mgif &amp;lt;- image_read(a_gif)
@@ -458,7 +458,7 @@ for(i in 2:250){
 }
 
 new_gif&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-11-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-11-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>

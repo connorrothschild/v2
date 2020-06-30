@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>small multiples | Connor Rothschild</title>
-    <link>https://connorrothschild.com/tag/small-multiples/</link>
-      <atom:link href="https://connorrothschild.com/tag/small-multiples/index.xml" rel="self" type="application/rss+xml" />
+    <link>/tag/small-multiples/</link>
+      <atom:link href="/tag/small-multiples/index.xml" rel="self" type="application/rss+xml" />
     <description>small multiples</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2020</copyright><lastBuildDate>Sat, 01 Feb 2020 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>https://connorrothschild.com/img/social.png</url>
+      <url>/img/social.jpg</url>
       <title>small multiples</title>
-      <link>https://connorrothschild.com/tag/small-multiples/</link>
+      <link>/tag/small-multiples/</link>
     </image>
     
     <item>
       <title>Trends in Refugee Acceptance, 2002 to 2019</title>
-      <link>https://connorrothschild.com/post/refugee-trends/</link>
+      <link>/post/refugee-trends/</link>
       <pubDate>Sat, 01 Feb 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/post/refugee-trends/</guid>
+      <guid>/post/refugee-trends/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;figures/final.svg&#34; alt=&#34;final&#34;&gt;&lt;/p&gt;
 &lt;p&gt;In 
 &lt;a href=&#34;https://connorrothschild.github.io/map-missing-migrants/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;previous projects&lt;/a&gt;, I&amp;rsquo;ve explored how migration has unfolded across &lt;em&gt;places&lt;/em&gt;: where migrants travel, where they go missing, and where their journeys come to a fatal end.&lt;/p&gt;
