@@ -2,36 +2,36 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>r | Connor Rothschild</title>
-    <link>/tag/r/</link>
-      <atom:link href="/tag/r/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://connorrothschild.com/tag/r/</link>
+      <atom:link href="https://connorrothschild.com/tag/r/index.xml" rel="self" type="application/rss+xml" />
     <description>r</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Tue, 19 May 2020 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2020</copyright><lastBuildDate>Tue, 19 May 2020 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>/img/social.jpg</url>
+      <url>https://connorrothschild.com/img/social.png</url>
       <title>r</title>
-      <link>/tag/r/</link>
+      <link>https://connorrothschild.com/tag/r/</link>
     </image>
     
     <item>
       <title>Recreating a Table by the Economist Using Reactable</title>
-      <link>/project/economist-table-replication/</link>
+      <link>https://connorrothschild.com/project/economist-table-replication/</link>
       <pubDate>Tue, 19 May 2020 00:00:00 +0000</pubDate>
-      <guid>/project/economist-table-replication/</guid>
+      <guid>https://connorrothschild.com/project/economist-table-replication/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Recreating a Table by The Economist Using Reactable</title>
-      <link>/post/economist-table-replication-using-reactable/</link>
+      <link>https://connorrothschild.com/post/economist-table-replication-using-reactable/</link>
       <pubDate>Mon, 18 May 2020 00:00:00 +0000</pubDate>
-      <guid>/post/economist-table-replication-using-reactable/</guid>
+      <guid>https://connorrothschild.com/post/economist-table-replication-using-reactable/</guid>
       <description>
-&lt;script src=&#34;/rmarkdown-libs/core-js/shim.min.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;/rmarkdown-libs/react/react.min.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;/rmarkdown-libs/react/react-dom.min.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;/rmarkdown-libs/reactwidget/react-tools.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;/rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;/rmarkdown-libs/reactable-binding/reactable.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/core-js/shim.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/react/react.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/react/react-dom.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/reactwidget/react-tools.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/reactable-binding/reactable.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;&lt;em&gt;The Economist&lt;/em&gt; recently released a series of country-level &lt;a href=&#34;https://twitter.com/J_CD_T/status/1261625814854045696&#34;&gt;datasets&lt;/a&gt; on ‘excess mortality’, a term used to &lt;a href=&#34;https://www.economist.com/graphic-detail/2020/04/16/tracking-covid-19-excess-deaths-across-countries&#34;&gt;describe&lt;/a&gt; ‘the gap between the total number of people who died from any cause, and the historical average for the same place and time of year.’ In simpler terms, the measure captures how many deaths &lt;em&gt;are&lt;/em&gt; happening that &lt;em&gt;shouldn’t be&lt;/em&gt;.&lt;/p&gt;
@@ -720,25 +720,25 @@ reactable(data_for_table, pagination = FALSE)&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Mobility and Predictors of Movement During COVID-19</title>
-      <link>/project/coronavirus-houston-response-projects/</link>
+      <link>https://connorrothschild.com/project/coronavirus-houston-response-projects/</link>
       <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
-      <guid>/project/coronavirus-houston-response-projects/</guid>
+      <guid>https://connorrothschild.com/project/coronavirus-houston-response-projects/</guid>
       <description></description>
     </item>
     
     <item>
       <title>COVID-19 Has Become a Partisan Issue</title>
-      <link>/project/covid-has-become-a-partisan-issue/</link>
+      <link>https://connorrothschild.com/project/covid-has-become-a-partisan-issue/</link>
       <pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate>
-      <guid>/project/covid-has-become-a-partisan-issue/</guid>
+      <guid>https://connorrothschild.com/project/covid-has-become-a-partisan-issue/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Create Dumbbell Plots to Visualize Group Differences in R</title>
-      <link>/post/dumbbell-plots/</link>
+      <link>https://connorrothschild.com/post/dumbbell-plots/</link>
       <pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate>
-      <guid>/post/dumbbell-plots/</guid>
+      <guid>https://connorrothschild.com/post/dumbbell-plots/</guid>
       <description>&lt;p&gt;The coronavirus (also known as COVID-19) is a pandemic. As of this writing, nearly 
 &lt;a href=&#34;https://www.worldometers.info/coronavirus/coronavirus-death-toll/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;6000&lt;/a&gt; people have died and another 
 &lt;a href=&#34;https://www.worldometers.info/coronavirus/coronavirus-death-toll/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;150,000&lt;/a&gt; have been infected. All signs seem to show that the virus is only growing.&lt;/p&gt;
@@ -886,9 +886,9 @@ theme(
     
     <item>
       <title>Trends in Refugee Acceptance, 2002 to 2019</title>
-      <link>/post/refugee-trends/</link>
+      <link>https://connorrothschild.com/post/refugee-trends/</link>
       <pubDate>Sat, 01 Feb 2020 00:00:00 +0000</pubDate>
-      <guid>/post/refugee-trends/</guid>
+      <guid>https://connorrothschild.com/post/refugee-trends/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;figures/final.svg&#34; alt=&#34;final&#34;&gt;&lt;/p&gt;
 &lt;p&gt;In 
 &lt;a href=&#34;https://connorrothschild.github.io/map-missing-migrants/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;previous projects&lt;/a&gt;, I&amp;rsquo;ve explored how migration has unfolded across &lt;em&gt;places&lt;/em&gt;: where migrants travel, where they go missing, and where their journeys come to a fatal end.&lt;/p&gt;
@@ -1014,24 +1014,24 @@ geom_rect(mapping=aes(xmin=2017, xmax=2019, ymin=0, ymax=12000), fill = &amp;quo
     
     <item>
       <title>Trends in Refugee Acceptance, 2002 to 2019</title>
-      <link>/project/refugee-trends/</link>
+      <link>https://connorrothschild.com/project/refugee-trends/</link>
       <pubDate>Sat, 01 Feb 2020 00:00:00 +0000</pubDate>
-      <guid>/project/refugee-trends/</guid>
+      <guid>https://connorrothschild.com/project/refugee-trends/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Who Mentions Who in the Office?</title>
-      <link>/post/who-mentions-who-in-the-office/</link>
+      <link>https://connorrothschild.com/post/who-mentions-who-in-the-office/</link>
       <pubDate>Mon, 16 Dec 2019 00:00:00 +0000</pubDate>
-      <guid>/post/who-mentions-who-in-the-office/</guid>
+      <guid>https://connorrothschild.com/post/who-mentions-who-in-the-office/</guid>
       <description>
-&lt;script src=&#34;/rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;/rmarkdown-libs/d3/d3.min.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;/rmarkdown-libs/d3-tip/index.js&#34;&gt;&lt;/script&gt;
-&lt;link href=&#34;/rmarkdown-libs/chorddiag/chorddiag.css&#34; rel=&#34;stylesheet&#34; /&gt;
-&lt;script src=&#34;/rmarkdown-libs/chorddiag/chorddiag.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;/rmarkdown-libs/chorddiag-binding/chorddiag.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/d3/d3.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/d3-tip/index.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://connorrothschild.com/rmarkdown-libs/chorddiag/chorddiag.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/chorddiag/chorddiag.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/chorddiag-binding/chorddiag.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;This project explores the relationships between different characters in the classic TV show &lt;strong&gt;The Office&lt;/strong&gt;. Using transcript data newly released in &lt;a href=&#34;https://technistema.com/&#34;&gt;Bradley H. Lindblad&lt;/a&gt;’s &lt;a href=&#34;https://cran.r-project.org/web/packages/schrute/vignettes/theoffice.html&#34;&gt;&lt;code&gt;schrute&lt;/code&gt; package&lt;/a&gt;, I’d like to see &lt;em&gt;who mentions who in the Office&lt;/em&gt;. Is one character more popular than the others?&lt;/p&gt;
@@ -1239,7 +1239,7 @@ knitr::kable(keep_characters)&lt;/code&gt;&lt;/pre&gt;
        subtitle = &amp;quot;Counts of &amp;#39;Jim&amp;#39; in The Office Transcripts&amp;quot;,
        x = element_blank(),
        y = &amp;quot;Mentions&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The takeaway here is that Dwight mentions Jim the most, followed by Michael. No surprise there! What I find interesting is that only three characters &lt;em&gt;really&lt;/em&gt; talk about/to Jim. After Dwight, Michael, and Pam (and Jim referencing himself, apparently), the mention rate for Jim’s name drops from over 200 to only 60 mentions. It seems as if the writers of the Office intentionally made Jim a subject of conversation among only a few characters!&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;replicate-for-the-rest-of-the-cast&#34; class=&#34;section level3&#34;&gt;
@@ -1318,7 +1318,7 @@ knitr::kable(keep_characters)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Using that data, we can create a chord diagram quite easily, using a single command from the &lt;code&gt;circlize&lt;/code&gt; library. &lt;a href=&#34;https://jokergoo.github.io/circlize_book/book/the-chorddiagram-function.html&#34;&gt;This chapter is helpful&lt;/a&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(circlize)
 chordDiagram(circlize_data, grid.col = c(&amp;quot;#B997C7&amp;quot;, &amp;quot;#824D99&amp;quot;, &amp;quot;#4E78C4&amp;quot;, &amp;quot;#57A2AC&amp;quot;, &amp;quot;#7EB875&amp;quot;, &amp;quot;#D0B541&amp;quot;, &amp;quot;#E67F33&amp;quot;, &amp;quot;#CE2220&amp;quot;, &amp;quot;#521A13&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;div id=&#34;make-it-interactive&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Make It Interactive&lt;/h3&gt;
 &lt;p&gt;With nine people, some of the data can get easily concealed (how often did Angela mention Michael’s name?). One way to fix this is to make the visualization interactive, so that a user can hover over chords to see relationships between characters.&lt;/p&gt;
@@ -1360,9 +1360,9 @@ p&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Tidy Tuesday: Replication</title>
-      <link>/post/tidy-tuesday-replication/</link>
+      <link>https://connorrothschild.com/post/tidy-tuesday-replication/</link>
       <pubDate>Tue, 10 Dec 2019 00:00:00 +0000</pubDate>
-      <guid>/post/tidy-tuesday-replication/</guid>
+      <guid>https://connorrothschild.com/post/tidy-tuesday-replication/</guid>
       <description>
 
 
@@ -1643,9 +1643,9 @@ hoverlabel = list(bgcolor = &amp;#39;white&amp;#39;, color = &amp;#39;black&amp;
     
     <item>
       <title>Creating a Streetmap of Springfield, MO</title>
-      <link>/post/map-springfield/</link>
+      <link>https://connorrothschild.com/post/map-springfield/</link>
       <pubDate>Wed, 20 Nov 2019 00:00:00 +0000</pubDate>
-      <guid>/post/map-springfield/</guid>
+      <guid>https://connorrothschild.com/post/map-springfield/</guid>
       <description>
 
 
@@ -1792,7 +1792,7 @@ mid_box = (left + right)/2&lt;/code&gt;&lt;/pre&gt;
   )
 
 map_bw&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/map-springfield/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/map-springfield/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Finally, save the plot:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(map_bw, filename = &amp;quot;bw_springfield_map.png&amp;quot;, width = 3.234, height = 5.016)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Replicate that code with different colors:&lt;/p&gt;
@@ -1901,7 +1901,7 @@ map_gold &amp;lt;- plot_gold +
   )
 
 map_gold&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/map-springfield/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/map-springfield/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(map_gold,
        filename = &amp;quot;gold_springfield_map.png&amp;quot;,
        width = 3.234,
@@ -1911,9 +1911,9 @@ map_gold&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>How to Scrollytell in R: Automation and Its Impact on Jobs</title>
-      <link>/post/automation-scrollytell/</link>
+      <link>https://connorrothschild.com/post/automation-scrollytell/</link>
       <pubDate>Sat, 26 Oct 2019 00:00:00 +0000</pubDate>
-      <guid>/post/automation-scrollytell/</guid>
+      <guid>https://connorrothschild.com/post/automation-scrollytell/</guid>
       <description>
 
 
@@ -2293,9 +2293,9 @@ shinyApp(ui = ui, server = server)&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>TidyTuesday: Powerlifting</title>
-      <link>/post/tidy-tuesday-powerlifting/</link>
+      <link>https://connorrothschild.com/post/tidy-tuesday-powerlifting/</link>
       <pubDate>Tue, 08 Oct 2019 00:00:00 +0000</pubDate>
-      <guid>/post/tidy-tuesday-powerlifting/</guid>
+      <guid>https://connorrothschild.com/post/tidy-tuesday-powerlifting/</guid>
       <description>
 
 
@@ -2383,7 +2383,7 @@ max_lifts_final &amp;lt;- max_lifts %&amp;gt;%
   geom_text(aes(label=diff, y=lift, x=450), fontface=&amp;quot;bold&amp;quot;, size=4) +
   geom_text(aes(x=450, y=3, label=&amp;quot;Difference&amp;quot;),
             color=&amp;quot;grey20&amp;quot;, size=4, vjust=-3, fontface=&amp;quot;bold&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Finally, we animate, using Thomas Pedersen’s wonderful &lt;a href=&#34;https://github.com/thomasp85/gganimate&#34;&gt;gganimate package&lt;/a&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animation &amp;lt;- max_lifts_final %&amp;gt;% 
   ggplot() + 
@@ -2413,7 +2413,7 @@ a_gif &amp;lt;- animate(animation,
                  renderer = gifski_renderer(&amp;quot;outputs/animation.gif&amp;quot;))
 
 a_gif&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-9-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-9-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;p&gt;I’d like to include another GIF: a line chart of differences over time&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animation2 &amp;lt;- max_lifts_final %&amp;gt;% 
   ungroup %&amp;gt;% 
@@ -2441,7 +2441,7 @@ b_gif &amp;lt;- animate(animation2,
         renderer = gifski_renderer(&amp;quot;outputs/animation2.gif&amp;quot;))
 
 b_gif&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-10-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-10-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;p&gt;Next, combine them using &lt;code&gt;magick&lt;/code&gt; (thanks to &lt;a href=&#34;https://github.com/thomasp85/gganimate/wiki/Animation-Composition&#34;&gt;this post&lt;/a&gt;):&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(magick)
 a_mgif &amp;lt;- image_read(a_gif)
@@ -2454,16 +2454,16 @@ for(i in 2:250){
 }
 
 new_gif&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-11-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-11-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
     
     <item>
       <title>Games and Guns</title>
-      <link>/post/games-and-guns/</link>
+      <link>https://connorrothschild.com/post/games-and-guns/</link>
       <pubDate>Mon, 12 Aug 2019 00:00:00 +0000</pubDate>
-      <guid>/post/games-and-guns/</guid>
+      <guid>https://connorrothschild.com/post/games-and-guns/</guid>
       <description>
 
 
@@ -2566,7 +2566,7 @@ oecd_joined &amp;lt;- oecd_joined %&amp;gt;%
   theme(plot.caption = element_text(face = &amp;quot;italic&amp;quot;, hjust = 0), 
         legend.position = &amp;quot;top&amp;quot;, legend.direction = &amp;quot;horizontal&amp;quot;) +
   drop_axis(axis = &amp;quot;y&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/games-and-guns/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/games-and-guns/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Finally, we can focus on only OECD countries:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;oecd_joined %&amp;gt;% 
   dplyr::filter(OECD == &amp;quot;OECD&amp;quot;) %&amp;gt;% 
@@ -2582,7 +2582,7 @@ oecd_joined &amp;lt;- oecd_joined %&amp;gt;%
   scale_y_continuous(limits = c(0, 5)) +
   theme(plot.caption = element_text(face = &amp;quot;italic&amp;quot;, hjust = 0)) +
   drop_axis(axis = &amp;quot;y&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/games-and-guns/index_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/games-and-guns/index_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;To conclude, let’s add an emoji to fully capture our skepticism with the &lt;a href=&#34;https://www.cnn.com/2019/08/05/politics/kevin-mccarthy-mass-shootings-video-games/index.html&#34;&gt;newfound argument&lt;/a&gt; linking video games to violence.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;oecd_joined %&amp;gt;% 
   dplyr::filter(OECD == &amp;quot;OECD&amp;quot;) %&amp;gt;% 
@@ -2599,16 +2599,16 @@ oecd_joined &amp;lt;- oecd_joined %&amp;gt;%
   theme(plot.caption = element_text(face = &amp;quot;italic&amp;quot;, hjust = 0)) +
   drop_axis(axis = &amp;quot;y&amp;quot;) +
   geom_text(y = 4.85, x = 107.5, size = 7, label = emoji(&amp;#39;thinking&amp;#39;), family = &amp;quot;EmojiOne&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/games-and-guns/index_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/games-and-guns/index_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
     
     <item>
       <title>Building my First Shiny App</title>
-      <link>/post/building-my-first-shiny-app/</link>
+      <link>https://connorrothschild.com/post/building-my-first-shiny-app/</link>
       <pubDate>Sat, 03 Aug 2019 00:00:00 +0000</pubDate>
-      <guid>/post/building-my-first-shiny-app/</guid>
+      <guid>https://connorrothschild.com/post/building-my-first-shiny-app/</guid>
       <description>
 
 
@@ -2774,9 +2774,9 @@ server &amp;lt;- function(input, output) {
     
     <item>
       <title>Texas Vaccination Rates (How to Use Rayshader)</title>
-      <link>/post/tx-vaccination-rates-rayshader/</link>
+      <link>https://connorrothschild.com/post/tx-vaccination-rates-rayshader/</link>
       <pubDate>Wed, 24 Jul 2019 00:00:00 +0000</pubDate>
-      <guid>/post/tx-vaccination-rates-rayshader/</guid>
+      <guid>https://connorrothschild.com/post/tx-vaccination-rates-rayshader/</guid>
       <description>
 
 
@@ -2974,7 +2974,7 @@ merged &amp;lt;- left_join(tx_county, grouped, by = &amp;quot;subregion&amp;quot
         subtitle = &amp;quot;Among Kindergartners&amp;quot;) + 
   tpltheme::scale_fill_continuous()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Here’s what the plot looks like before animation:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/post/tx-vaccination-rates-rayshader/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tx-vaccination-rates-rayshader/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;rayshader&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Rayshader&lt;/h3&gt;
@@ -3007,9 +3007,9 @@ render_movie(filename = &amp;quot;outputs/tx_vac_vid&amp;quot;, type = &amp;quot
     
     <item>
       <title>My First Package! Introducing &#39;tpltheme&#39;</title>
-      <link>/post/introducing-tpltheme/</link>
+      <link>https://connorrothschild.com/post/introducing-tpltheme/</link>
       <pubDate>Tue, 23 Jul 2019 00:00:00 +0000</pubDate>
-      <guid>/post/introducing-tpltheme/</guid>
+      <guid>https://connorrothschild.com/post/introducing-tpltheme/</guid>
       <description>
 
 
@@ -3042,7 +3042,7 @@ ggplot(iris, aes(x=Species, y=Sepal.Width, fill=Species)) +
     geom_bar(stat=&amp;quot;summary&amp;quot;, fun.y=&amp;quot;mean&amp;quot;, show.legend = FALSE) +
     scale_y_continuous(expand = expand_scale(mult = c(0, 0.001))) +
     labs(x=&amp;quot;Species&amp;quot;, y=&amp;quot;Mean Sepal Width (cm)&amp;quot;, fill=&amp;quot;Species&amp;quot;, title=&amp;quot;Iris Dataset&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;div id=&#34;fonts&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Fonts&lt;/h3&gt;
 &lt;p&gt;The user is able to specify whether they want to use &lt;em&gt;Lato&lt;/em&gt; or &lt;em&gt;Adobe Caslon Pro&lt;/em&gt; in their figures.&lt;/p&gt;
@@ -3055,7 +3055,7 @@ tpl_font_install()&lt;/code&gt;&lt;/pre&gt;
 ggplot(iris, aes(x=jitter(Sepal.Width), y=jitter(Sepal.Length), col=Species, size = Petal.Length)) +
     geom_point() +
     labs(x=&amp;quot;Sepal Width (cm)&amp;quot;, y=&amp;quot;Sepal Length (cm)&amp;quot;, col=&amp;quot;Species&amp;quot;, size = &amp;quot;Petal Length&amp;quot;, title=&amp;quot;Iris Dataset&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;By specifying &lt;code&gt;style = &amp;quot;Texas&amp;quot;&lt;/code&gt; within &lt;code&gt;set_tpl_theme&lt;/code&gt;, the user may also create Texas-specific plots.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tx_vac &amp;lt;- readr::read_csv(&amp;quot;https://raw.githubusercontent.com/connorrothschild/tpltheme/master/data/tx_vac_example.csv&amp;quot;)
 set_tpl_theme(style = &amp;quot;Texas&amp;quot;, font = &amp;quot;adobe&amp;quot;)
@@ -3068,7 +3068,7 @@ ggplot(data = tx_vac, mapping = aes(x = long, y = lat, group = group, fill = avg
        subtitle = &amp;quot;Among Kindergarteners&amp;quot;,
        fill = &amp;quot;Percent\nVaccinated&amp;quot;,
        caption = &amp;quot;Source: Texas DSHS&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;And it also works for categorical variables:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set_tpl_theme(style = &amp;quot;Texas&amp;quot;, font = &amp;quot;lato&amp;quot;)
 
@@ -3083,14 +3083,14 @@ tx_vac %&amp;gt;%
        subtitle = &amp;quot;Among Kindergarteners&amp;quot;,
        fill = &amp;quot;Vaccination Rating&amp;quot;,
        caption = &amp;quot;Source: Texas DSHS&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;If the number of colors exceeds the number of colors in the TPL palette (9), the function &lt;code&gt;tpl_color_pal()&lt;/code&gt; will drop the TPL color palette and return the greatest number of unique colors possible within the RColorBrewer’s “Paired” palette (for more information on the use of RColorBrewer palettes, see &lt;a href=&#34;https://bookdown.org/rdpeng/exdata/plotting-and-color-in-r.html#using-the-rcolorbrewer-palettes&#34;&gt;this chapter&lt;/a&gt;).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tx_vac %&amp;gt;% 
   ggplot(mapping = aes(x = long, y = lat, group = group, fill = subregion)) +
   coord_fixed(1.3) +
   geom_polygon(color = &amp;quot;black&amp;quot;, show.legend = FALSE) +
   labs(title = &amp;quot;Texas Counties&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# default to print afterwards
 set_tpl_theme(style = &amp;quot;print&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -3106,7 +3106,7 @@ set_tpl_theme(style = &amp;quot;print&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
     labs(x=&amp;quot;Species&amp;quot;, y=&amp;quot;Mean Sepal Width (cm)&amp;quot;, fill=&amp;quot;Species&amp;quot;, title=&amp;quot;Iris Dataset&amp;quot;)
 
 add_tpl_logo(plot, position = &amp;quot;top right&amp;quot;, scale = 1.5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;logo-text&#34; class=&#34;section level4&#34;&gt;
 &lt;h4&gt;Logo Text&lt;/h4&gt;
@@ -3116,14 +3116,14 @@ add_tpl_logo(plot, position = &amp;quot;top right&amp;quot;, scale = 1.5)&lt;/co
     labs(x=&amp;quot;Sepal Width (cm)&amp;quot;, y=&amp;quot;Sepal Length (cm)&amp;quot;, col=&amp;quot;Species&amp;quot;, size = &amp;quot;Petal Length&amp;quot;, title=&amp;quot;Iris Dataset&amp;quot;)
     
 add_tpl_logo_text(plot)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The user may also need to specify &lt;code&gt;align&lt;/code&gt;, which moves the plot horizontally across the bottom of the page.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot &amp;lt;- ggplot(iris, aes(x=Species, y=Sepal.Width, fill=Species)) +
     geom_boxplot(show.legend = FALSE) +
     labs(x=&amp;quot;Species&amp;quot;, y=&amp;quot;Sepal Width (cm)&amp;quot;, fill=&amp;quot;Species&amp;quot;, title=&amp;quot;Iris Dataset&amp;quot;, subtitle =&amp;quot;When specifying align = 1&amp;quot;)
     
 add_tpl_logo_text(plot, align = 1)    &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;additional-functions&#34; class=&#34;section level3&#34;&gt;
@@ -3136,7 +3136,7 @@ add_tpl_logo_text(plot, align = 1)    &lt;/code&gt;&lt;/pre&gt;
     geom_point() +
     labs(x=&amp;quot;Sepal Width (cm)&amp;quot;, y=&amp;quot;Sepal Length (cm)&amp;quot;, col=&amp;quot;Species&amp;quot;, size = &amp;quot;Petal Length&amp;quot;, title=&amp;quot;Iris Dataset&amp;quot;) +
     drop_axis(axis = &amp;quot;y&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;colors&#34; class=&#34;section level3&#34;&gt;
@@ -3149,7 +3149,7 @@ p2 &amp;lt;- view_palette(palette = palette_tpl_diverging) + ggtitle(&amp;quot;D
 p3 &amp;lt;- view_palette(palette = palette_tpl_sequential) + ggtitle(&amp;quot;Sequential&amp;quot;)
 
 gridExtra::grid.arrange(p1, p2, p3, nrow = 1)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;These palettes were created using &lt;a href=&#34;http://colorbrewer2.org&#34; class=&#34;uri&#34;&gt;http://colorbrewer2.org&lt;/a&gt; and &lt;a href=&#34;http://coloors.co&#34; class=&#34;uri&#34;&gt;http://coloors.co&lt;/a&gt; and are colorblind friendly.&lt;/p&gt;
 &lt;p&gt;The diverging and sequential color palettes are from &lt;a href=&#34;http://colorbrewer2.org&#34; class=&#34;uri&#34;&gt;http://colorbrewer2.org&lt;/a&gt; and the categorical palette is composed of a variety of colors from &lt;a href=&#34;https://coolors.co/&#34; class=&#34;uri&#34;&gt;https://coolors.co/&lt;/a&gt; and the TPL website.&lt;/p&gt;
 &lt;p&gt;In action, the color palette looks like this:&lt;/p&gt;
@@ -3175,7 +3175,7 @@ reversed &amp;lt;- normal +
   scale_fill_discrete(reverse = TRUE)
 
 gridExtra::grid.arrange(normal, reversed)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The user may specify the color palette in the &lt;code&gt;scale_fill_*&lt;/code&gt; or &lt;code&gt;scale_color_*&lt;/code&gt; functions in a ggplot call. Specifically, the user can specify the &lt;code&gt;palette&lt;/code&gt; (categorical, diverging, sequential) and whether the palette should be reversed.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set_tpl_theme(style = &amp;quot;print&amp;quot;, font = &amp;quot;lato&amp;quot;)
 normal &amp;lt;- ggplot(diamonds) +
@@ -3193,7 +3193,7 @@ reversed &amp;lt;- normal +
   scale_fill_discrete(reverse = TRUE)
 
 gridExtra::grid.arrange(normal, reversed, nrow = 1)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- gapminder::gapminder %&amp;gt;% 
   dplyr::filter(gapminder::gapminder$country %in% c(&amp;quot;France&amp;quot;, &amp;quot;Germany&amp;quot;, &amp;quot;Ireland&amp;quot;, &amp;quot;Italy&amp;quot;, &amp;quot;Japan&amp;quot;, &amp;quot;Norway&amp;quot;, &amp;quot;Mexico&amp;quot;, &amp;quot;United States&amp;quot;)) %&amp;gt;%
   dplyr::mutate(year = as.Date(paste(year, &amp;quot;-01-01&amp;quot;, sep = &amp;quot;&amp;quot;, format=&amp;#39;%Y-%b-%d&amp;#39;)))
@@ -3208,7 +3208,7 @@ ggplot(data = data, aes(x = year, y = gdpPercap, fill = country)) +
        y = &amp;quot;GDP Per Capita&amp;quot;,
        fill = &amp;quot;Country&amp;quot;) + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;restore-defaults&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Restore Defaults&lt;/h3&gt;
@@ -3218,11 +3218,11 @@ ggplot(data = data, aes(x = year, y = gdpPercap, fill = country)) +
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(iris, aes(x=jitter(Sepal.Width), y=jitter(Sepal.Length), col=Species, size = Petal.Length)) +
     geom_point() +
     labs(x=&amp;quot;Sepal Width (cm)&amp;quot;, y=&amp;quot;Sepal Length (cm)&amp;quot;, col=&amp;quot;Species&amp;quot;, size = &amp;quot;Petal Length&amp;quot;, title=&amp;quot;Iris Dataset&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;To restore the TPL theme, simply call &lt;code&gt;set_tpl_theme()&lt;/code&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set_tpl_theme()
 last_plot()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -3231,9 +3231,9 @@ last_plot()&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Bible Babies: Exploring Biblically-Inspired Baby Names over Time</title>
-      <link>/post/bible-babies/</link>
+      <link>https://connorrothschild.com/post/bible-babies/</link>
       <pubDate>Wed, 12 Jun 2019 00:00:00 +0000</pubDate>
-      <guid>/post/bible-babies/</guid>
+      <guid>https://connorrothschild.com/post/bible-babies/</guid>
       <description>
 
 
@@ -3336,7 +3336,7 @@ babynames &amp;lt;- babynames %&amp;gt;%
        y=&amp;quot;Percent&amp;quot;,
        caption = &amp;quot;Source: U.S. Social Security Administration
        \n Design: www.connorrothschild.com&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/bible-babies/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/bible-babies/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Biblical names have become significantly less popular over time. We can split up the trend by sex to see if it is primarily driven by one group of babies.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;babynames %&amp;gt;% 
   group_by(year, sex) %&amp;gt;% 
@@ -3353,7 +3353,7 @@ babynames &amp;lt;- babynames %&amp;gt;%
        color=&amp;quot;Sex&amp;quot;,
        caption = &amp;quot;Source: U.S. Social Security Administration
        \n Design: www.connorrothschild.com&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/bible-babies/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/bible-babies/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Indeed, much of the departure from Biblically-inspired baby names has been driven by girls. While 13% of boys born in 2017 shared a name with some biblical figure, the same was true of only 4% of girls.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;exploring-popular-names-over-time-using-gganimate&#34; class=&#34;section level2&#34;&gt;
@@ -3395,7 +3395,7 @@ maleanimation &amp;lt;- malebabynames %&amp;gt;%
   ease_aes(&amp;#39;cubic-in-out&amp;#39;)
 
 animate(maleanimation, fps = 25, nframes = 500, width = 800, height = 600)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/bible-babies/index_files/figure-html/unnamed-chunk-5-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/bible-babies/index_files/figure-html/unnamed-chunk-5-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;        #, renderer = gifski_renderer(&amp;quot;boybiblebabies.gif&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Replicating that code with minor tweaks creates the same animation for girls’ names:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# make rank variable
@@ -3431,7 +3431,7 @@ femaleanimation &amp;lt;- femalebabynames %&amp;gt;%
   ease_aes(&amp;#39;cubic-in-out&amp;#39;)
 
 animate(femaleanimation, fps = 25, nframes = 500, width = 800, height = 600)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/bible-babies/index_files/figure-html/unnamed-chunk-6-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/bible-babies/index_files/figure-html/unnamed-chunk-6-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;        #, renderer = gifski_renderer(&amp;quot;girlbiblebabies.gif&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Finally, we can combine some of the insights from our earlier plot (depicting the popularity of Biblical names by sex) to show which boys’ names are responsible for their sex’s relative dominance over girls’ Biblically-inspired names.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# make rank variable
@@ -3466,7 +3466,7 @@ babyanimation &amp;lt;- babynamesrank %&amp;gt;%
   ease_aes(&amp;#39;cubic-in-out&amp;#39;)
 
 animate(babyanimation, fps = 25, nframes = 500, width = 800, height = 600)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/bible-babies/index_files/figure-html/unnamed-chunk-7-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/bible-babies/index_files/figure-html/unnamed-chunk-7-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;        #, renderer = gifski_renderer(&amp;quot;combinedbiblebabies.gif&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 </description>
@@ -3474,9 +3474,9 @@ animate(babyanimation, fps = 25, nframes = 500, width = 800, height = 600)&lt;/c
     
     <item>
       <title>The Race for Media Attention</title>
-      <link>/post/media-mentions/</link>
+      <link>https://connorrothschild.com/post/media-mentions/</link>
       <pubDate>Thu, 30 May 2019 00:00:00 +0000</pubDate>
-      <guid>/post/media-mentions/</guid>
+      <guid>https://connorrothschild.com/post/media-mentions/</guid>
       <description>
 
 
@@ -3581,7 +3581,7 @@ data &amp;lt;- data %&amp;gt;%
   labs(x=element_blank(),
        y=&amp;quot;Percent of Media Mentions&amp;quot;,
        title=&amp;quot;Average Proportion of Media Coverage on a Weekly Basis&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/media-mentions/index_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/media-mentions/index_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Somewhat unsurprisingly. Joe Biden and Bernie Sanders lead the pack in media attention. Joe Biden tends to receive significantly more media attention than the average candidate (a weekly average of 0.9% of overall media content compared to 0.14% for the average candidate).&lt;/p&gt;
 &lt;p&gt;How has that coverage changed over time?&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
@@ -3614,7 +3614,7 @@ data &amp;lt;- data %&amp;gt;%
   scale_color_discrete(name=&amp;quot;Candidate&amp;quot;, 
                        limits = c(&amp;quot;Joe Biden&amp;quot;, &amp;quot;Bernie Sanders&amp;quot;, &amp;quot;Elizabeth Warren&amp;quot;, 
                                   &amp;quot;Kamala Harris&amp;quot;, &amp;quot;Beto O&amp;#39;Rourke&amp;quot;, &amp;quot;Cory Booker&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/media-mentions/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/media-mentions/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Evidently, much of Joe Biden’s popularity in the media can be explained by a few large spikes in weekly media mentions. We can explore the distribution of weekly media mentions using a visualization known as a &lt;a href=&#34;https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html&#34;&gt;density ridge plot&lt;/a&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
   group_by(name) %&amp;gt;% 
@@ -3630,7 +3630,7 @@ ggplot(aes(x = pct_of_all_candidate_clips*100, y = reorder(name,pct_of_all_candi
        y=element_blank(),
        title=&amp;quot;Media Mentions of Each Candidate&amp;quot;,
        subtitle=&amp;quot;With density ridges depicting average mentions on a weekly basis&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/media-mentions/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/media-mentions/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This plot illustrates that most candidates enjoy the same levels of media coverage from one week to another. Joe Biden, however, often has weeks in which he receives much more attention than usual, as evidenced by his small peaks throughout the plot. Bernie Sanders, Kamala Harris, and Beto O’Rourke also experienced a few jumps in attention, likely when they announced their candidacy for the presidency.&lt;/p&gt;
 &lt;p&gt;This raises an interesting question: when did candidates experience the most drastic changes in media attention? For example, were there any weeks in which a candidate who normally enjoys nearly no media attention began to get a lot of it?&lt;/p&gt;
 &lt;p&gt;We can answer this question by calculating the difference between one week’s coverage and the prior week’s coverage (using the &lt;a href=&#34;https://www.rdocumentation.org/packages/stats/versions/3.6.0/topics/lag&#34;&gt;lag&lt;/a&gt; function).&lt;/p&gt;
@@ -3646,7 +3646,7 @@ ggplot(aes(x = pct_of_all_candidate_clips*100, y = reorder(name,pct_of_all_candi
        y=&amp;quot;Percent Change&amp;quot;,
        title=&amp;quot;Largest Differences in Weekly Media Mentions&amp;quot;,
        subtitle=&amp;quot;Subtracting a given week&amp;#39;s % mentions from the week prior&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/media-mentions/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/media-mentions/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Unsurprisingly, the bars tend to mirror one another. If a candidate enjoys a steep increase in media attention one week, they are likely to see a correlated drop in the following week (if that week were really a spike in attention). The plot suggests that Joe Biden’s announcement (on April 25th) led to the most dramatic change in media attention in the 2020 cycle so far. Bernie Sanders also witnessed a spike in attention in the week following his announcement on February 19th. The same is true for the other candidates included in this plot.&lt;/p&gt;
 &lt;p&gt;Finally, I am interested in who is “winning” the race for media attention. Although a previous plot has shown media attention over time, this data can be somewhat hard to digest and interpret as so many candidates crowd the lower bound of the data (as they receive little media attention compared to Joe Biden).&lt;/p&gt;
 &lt;p&gt;By constructing a &lt;a href=&#34;https://learnr.wordpress.com/2009/05/06/ggplot2-bump-chart/&#34;&gt;bump chart&lt;/a&gt;, I am able to depict the rank of each candidate in terms of their media attention in a given week. This type of visualization assigns each candidate a categorical rank and makes their progress throughout the campaign easier to visualize.&lt;/p&gt;
@@ -3702,7 +3702,7 @@ recentdata %&amp;gt;%
        y = &amp;quot;Rank&amp;quot;,
        title = &amp;quot;The Race for Media Attention&amp;quot;,
        subtitle = &amp;quot;Candidates ranked by weekly media mentions&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/media-mentions/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/media-mentions/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Let’s focus on the meteoric rise of Pete Buttigieg:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;petedata &amp;lt;- recentdata %&amp;gt;% 
   mutate(pete = ifelse(name == &amp;quot;Pete Buttigieg&amp;quot;, 1, 0))
@@ -3741,7 +3741,7 @@ petedata %&amp;gt;%
        y = &amp;quot;Rank&amp;quot;,
        title = &amp;quot;Out of Nowhere&amp;quot;,
        subtitle = &amp;quot;Pete Buttigieg&amp;#39;s Rapid Rise in Media Mentions&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/media-mentions/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/media-mentions/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Some takeaways:&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
 &lt;li&gt;Bernie Sanders and Joe Biden consistently receive the most attention from the media.&lt;/li&gt;
@@ -3758,9 +3758,9 @@ petedata %&amp;gt;%
     
     <item>
       <title>STEMigration: Leaving and Entering STEM Fields During College</title>
-      <link>/post/stem-igration/</link>
+      <link>https://connorrothschild.com/post/stem-igration/</link>
       <pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate>
-      <guid>/post/stem-igration/</guid>
+      <guid>https://connorrothschild.com/post/stem-igration/</guid>
       <description>
 
 
@@ -4111,7 +4111,7 @@ set_cr_theme(font = &amp;quot;lato&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
                       breaks=c(&amp;quot;propblack&amp;quot;,&amp;quot;propfemale&amp;quot;,&amp;quot;prophispanic&amp;quot;),
                       label=c(&amp;quot;Black&amp;quot;,&amp;quot;Female&amp;quot;,&amp;quot;Hispanic&amp;quot;)) +
   theme(axis.text.x = element_text(angle = 90))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/stem-igration/index_files/figure-html/plot2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/stem-igration/index_files/figure-html/plot2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Of the traditionally underrepresented groups, women fare the best in STEM. But even at their peak, they only held 19% of seats in STEM classrooms.&lt;/p&gt;
 &lt;p&gt;Next, I am curious how these shifts vary from one graduation class to another. In other words, &lt;strong&gt;which classes experience the greatest shifts in representation throughout their time in university?&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;I explore this by mutating the data to include a new variable: &lt;em&gt;growth&lt;/em&gt;.
@@ -4128,7 +4128,7 @@ ggplot(aes(fill=type, y=growth, x=year)) +
   scale_fill_discrete(name=&amp;quot;Demographic&amp;quot;,
                       label=c(&amp;quot;Black&amp;quot;,&amp;quot;Female&amp;quot;,&amp;quot;Hispanic&amp;quot;)) +
   theme(axis.text.x = element_text(angle = 90))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/stem-igration/index_files/figure-html/plot3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/stem-igration/index_files/figure-html/plot3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;It seems as if women experience the greatest growth in STEM enrollment during their time as undergraduates, while Black students tend to migrate &lt;em&gt;out&lt;/em&gt; of STEM majors.&lt;/p&gt;
 &lt;p&gt;We can break that down group-by-group.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% distinct(year,type,.keep_all=TRUE) %&amp;gt;% 
@@ -4142,7 +4142,7 @@ ggplot(aes(fill=type, y=growth, x=year)) +
   labs(fill=&amp;quot;Attrition&amp;quot;) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/stem-igration/index_files/figure-html/plot4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/stem-igration/index_files/figure-html/plot4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% distinct(year,type,.keep_all=TRUE) %&amp;gt;% 
   filter(type==&amp;quot;femalegrowth&amp;quot;) %&amp;gt;% 
   ggplot(mapping=aes(x=year,y=growth)) +
@@ -4153,7 +4153,7 @@ ggplot(aes(fill=type, y=growth, x=year)) +
   ggtitle(&amp;quot;Percent Change in Female STEM Undergrads&amp;quot;, subtitle = &amp;quot;Between time of matriculation and time of graduation&amp;quot;) +
   labs(fill=&amp;quot;Growth&amp;quot;) +
   theme(axis.text.x = element_text(angle = 90))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/stem-igration/index_files/figure-html/plot5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/stem-igration/index_files/figure-html/plot5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% distinct(year,type,.keep_all=TRUE) %&amp;gt;% 
   filter(type==&amp;quot;hispanicgrowth&amp;quot;) %&amp;gt;% 
   ggplot(mapping=aes(x=year,y=growth)) +
@@ -4164,7 +4164,7 @@ ggplot(aes(fill=type, y=growth, x=year)) +
   ggtitle(&amp;quot;Percent Change in Hispanic STEM Undergrads&amp;quot;, subtitle = &amp;quot;Between time of matriculation and time of graduation&amp;quot;) +
   labs(fill=&amp;quot;Growth&amp;quot;) +
   theme(axis.text.x = element_text(angle = 90))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/stem-igration/index_files/figure-html/plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/stem-igration/index_files/figure-html/plot-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Here are the previous graphs, faceted:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;labels &amp;lt;- c(blackgrowth = &amp;quot;Black&amp;quot;, femalegrowth = &amp;quot;Female&amp;quot;, hispanicgrowth=&amp;quot;Hispanic&amp;quot;) 
 data %&amp;gt;% distinct(year,type,.keep_all=TRUE) %&amp;gt;% 
@@ -4177,7 +4177,7 @@ data %&amp;gt;% distinct(year,type,.keep_all=TRUE) %&amp;gt;%
   facet_grid(. ~ type, labeller=labeller(type = labels)) +
   scale_x_discrete(labels = c(&amp;quot;Class of 2006&amp;quot; = &amp;quot;2006&amp;quot;, &amp;quot;Class of 2007&amp;quot; = &amp;quot;2007&amp;quot;, &amp;quot;Class of 2008&amp;quot; = &amp;quot;2008&amp;quot;, &amp;quot;Class of 2009&amp;quot; = &amp;quot;2009&amp;quot;, &amp;quot;Class of 2010&amp;quot; = &amp;quot;2010&amp;quot;, &amp;quot;Class of 2011&amp;quot; = &amp;quot;2011&amp;quot;, &amp;quot;Class of 2012&amp;quot; = &amp;quot;2012&amp;quot;, &amp;quot;Class of 2013&amp;quot; = &amp;quot;2013&amp;quot;)) +
   theme(axis.text.x = element_text(angle = 90))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/stem-igration/index_files/figure-html/plot6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/stem-igration/index_files/figure-html/plot6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;summaries-and-takeaways&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Summaries and Takeaways&lt;/h3&gt;
@@ -4191,9 +4191,9 @@ data %&amp;gt;% distinct(year,type,.keep_all=TRUE) %&amp;gt;%
     
     <item>
       <title>Automation and Its Impact on Jobs</title>
-      <link>/post/automation/</link>
+      <link>https://connorrothschild.com/post/automation/</link>
       <pubDate>Thu, 10 May 2018 00:00:00 +0000</pubDate>
-      <guid>/post/automation/</guid>
+      <guid>https://connorrothschild.com/post/automation/</guid>
       <description>
 
 
@@ -4298,7 +4298,7 @@ salary2 %&amp;gt;%
   ggtitle(&amp;quot;Median Wage vs Total Employment&amp;quot;) +
   xlab(&amp;quot;Number of Americans in a Given Job&amp;quot;) +
   ylab(&amp;quot;Median Wage of a Given Job&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/automation/index_files/figure-html/wagevsemployment-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/automation/index_files/figure-html/wagevsemployment-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We now have three data points:&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
 &lt;li&gt;&lt;p&gt;The name of an occupation&lt;/p&gt;&lt;/li&gt;
@@ -4613,7 +4613,7 @@ ggplot(data=edsal3, aes(x = reorder(typicaled, medianwage), y = medianwage)) +
   scale_fill_discrete(breaks=legend_ord) +
   theme_minimal() +
   theme(axis.text.x=element_blank())&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/automation/index_files/figure-html/wagebyedu-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/automation/index_files/figure-html/wagebyedu-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The results are unsurpising: more educated people on average earn more.&lt;/p&gt;
 &lt;p&gt;Lastly, I bring in the automation data.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;automationwstates &amp;lt;- automation %&amp;gt;% select(-soc)
@@ -5034,7 +5034,7 @@ head(automation) %&amp;gt;% kable()&lt;/code&gt;&lt;/pre&gt;
   ylab(&amp;quot;Probability of Automation&amp;quot;) +
   geom_label_repel(data=subset(automation1, total &amp;gt; 4000000),
                    aes(total, probability,label=occupation), label.size=.5, label.r=.05, size=2.5, nudge_y = .05, nudge_x= -10000)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/automation/index_files/figure-html/autoviz-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/automation/index_files/figure-html/autoviz-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;There doesn’t seem to be a huge relationship between automation and number of employees, however there is some concentration at each of the poles.&lt;/p&gt;
 &lt;p&gt;Some final data cleaning, and the merge of the final dataset:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;automation1$occupation &amp;lt;- str_replace_all(automation1$occupation, &amp;quot;;&amp;quot;, &amp;quot;,&amp;quot;)
@@ -5057,7 +5057,7 @@ ggplot(data=autovsedu, aes(x = reorder(typicaled, -averageprobability), y = aver
   scale_fill_discrete(breaks=legend_ord2) +
   theme_minimal() +
   theme(axis.text.x=element_blank())&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/automation/index_files/figure-html/firstlook-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/automation/index_files/figure-html/firstlook-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;There is a rather clear correlation between level of education and automation risk: those who are more educated are better protected from automation.&lt;/p&gt;
 &lt;p&gt;We can then visualize this relationship by individual occupation:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(data=data) +
@@ -5073,7 +5073,7 @@ ggplot(data=autovsedu, aes(x = reorder(typicaled, -averageprobability), y = aver
   theme(legend.text = element_text(colour=&amp;quot;black&amp;quot;, size = 10)) +
   guides(col = guide_legend(override.aes = list(size=5))) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/automation/index_files/figure-html/viz2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/automation/index_files/figure-html/viz2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;With labels, a final look:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data$occupation &amp;lt;- toTitleCase(data$occupation)
 
@@ -5100,7 +5100,7 @@ ggplot(data=data) +
   annotate(&amp;quot;text&amp;quot;, x = 165000, y = -0.035, label = &amp;quot;Highest salary,\n lowest automation risk&amp;quot;, size=3, fontface=2) +
   annotate(&amp;quot;text&amp;quot;, x = 45000, y = -0.035, label = &amp;quot;Lowest salary,\n lowest automation risk&amp;quot;, size=3, fontface=2) +
   annotate(&amp;quot;text&amp;quot;, x = 45000, y = 1.03, label = &amp;quot;Lowest salary,\n highest automation risk&amp;quot;, size=3, fontface=2)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/automation/index_files/figure-html/finalviz-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/automation/index_files/figure-html/finalviz-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;div id=&#34;conclusions&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Conclusions&lt;/h3&gt;
 &lt;p&gt;Using the dataset I’ve used in this project, researchers Carl Frey and Michael Osborne &lt;a href=&#34;https://www.oxfordmartin.ox.ac.uk/downloads/academic/The_Future_of_Employment.pdf&#34;&gt;predicted&lt;/a&gt; that 47% of jobs are at risk of automation over the next couple decades.&lt;/p&gt;
@@ -5115,65 +5115,65 @@ ggplot(data=data) +
     
     <item>
       <title>Bible Babies</title>
-      <link>/project/bible-babies/</link>
+      <link>https://connorrothschild.com/project/bible-babies/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/project/bible-babies/</guid>
+      <guid>https://connorrothschild.com/project/bible-babies/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Build Your Own Streetmap in R</title>
-      <link>/project/map-springfield/</link>
+      <link>https://connorrothschild.com/project/map-springfield/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/project/map-springfield/</guid>
+      <guid>https://connorrothschild.com/project/map-springfield/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Replicating Plots in R (Tidy Tuesday)</title>
-      <link>/project/tt-replication/</link>
+      <link>https://connorrothschild.com/project/tt-replication/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/project/tt-replication/</guid>
+      <guid>https://connorrothschild.com/project/tt-replication/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Scrollytelling in R: Automation and Its Impact on Jobs</title>
-      <link>/project/r-scrollytell/</link>
+      <link>https://connorrothschild.com/project/r-scrollytell/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/project/r-scrollytell/</guid>
+      <guid>https://connorrothschild.com/project/r-scrollytell/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Texas Vaccination Rates</title>
-      <link>/project/tx-vaccination-rates/</link>
+      <link>https://connorrothschild.com/project/tx-vaccination-rates/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/project/tx-vaccination-rates/</guid>
+      <guid>https://connorrothschild.com/project/tx-vaccination-rates/</guid>
       <description></description>
     </item>
     
     <item>
       <title>The Birth, Death, and Rebirth of Kanye West</title>
-      <link>/project/death-rebirth-kanye/</link>
+      <link>https://connorrothschild.com/project/death-rebirth-kanye/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/project/death-rebirth-kanye/</guid>
+      <guid>https://connorrothschild.com/project/death-rebirth-kanye/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tidy Tuesday: Powerlifting</title>
-      <link>/project/tt-powerlifting/</link>
+      <link>https://connorrothschild.com/project/tt-powerlifting/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/project/tt-powerlifting/</guid>
+      <guid>https://connorrothschild.com/project/tt-powerlifting/</guid>
       <description></description>
     </item>
     
     <item>
       <title>TPL Themes</title>
-      <link>/project/tpl-theme/</link>
+      <link>https://connorrothschild.com/project/tpl-theme/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/project/tpl-theme/</guid>
+      <guid>https://connorrothschild.com/project/tpl-theme/</guid>
       <description></description>
     </item>
     
