@@ -7,17 +7,17 @@ weight = 130  # Order that this section will appear.
 
 title = "Let's Connect."
 subtitle = """
-If you think my skills could help your organization, let's chat.
+I love learning and teaching new things. Feel free  to reach out through any of the mediums below to get in touch!
 """
 
 # Automatically link email and phone?
-autolink = true
+autolink = false
 
 # Email form provider
 #   0: Disable email form
 #   1: Netlify (requires that the site is hosted by Netlify)
 #   2: formspree.io
-email_form = 0
+email_form = 1
 
 [design.background]
   # Apply a background color, gradient, or image.
@@ -30,6 +30,6 @@ email_form = 0
   
   # Background gradient.
   gradient_start = "#CBE9F6"
-  gradient_end = "white"
+  gradient_end = "#E3E3E5"
 +++
 

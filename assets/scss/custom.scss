@@ -5,10 +5,16 @@ $light-grey: #E3E3E5;
 $sta-primary-dark: black;
 $sta-primary-light: grey;
 
+/* background color for body */
+body {
+  background-color: white;
+}
+
 /* top level font and styling*/
 h1 {
   font-family: $font-main;
   font-weight: $font-bold;
+  color: $sta-primary-dark;
 }
 
 .section-heading p {
@@ -17,7 +23,8 @@ h1 {
 
 /* intro animation */
 
-.avatar-circle, .network-icon {
+#profile .avatar.avatar-circle,
+#profile .network-icon {
   position: relative;
   right: -1000px;
   -webkit-animation: slide-left 1s forwards;
@@ -48,19 +55,19 @@ h1 {
 }
 
 /* buttons */
-.btn-primary {
+.btn {
   border-radius: 5px;
   background-color: $dark-grey;
 }
 
-.btn-toolbar .btn.btn-primary.active  {
-  background-color: black !important;
+.btn-toolbar .btn.active  {
+  background-color: $sta-primary-dark !important;
   box-shadow: 3px 3px 0 0 white !important;
 }
 
-.btn-primary:focus {
+.btn:focus {
   box-shadow: 3px 3px 0 0 white !important;
-  color: black;
+  color: $sta-primary-dark;
 }
 
 .btn {
@@ -73,14 +80,14 @@ h1 {
 
 .btn-links .btn:hover {
   padding: .3rem;
-  color: black;
-  border-color: black;
+  color: $sta-primary-dark;
+  border-color: $sta-primary-dark;
   background-color: $dark-grey !important;
 }
 
-.btn-primary:hover {
+.btn:hover {
   background-color: $light-grey !important;
-  color: black;
+  color: $sta-primary-dark;
 }
 
 .btn {
@@ -88,19 +95,18 @@ h1 {
   line-height: 1;
   box-shadow: 3px 3px 0 0 $dark-grey;
   color: $dark-grey;
-  border-color: black;
+  border-color: $sta-primary-dark;
   background-color: white !important;
   justify-content: center; 
 }
 
 /* toolbar */
 .navbar .navbar-nav .nav-link.active {
-  color: black !important;
+  color: $sta-primary-dark !important;
 }
 
 /* link styling */
-
-.card-text p a {
+.card-text p a, .powered-by a {
   text-decoration: none;
    line-height: 1;
    position: relative;
@@ -108,12 +114,12 @@ h1 {
    display: inline-block;
    padding: 5px 5px;
    overflow: hidden;
-   color: #333;
+   color: black;
    vertical-align: bottom;
    transition: color .3s ease-out;
 }
 
-.card-text p a::before {
+.card-text p a::before, .powered-by a::before {
    content: "";
    position: absolute;
    z-index: -1;
@@ -127,10 +133,10 @@ h1 {
    transition: transform .25s ease-out;
 }
 
-.card-text p a:hover { 
+.card-text p a:hover, .powered-by a:hover { 
    color: #fff; 
 }
-.card-text p a:hover::before {
+.card-text p a:hover::before, .powered-by a:hover::before {
    transform: translateY(0);
    transition: transform .25s ease-out;
 }
@@ -138,4 +144,31 @@ h1 {
 /* code on blog */
 .hljs {
   background: $light-grey !important;
+}
+
+/* footer */
+.powered-by {
+  font-size: 1em;
+}
+
+footer {
+  margin: auto !important;
+}
+
+footer p {
+  margin-bottom: 0 !important;
+}
+
+/* awards cards */
+.card.experience.course.card-title {
+  font-size: 1rem;
+}
+
+.card.experience.course.card-subtitle {
+  font-size: .8rem;
+  letter-spacing: 0 !important;
+}
+
+.course .card-body .card-text {
+  padding: .8rem 0.5rem .8rem 0 !important;
 }

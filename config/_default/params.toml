@@ -82,7 +82,7 @@ edit_page = {repo_url = "https://github.com/gcushen/hugo-academic", content_dir 
 
 # Enter contact details (optional). To hide a field, clear it to "".
 email = "connor@connorrothschild.com"
-phone = "417-569-8406"
+# phone = "417-569-8406"
 
 # Address
 # For country_code, use the 2-letter ISO code (see https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 )
@@ -105,8 +105,8 @@ office_hours = []
 # Contact links
 #   Set to `[]` to disable, or comment out unwanted lines with a hash `#`.
 contact_links = [
-  {icon = "twitter", icon_pack = "fab", name = "Twitter", link = "https://twitter.com/CL_Rothschild"},
-  {icon = "github", icon_pack = "fab", name = "GitHub", link = "https://github.com/connorrothschild"},
+  # {icon = "twitter", icon_pack = "fab", name = "Twitter", link = "https://twitter.com/CL_Rothschild"},
+  # {icon = "github", icon_pack = "fab", name = "GitHub", link = "https://github.com/connorrothschild"},
   # {icon = "spotify", icon_pack = "fab", name = "Spotify", link = "https://keybase.io/"},
   ]
 
@@ -152,7 +152,7 @@ sharing = true
 
 # Show a copyright license from creativecommons.org in the site footer?
 # Page specific copyright licenses are also possible by adding this option to a page's front matter.
-copyright_license = {enable = false, allow_derivatives = false, share_alike = true, allow_commercial = false, notice = "This work is licensed under {license}"}
+copyright_license = {enable = true, allow_derivatives = false, share_alike = true, allow_commercial = false, notice = "This work is licensed under {license}"}
 
 # Link authors to their profile page? (true/false)
 link_authors = false

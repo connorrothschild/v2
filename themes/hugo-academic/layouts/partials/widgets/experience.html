@@ -48,7 +48,7 @@
                 <span>{{.}}</span>
               {{end}}
             </div>
-            {{with .description}}<div class="card-text">{{. | markdownify | emojify}}</div>{{end}}
+            {{with .description}}<div class="card-text"><p>{{. | markdownify | emojify}}</p></div>{{end}}
           </div>
         </div>
       </div>

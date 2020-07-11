@@ -59,7 +59,7 @@ Under the direction of Dr. Elaine Howard Ecklund, I worked as one of three under
   date_start = "2018-05-30"
   date_end = "2018-08-07"
   description = """
-Under the direction of Dr. Ed Egan, I helped create a comprehensive database of startups and accelerators in the United States. I matched and organized 13,000 companies from a spreadsheet to public data using SQL and Excel. I assisted in the strategic development of web crawlers to detect and classify the industry of a company.
+Under the direction of Dr. Ed Egan, I helped create a comprehensive database of startups and accelerators in the United States at the [Baker Institute for Public Policy](https://www.bakerinstitute.org/). I matched and organized 13,000 companies from a spreadsheet to public data using SQL and Excel. I assisted in the strategic development of web crawlers to detect and classify the industry of a company.
   """
   
 [design.background]
