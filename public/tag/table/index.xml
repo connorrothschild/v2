@@ -2,28 +2,28 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>table | Connor Rothschild</title>
-    <link>/tag/table/</link>
-      <atom:link href="/tag/table/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://connorrothschild.com/tag/table/</link>
+      <atom:link href="https://connorrothschild.com/tag/table/index.xml" rel="self" type="application/rss+xml" />
     <description>table</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2020</copyright><lastBuildDate>Mon, 18 May 2020 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>/img/social.png</url>
+      <url>https://connorrothschild.com/img/social.png</url>
       <title>table</title>
-      <link>/tag/table/</link>
+      <link>https://connorrothschild.com/tag/table/</link>
     </image>
     
     <item>
       <title>Recreating a Table by The Economist Using Reactable</title>
-      <link>/post/economist-table-replication-using-reactable/</link>
+      <link>https://connorrothschild.com/post/economist-table-replication-using-reactable/</link>
       <pubDate>Mon, 18 May 2020 00:00:00 +0000</pubDate>
-      <guid>/post/economist-table-replication-using-reactable/</guid>
+      <guid>https://connorrothschild.com/post/economist-table-replication-using-reactable/</guid>
       <description>
-&lt;script src=&#34;/rmarkdown-libs/core-js/shim.min.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;/rmarkdown-libs/react/react.min.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;/rmarkdown-libs/react/react-dom.min.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;/rmarkdown-libs/reactwidget/react-tools.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;/rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;/rmarkdown-libs/reactable-binding/reactable.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/core-js/shim.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/react/react.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/react/react-dom.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/reactwidget/react-tools.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/reactable-binding/reactable.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;&lt;em&gt;The Economist&lt;/em&gt; recently released a series of country-level &lt;a href=&#34;https://twitter.com/J_CD_T/status/1261625814854045696&#34;&gt;datasets&lt;/a&gt; on ‘excess mortality’, a term used to &lt;a href=&#34;https://www.economist.com/graphic-detail/2020/04/16/tracking-covid-19-excess-deaths-across-countries&#34;&gt;describe&lt;/a&gt; ‘the gap between the total number of people who died from any cause, and the historical average for the same place and time of year.’ In simpler terms, the measure captures how many deaths &lt;em&gt;are&lt;/em&gt; happening that &lt;em&gt;shouldn’t be&lt;/em&gt;.&lt;/p&gt;

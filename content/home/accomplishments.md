@@ -44,7 +44,7 @@ Find the project [here](https://github.com/connorrothschild/covid-mobility).
   description = """
 Awarded the Marian Fox Martel Scholar Award for the 2019-2020 academic year. The award is in recognition of a Martel junior who 'demonstrates extraordinary citizenship in various area of College life, focusing on academic excellence and who has a GPA greater than 3.5.'
 """
-  
+
 [[item]]
   organization = "Rice University, Center for Civic Leadership"
   organization_url = "https://ccl.rice.edu/"
@@ -60,7 +60,7 @@ My partner and I proposed a pre-trial diversion program for pregnant women and m
 
 See media [here](https://news.rice.edu/2020/03/02/rice-students-tackle-criminal-justice-reform-at-houston-policy-challenge/).
   """
-  
+
 [[item]]
   organization = "Rice DataSci"
   organization_url = "https://datasci.rice.edu/"
@@ -74,7 +74,7 @@ Awarded first place in the 'Houston/Texas trends' track at the 2020 Rice Datatho
 
 Find the project [here](https://connorrothschild.github.io/datathon-2020/source/).
   """
-  
+
 [[item]]
   organization = "Northeastern University"
   organization_url = "https://cj2020.northeastern.edu/"
@@ -88,11 +88,11 @@ Honored with the student award for best visualization at the 2020 Computation + 
 
 Find the project [here](https://connorrothschild.shinyapps.io/automation/).
   """
-  
+
 [[item]]
   organization = "Rice University Political Science Department"
   organization_url = "https://politicalscience.rice.edu/"
-  title = "First Place, COVID-19 Houston Response Projects"
+  title = "Hudspeth Award for Best Undergraduate Paper in Political Science"
   url = "https://politicalscience.rice.edu/undergraduateawards"
   certificate_url = ""
   date_start = "2019-05-22"
@@ -102,7 +102,7 @@ Recipient of the Hudspeth Award in recognition of my seminar paper "¡Vota! Test
 
 Find the paper [here](https://www.researchgate.net/publication/332470540_Vota_Testing_the_Impact_of_Spanish-Language_Ballots_on_Election_Results_and_Preferences).
   """
-  
+
 [[item]]
   organization = "Rice University, Center for Civic Leadership"
   organization_url = "https://ccl.rice.edu/"
@@ -118,7 +118,7 @@ My team and I proposed a program which incentivizes homeowners in high-opportuni
 
 See media [here](https://kinder.rice.edu/urbanedge/2019/02/26/affordable-housing-houston-rice-university).
   """
-  
+
 [[item]]
   organization = "The Baker Institute for Public Policy"
   organization_url = "https://www.bakerinstitute.org/"
@@ -134,7 +134,7 @@ The award was in recognition of a 6000-word research paper and a 20 minute prese
 
 See media [here](https://mailchi.mp/rice.edu/gala-547673?e=a93e1ef59d#AnnualReport). Find the paper [here](https://issuu.com/ricejpp/docs/rjppfinalsingle/20).
   """
-  
+
 [[item]]
   organization = "Rice University, Center for Civic Leadership"
   organization_url = "https://ccl.rice.edu/"
@@ -150,7 +150,7 @@ My partner and I proposed an innovative, multi-home buyout system for the Meyerl
 
 See media [here](http://news.rice.edu/2018/02/23/martel-college-students-win-rices-inaugural-houston-centered-policy-challenge/) and [here](https://www.houstonpublicmedia.org/articles/news/2018/02/27/270232/rice-students-win-flood-policy-contest-for-multi-home-buyout-idea/).
   """
-  
+
 [[item]]
   organization = "National Speech and Debate Association"
   organization_url = "https://www.speechanddebate.org/"
@@ -173,7 +173,7 @@ See media [here](http://www.news-leader.com/story/news/business/2017/06/28/kicka
 
   # Background color.
   # color = "navy"
-  
+
   # Background gradient.
   gradient_start = "#ECCCC2"
   gradient_end = "lightgrey"

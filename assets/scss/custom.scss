@@ -1,0 +1,141 @@
+$font-main: Inter;
+$font-bold: 800;
+$dark-grey: #343434;
+$light-grey: #E3E3E5;
+$sta-primary-dark: black;
+$sta-primary-light: grey;
+
+/* top level font and styling*/
+h1 {
+  font-family: $font-main;
+  font-weight: $font-bold;
+}
+
+.section-heading p {
+  color: $dark-grey;
+}
+
+/* intro animation */
+
+.avatar-circle, .network-icon {
+  position: relative;
+  right: -1000px;
+  -webkit-animation: slide-left 1s forwards;
+  animation: slide-left 1s forwards;
+}
+
+.portrait-title {
+  position: relative;
+  left: -1000px;
+  -webkit-animation: slide-right 1s forwards;
+  animation: slide-right 1s forwards;
+}
+
+@-webkit-keyframes slide-right {
+    100% { left: 0; }
+}
+
+@keyframes slide-right {
+    100% { left: 0; }
+}
+
+@-webkit-keyframes slide-left {
+    100% { right: 0; }
+}
+
+@keyframes slide-left {
+    100% { right: 0; }
+}
+
+/* buttons */
+.btn-primary {
+  border-radius: 5px;
+  background-color: $dark-grey;
+}
+
+.btn-toolbar .btn.btn-primary.active  {
+  background-color: black !important;
+  box-shadow: 3px 3px 0 0 white !important;
+}
+
+.btn-primary:focus {
+  box-shadow: 3px 3px 0 0 white !important;
+  color: black;
+}
+
+.btn {
+  margin: 2.5px;
+}
+
+.btn-links .btn {
+  padding: .3rem;
+}
+
+.btn-links .btn:hover {
+  padding: .3rem;
+  color: black;
+  border-color: black;
+  background-color: $dark-grey !important;
+}
+
+.btn-primary:hover {
+  background-color: $light-grey !important;
+  color: black;
+}
+
+.btn {
+  padding: .3rem;
+  line-height: 1;
+  box-shadow: 3px 3px 0 0 $dark-grey;
+  color: $dark-grey;
+  border-color: black;
+  background-color: white !important;
+  justify-content: center; 
+}
+
+/* toolbar */
+.navbar .navbar-nav .nav-link.active {
+  color: black !important;
+}
+
+/* link styling */
+
+.card-text p a {
+  text-decoration: none;
+   line-height: 1;
+   position: relative;
+   z-index: 0;
+   display: inline-block;
+   padding: 5px 5px;
+   overflow: hidden;
+   color: #333;
+   vertical-align: bottom;
+   transition: color .3s ease-out;
+}
+
+.card-text p a::before {
+   content: "";
+   position: absolute;
+   z-index: -1;
+   top: 0;
+   left: 0;
+   transform: translateY(calc(100% - 2px));
+   width: 100%;
+   height: 100%;
+   border-radius: 2.5px;
+   background-image: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(52,52,52,1) 35%, rgba(136,136,136,1) 100%);
+   transition: transform .25s ease-out;
+}
+
+.card-text p a:hover { 
+   color: #fff; 
+}
+.card-text p a:hover::before {
+   transform: translateY(0);
+   transition: transform .25s ease-out;
+}
+
+/* code on blog */
+.hljs {
+  background: $light-grey !important;
+}

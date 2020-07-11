@@ -2,10 +2,10 @@
 name = "connor_fonts"
 
 # Optional Google font URL
-google_fonts = "Muli:400,500,600,700|Lato|Roboto+Mono|Khula:400,500,600,700"
+google_fonts = "Muli:400,500,600,700,800,900|Lato:400,500,600,700,800,900|Roboto+Mono:400,500,600,700,800,900|Khula:400,500,600,700|Inter:400,500,600,700,800,900"
 
 # Font families
-heading_font = "Muli"
+heading_font = "Inter"
 body_font = "Lato"
-nav_font = "Muli"
+nav_font = "Inter"
 mono_font = "Roboto Mono"

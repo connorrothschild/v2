@@ -37,7 +37,7 @@ Through a fellowship with [Coding It Forward](https://www.codingitforward.com/),
   date_end = ""
   description = """
 
-I conduct policy research and assist with data for the Texas Policy Lab. I create engaging data visualizations for internal and external use, develop reports detailing analyses of existing programs, and produce data dashboards for government partners. 
+I conduct policy research and assist with data for the [Texas Policy Lab](https://www.texaspolicylab.org/). I create engaging data visualizations for internal and external use, develop reports detailing analyses of existing programs, and produce data dashboards for government partners. 
   """
 
 [[experience]]
@@ -48,7 +48,7 @@ I conduct policy research and assist with data for the Texas Policy Lab. I creat
   date_start = "2019-09-01"
   date_end = "2020-04-21"
   description = """
-Under the direction of Dr. Elaine Howard Ecklund, I worked as one of three undergraduate fellows at the Religion and Public Life Program at Rice University. I assist in the writing of literature reviews, code and categorize interview transcripts, and do general research for RPLP fellows. 
+Under the direction of Dr. Elaine Howard Ecklund, I worked as one of three undergraduate fellows at the [Religion and Public Life Program](https://rplp.rice.edu/) at Rice University. I assist in the writing of literature reviews, code and categorize interview transcripts, and do general research for RPLP fellows. 
   """
 
 [[experience]]

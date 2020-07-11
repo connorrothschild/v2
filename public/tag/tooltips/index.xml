@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>tooltips | Connor Rothschild</title>
-    <link>/tag/tooltips/</link>
-      <atom:link href="/tag/tooltips/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://connorrothschild.com/tag/tooltips/</link>
+      <atom:link href="https://connorrothschild.com/tag/tooltips/index.xml" rel="self" type="application/rss+xml" />
     <description>tooltips</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2020</copyright><lastBuildDate>Sat, 04 Jan 2020 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>/img/social.png</url>
+      <url>https://connorrothschild.com/img/social.png</url>
       <title>tooltips</title>
-      <link>/tag/tooltips/</link>
+      <link>https://connorrothschild.com/tag/tooltips/</link>
     </image>
     
     <item>
       <title>How (and Why) to Add a Chart to Your D3.js Tooltip</title>
-      <link>/post/adding-a-chart-to-your-d3-tooltip/</link>
+      <link>https://connorrothschild.com/post/adding-a-chart-to-your-d3-tooltip/</link>
       <pubDate>Sat, 04 Jan 2020 00:00:00 +0000</pubDate>
-      <guid>/post/adding-a-chart-to-your-d3-tooltip/</guid>
+      <guid>https://connorrothschild.com/post/adding-a-chart-to-your-d3-tooltip/</guid>
       <description>&lt;p&gt;I think tooltips are one of the most underrated parts of a visualization. When users are initially confused by a visualization, they often hover over a data point of interest to get more information.&lt;/p&gt;
 &lt;p&gt;Unfortunately, many tooltips fail to really illuminate much about our data. They often recapitulate what is already being presented without clarifying any of the confusing parts of the data. Most frequently, I see (and even create 😦) tooltips which present the most basic information (in a map, a tooltip would present the state name and the value of interest), and nothing else!&lt;/p&gt;
 &lt;p&gt;Of course, there&amp;rsquo;s nothing &lt;em&gt;wrong&lt;/em&gt; with these kinds of tooltips. But they are truly doing the bare minimum, and, as a result, they&amp;rsquo;re missing out on the full potential of tooltips. &lt;strong&gt;If users are actively seeking more information by hovering over data, we ought to reward them with the most helpful and interesting information we can.&lt;/strong&gt;&lt;/p&gt;
