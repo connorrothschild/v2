@@ -159,7 +159,7 @@ footer p {
   margin-bottom: 0 !important;
 }
 
-/* awards cards */
+/* awards and experience cards */
 .card.experience.course.card-title {
   font-size: 1rem;
 }
@@ -169,6 +169,7 @@ footer p {
   letter-spacing: 0 !important;
 }
 
-.course .card-body .card-text {
+.course .card-body .card-text,
+.experience .card-body .card-text {
   padding: .8rem 0.5rem .8rem 0 !important;
 }
