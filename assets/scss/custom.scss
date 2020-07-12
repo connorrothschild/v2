@@ -175,7 +175,7 @@ h1 {
 
 /* footer */
 .powered-by {
-  font-size: 1em;
+  font-size: .9em;
 }
 
 footer {
@@ -191,7 +191,8 @@ footer p {
   font-size: 1rem;
 }
 
-.card.experience.course.card-subtitle {
+.card-subtitle.my-0.article-metadata,
+.card .text-muted.exp-meta{
   font-size: .8rem;
   letter-spacing: 0 !important;
 }
