@@ -1,6 +1,6 @@
 ---
 date: “2020-10-08T00:00:00Z"
-external_link: post/tidy-tuesday-powerlifting/
+external_link: /post/tidy-tuesday-powerlifting/
 image:
   caption: 
   focal_point: Smart

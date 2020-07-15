@@ -167,10 +167,23 @@ h1 {
    transition: transform .25s ease-out;
 }
 
-/* code on blog */
+/* blog formatting */
 .hljs {
   background: $light-grey !important;
 }
+
+.article-style {
+  a {
+    color: red;
+    border-bottom: 1px dotted grey;
+  }
+  
+  a:hover {
+    border-bottom: 1px solid red;
+    text-decoration: none;
+  }
+}
+
 
 /* footer */
 .powered-by {

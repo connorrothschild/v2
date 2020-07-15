@@ -1,6 +1,6 @@
 ---
 date: "2020-03-15T00:00:00Z"
-external_link: post/dumbbell-plots/
+external_link: /post/dumbbell-plots/
 image:
   caption: 
   focal_point: Smart

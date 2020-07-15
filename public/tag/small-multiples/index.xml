@@ -2,21 +2,250 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>small multiples | Connor Rothschild</title>
-    <link>https://connorrothschild.com/tag/small-multiples/</link>
-      <atom:link href="https://connorrothschild.com/tag/small-multiples/index.xml" rel="self" type="application/rss+xml" />
+    <link>/tag/small-multiples/</link>
+      <atom:link href="/tag/small-multiples/index.xml" rel="self" type="application/rss+xml" />
     <description>small multiples</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2020</copyright><lastBuildDate>Sat, 01 Feb 2020 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2020</copyright><lastBuildDate>Tue, 14 Jul 2020 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>https://connorrothschild.com/img/social.png</url>
+      <url>/img/social.png</url>
       <title>small multiples</title>
-      <link>https://connorrothschild.com/tag/small-multiples/</link>
+      <link>/tag/small-multiples/</link>
     </image>
     
     <item>
+      <title>Spikes in Firearm Background Checks During COVID-19</title>
+      <link>/post/covid-gun-spikes/</link>
+      <pubDate>Tue, 14 Jul 2020 00:00:00 +0000</pubDate>
+      <guid>/post/covid-gun-spikes/</guid>
+      <description>
+&lt;script src=&#34;/rmarkdown-libs/core-js/shim.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/react/react.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/react/react-dom.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/reactwidget/react-tools.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/reactable-binding/reactable.js&#34;&gt;&lt;/script&gt;
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;/post/covid-gun-spikes/featured_hu5c0e9a0959b7c46cfeefb3cca4b2252e_960654_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;/post/covid-gun-spikes/featured_hu5c0e9a0959b7c46cfeefb3cca4b2252e_960654_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;A small multiples map showing spikes in firearm background checks in 2020, compared to 1999-2019&#34; width=&#34;4173&#34; height=&#34;2917&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;style type=&#34;text/css&#34;&gt;
+.header {
+  border-bottom: 2px solid #555;
+  font-size: 13px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.header:hover {
+  background-color: #eee;
+}
+&lt;/style&gt;
+&lt;p&gt;So far in 2020, firearm background checks are happening &lt;strong&gt;significantly&lt;/strong&gt; more frequently than they did during the first six months of the last 20 years. Some &lt;a href=&#34;https://www.nytimes.com/interactive/2020/04/01/business/coronavirus-gun-sales.html&#34;&gt;media reports&lt;/a&gt; captured the gun-buying frenzy during its apparent peak in March, but according to data from the &lt;a href=&#34;https://www.fbi.gov/file-repository/nics_firearm_checks_-_month_year_by_state_type.pdf/view&#34;&gt;FBI NICS&lt;/a&gt;, &lt;em&gt;the month of June saw the largest single month count of firearm background checks in the last 20 years.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The data, &lt;a href=&#34;https://github.com/BuzzFeedNews/nics-firearm-background-checks&#34;&gt;which is scraped and cleaned by BuzzFeed News&lt;/a&gt;, shows a massive spike in firearm background checks in the last 5 months:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(reactable)
+library(tidyverse)
+library(geofacet)
+library(scales)
+library(cr)
+
+set_cr_theme(font = &amp;quot;IBM Plex Sans&amp;quot;)
+
+data &amp;lt;- readr::read_csv(&amp;#39;data/data.csv&amp;#39;)
+
+data &amp;lt;- data %&amp;gt;%
+  mutate(month = as.Date(paste(month, &amp;quot;-01&amp;quot;, sep = &amp;quot;&amp;quot;)),
+         year = lubridate::year(month)) %&amp;gt;%
+  filter(year != 1998)
+
+data %&amp;gt;%
+  mutate(month = lubridate::month(month),
+         month = month.abb[month]) %&amp;gt;%
+  group_by(year, month) %&amp;gt;%
+  summarise(sum = sum(totals)) %&amp;gt;%
+  reactable(
+    defaultSorted = &amp;#39;sum&amp;#39;,
+    defaultSortOrder = &amp;#39;desc&amp;#39;,
+    defaultColDef = colDef(headerClass = &amp;quot;header&amp;quot;),
+    compact = TRUE,
+    fullWidth = FALSE,
+    columns = list(
+      month = colDef(name = &amp;quot;Month&amp;quot;),
+      year = colDef(name = &amp;quot;Year&amp;quot;),
+      sum = colDef(name = &amp;quot;# of Firearm Background Checks&amp;quot;,
+                   format = colFormat(separators = TRUE))
+    ),
+    rowStyle = function(index) {
+      if (.[index, &amp;quot;year&amp;quot;] == 2020)
+        list(fontWeight = &amp;quot;bold&amp;quot;,
+             background = &amp;quot;rgba(0, 0, 0, 0.05)&amp;quot;)
+    }
+  )&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;htmlwidget-1&#34; class=&#34;reactable html-widget&#34; style=&#34;width:auto;height:auto;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-1&#34;&gt;{&#34;x&#34;:{&#34;tag&#34;:{&#34;name&#34;:&#34;Reactable&#34;,&#34;attribs&#34;:{&#34;data&#34;:{&#34;year&#34;:[1999,1999,1999,1999,1999,1999,1999,1999,1999,1999,1999,1999,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2001,2001,2001,2001,2001,2001,2001,2001,2001,2001,2001,2001,2002,2002,2002,2002,2002,2002,2002,2002,2002,2002,2002,2002,2003,2003,2003,2003,2003,2003,2003,2003,2003,2003,2003,2003,2004,2004,2004,2004,2004,2004,2004,2004,2004,2004,2004,2004,2005,2005,2005,2005,2005,2005,2005,2005,2005,2005,2005,2005,2006,2006,2006,2006,2006,2006,2006,2006,2006,2006,2006,2006,2007,2007,2007,2007,2007,2007,2007,2007,2007,2007,2007,2007,2008,2008,2008,2008,2008,2008,2008,2008,2008,2008,2008,2008,2009,2009,2009,2009,2009,2009,2009,2009,2009,2009,2009,2009,2010,2010,2010,2010,2010,2010,2010,2010,2010,2010,2010,2010,2011,2011,2011,2011,2011,2011,2011,2011,2011,2011,2011,2011,2012,2012,2012,2012,2012,2012,2012,2012,2012,2012,2012,2012,2013,2013,2013,2013,2013,2013,2013,2013,2013,2013,2013,2013,2014,2014,2014,2014,2014,2014,2014,2014,2014,2014,2014,2014,2015,2015,2015,2015,2015,2015,2015,2015,2015,2015,2015,2015,2016,2016,2016,2016,2016,2016,2016,2016,2016,2016,2016,2016,2017,2017,2017,2017,2017,2017,2017,2017,2017,2017,2017,2017,2018,2018,2018,2018,2018,2018,2018,2018,2018,2018,2018,2018,2019,2019,2019,2019,2019,2019,2019,2019,2019,2019,2019,2019,2020,2020,2020,2020,2020,2020],&#34;month&#34;:[&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Aug&#34;,&#34;Dec&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jul&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;,&#34;Nov&#34;,&#34;Oct&#34;,&#34;Sep&#34;,&#34;Apr&#34;,&#34;Feb&#34;,&#34;Jan&#34;,&#34;Jun&#34;,&#34;Mar&#34;,&#34;May&#34;],&#34;sum&#34;:[638666,694980,1248333,690215,585974,579634,564912,741687,569220,995894,934922,799310,606636,676394,993656,696313,628853,533898,540036,725733,526521,888547,836363,774146,583762,704010,1055298,666352,633916,532306,534369,720477,532437,976210,1023080,857828,619669,688810,969919,687011,655987,530171,507222,707897,557459,881541,843113,718270,615058,677315,1003080,703956,646882,525032,523780,730189,560886,836392,848369,731305,629279,658919,1065185,715879,685638,552985,537942,729554,529776,883939,857807,732988,647423,679473,1161381,735103,678733,555679,548584,757824,546986,921798,847860,786211,693232,830477,1252784,815478,767936,629866,613583,837280,622547,1043598,969092,917184,838642,916097,1229610,913547,893575,756584,791992,974093,801509,1079062,1023899,943662,938745,955685,1522468,1019972,941043,889634,818485,1039597,885246,1528341,1182156,971613,1222022,1070879,1401109,1257324,1212863,963521,964070,1342359,1019331,1217229,1226560,1087686,1226760,1082360,1512265,1237617,1112312,1062886,998262,1291618,1009818,1286817,1359894,1139880,1339673,1300433,1854400,1463138,1312544,1147355,1157714,1437709,1219872,1527454,1331836,1244604,1416074,1514696,2776105,1734646,1368816,1289585,1290210,1715125,1305392,1997703,1604743,1450737,1702455,1408468,2032755,2298561,2483230,1271571,1270817,2197116,1424450,1805759,1679099,1392423,1733651,1538347,2301386,2073978,1650565,1393705,1375135,2476610,1476318,1797163,1595898,1447485,1697737,1735911,3308199,1848308,1763233,1589462,1518852,2001245,1570893,2236457,1969248,1786743,2135909,1836788,2763115,2604667,2540146,2187190,2123334,2509065,1860699,2554486,2326517,1983596,2037180,1896457,2575486,2224394,2032108,1733308,1888266,2422749,1898840,2372888,2017017,1857226,2186119,2026309,2517286,2293373,1996721,1806746,1912838,2753881,1983346,2363705,2033276,1895841,2305136,2341363,2898501,2028667,2150322,2004277,2291066,2604927,2320918,2545863,2327252,2189028,2878176,2776380,2652263,3909502,3709562,3066740]},&#34;columns&#34;:[{&#34;accessor&#34;:&#34;year&#34;,&#34;name&#34;:&#34;Year&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;headerClassName&#34;:&#34;header&#34;},{&#34;accessor&#34;:&#34;month&#34;,&#34;name&#34;:&#34;Month&#34;,&#34;type&#34;:&#34;character&#34;,&#34;headerClassName&#34;:&#34;header&#34;},{&#34;accessor&#34;:&#34;sum&#34;,&#34;name&#34;:&#34;# of Firearm Background Checks&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;headerClassName&#34;:&#34;header&#34;,&#34;format&#34;:{&#34;cell&#34;:{&#34;separators&#34;:true},&#34;aggregated&#34;:{&#34;separators&#34;:true}}}],&#34;defaultSortDesc&#34;:true,&#34;defaultSorted&#34;:[{&#34;id&#34;:&#34;sum&#34;,&#34;desc&#34;:true}],&#34;defaultPageSize&#34;:10,&#34;paginationType&#34;:&#34;numbers&#34;,&#34;showPageInfo&#34;:true,&#34;minRows&#34;:1,&#34;compact&#34;:true,&#34;rowStyle&#34;:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,{&#34;fontWeight&#34;:&#34;bold&#34;,&#34;background&#34;:&#34;rgba(0, 0, 0, 0.05)&#34;},{&#34;fontWeight&#34;:&#34;bold&#34;,&#34;background&#34;:&#34;rgba(0, 0, 0, 0.05)&#34;},{&#34;fontWeight&#34;:&#34;bold&#34;,&#34;background&#34;:&#34;rgba(0, 0, 0, 0.05)&#34;},{&#34;fontWeight&#34;:&#34;bold&#34;,&#34;background&#34;:&#34;rgba(0, 0, 0, 0.05)&#34;},{&#34;fontWeight&#34;:&#34;bold&#34;,&#34;background&#34;:&#34;rgba(0, 0, 0, 0.05)&#34;},{&#34;fontWeight&#34;:&#34;bold&#34;,&#34;background&#34;:&#34;rgba(0, 0, 0, 0.05)&#34;}],&#34;inline&#34;:true,&#34;dataKey&#34;:&#34;dfa06ad7180cec336bbb44b162fe770e&#34;},&#34;children&#34;:[]},&#34;class&#34;:&#34;reactR_markup&#34;},&#34;evals&#34;:[],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;p&gt;As the table shows, the last 5 months have seen some of the greatest numbers of firearm background checks since the FBI has collected such data. It seems as if the only non-2020 entrants to the top 7 are from December 2015, and December 2019, which are (perhaps coincidentally) both the final months before new presidents took office.&lt;/p&gt;
+&lt;p&gt;Visually, we see that firearm background checks follow some seasonal trends, but by and large, have undergone unprecedented spikes in the last 5 months:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;%
+  group_by(month) %&amp;gt;%
+  summarise(sum = sum(totals)) %&amp;gt;%
+  ggplot(aes(x = month, y = sum)) +
+  geom_line() +
+  geom_area(alpha = .7, fill = &amp;#39;red&amp;#39;) +
+  labs(y = element_blank(), x = element_blank(),
+       title = &amp;#39;Firearm background checks, over time&amp;#39;) +
+  scale_x_date(expand = expansion(c(0, 0.001))) +
+  scale_y_continuous(expand = expansion(c(0, 0.001)),
+                     labels = unit_format(
+                       unit = &amp;quot;M&amp;quot;,
+                       scale = 1e-6,
+                       sep = &amp;quot;&amp;quot;,
+                       accuracy = 1
+                     )) +
+  drop_axis(&amp;quot;y&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/covid-gun-spikes/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;And we can better understand the magnitude of these shifts by visualizing year-to-year changes:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;%
+  mutate(month = lubridate::month(month)) %&amp;gt;% 
+  filter(month &amp;lt; 7) %&amp;gt;% 
+  group_by(year) %&amp;gt;%
+  summarise(sum = sum(totals)) %&amp;gt;%
+  ungroup() %&amp;gt;% 
+  mutate(last_year = lag(sum),
+         perc_change =  ((sum - last_year) / last_year)) %&amp;gt;%
+  ggplot(aes(x = year, y = perc_change)) +
+  geom_col(alpha = .7, fill = &amp;#39;red&amp;#39;, color = &amp;#39;black&amp;#39;) +
+  geom_hline(yintercept = 0) +
+  scale_x_continuous(expand = expansion(c(0, 0.001))) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  drop_axis() +
+  labs(x = element_blank(), y = element_blank(),
+       title = &amp;quot;Year-on-year changes in firearm background checks, 1999-2020&amp;quot;,
+       subtitle = &amp;quot;January through June&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/covid-gun-spikes/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Visualized another way, we can explore the temporal change &lt;strong&gt;within each year&lt;/strong&gt; for every year between 1999 and 2020, with 2020 &lt;span style=&#34;color:red&#34;&gt;highlighted in red.&lt;/span&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
+  mutate(month = lubridate::month(month)) %&amp;gt;%
+  filter(month &amp;lt; 7) %&amp;gt;%
+  group_by(month, year) %&amp;gt;%
+  summarise(sum = sum(totals)) %&amp;gt;%
+  mutate(fill = ifelse(year == 2020, &amp;quot;2020&amp;quot;, &amp;quot;&amp;quot;)) %&amp;gt;%
+  ggplot(aes(group = year)) +
+  geom_line(aes(x = month, y = sum, color = fill, alpha = fill), show.legend = FALSE) +
+  scale_y_continuous(limits = c(0, 4000000), labels = unit_format(unit = &amp;quot;M&amp;quot;, sep = &amp;quot;&amp;quot;, scale = 1e-6, accuracy = 1)) +
+  scale_x_continuous(breaks = c(1,2,3,4,5,6), labels = c(&amp;quot;Jan&amp;quot;, &amp;quot;Feb&amp;quot;, &amp;quot;Mar&amp;quot;, &amp;quot;April&amp;quot;, &amp;quot;May&amp;quot;, &amp;quot;June&amp;quot;)) +
+  scale_color_manual(values = c(&amp;quot;gray&amp;quot;, &amp;quot;red&amp;quot;)) +
+  scale_alpha_manual(values = c(.7, 1)) +
+  labs(x = element_blank(), y = element_blank(),
+       title = &amp;quot;Firearm background checks in &amp;lt;span style = &amp;#39;color: red;&amp;#39;&amp;gt;2020&amp;lt;/span&amp;gt; 
+       compared to &amp;lt;span style = &amp;#39;color: #343434&amp;#39;&amp;gt;1999 - 2019&amp;lt;/span&amp;gt;&amp;quot;,
+       subtitle = &amp;quot;January to June&amp;quot;) +
+  drop_axis() +
+  theme(plot.title = ggtext::element_markdown())&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/covid-gun-spikes/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The FBI database also includes background check data for each U.S. state. This data allows us to compare trends &lt;em&gt;across&lt;/em&gt; states and over time (using &lt;code&gt;geofacet&lt;/code&gt;):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;%
+  mutate(month = lubridate::month(month)) %&amp;gt;%
+  filter(month &amp;lt; 7) %&amp;gt;%
+  group_by(month, year, state) %&amp;gt;%
+  summarise(sum = sum(totals)) %&amp;gt;%
+  mutate(fill = ifelse(year == 2020, &amp;quot;2020&amp;quot;, &amp;quot;&amp;quot;)) %&amp;gt;%
+  ggplot(aes(group = year)) +
+  geom_line(aes(x = month, y = sum, color = fill, alpha = fill), 
+            size = .2, show.legend = FALSE) +
+  scale_color_manual(values = c(&amp;quot;gray&amp;quot;, &amp;quot;red&amp;quot;)) +
+  scale_alpha_manual(values = c(.5, 1)) +
+  facet_geo(~ state, scales = &amp;#39;free_y&amp;#39;, grid = &amp;quot;us_state_grid1&amp;quot;) +
+  drop_axis() +
+  theme(text = element_text(color = &amp;quot;white&amp;quot;,
+                            family = &amp;quot;IBM Plex Sans&amp;quot;),
+        axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        strip.background = element_rect(fill = &amp;#39;black&amp;#39;),
+        strip.text = element_text(size = 10, color = &amp;#39;white&amp;#39;),
+        panel.background = element_rect(fill = &amp;#39;black&amp;#39;),
+        plot.background = element_rect(fill = &amp;#39;black&amp;#39;),
+        panel.grid = element_blank()) +
+  labs(x = element_blank(),
+       y = element_blank(),
+       title = &amp;quot;Spikes in gun ownership during COVID-19&amp;quot;,
+       subtitle = &amp;quot;How the first six months of 2020 compare to 1999-2019&amp;quot;)
+
+## With additional styling changes made in Illustrator!&lt;/code&gt;&lt;/pre&gt;
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;/post/covid-gun-spikes/featured_hu5c0e9a0959b7c46cfeefb3cca4b2252e_960654_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;/post/covid-gun-spikes/featured_hu5c0e9a0959b7c46cfeefb3cca4b2252e_960654_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;A small multiples map showing spikes in firearm background checks in 2020, compared to 1999-2019&#34; width=&#34;4173&#34; height=&#34;2917&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;div id=&#34;the-impact&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The Impact&lt;/h2&gt;
+&lt;p&gt;Most obviously, background checks are a proxy for gun purchases and gun ownership; as such, this data informs us that more and more people are grabbing for guns during COVID-19, perhaps in anticipation of some post-COVID apocalypse or perceived government overreach during.&lt;/p&gt;
+&lt;p&gt;In addition, one risk is that more guns can lead to greater numbers of firearm suicides. &lt;a href=&#34;https://everytownresearch.org/reports/covid-gun-violence/&#34;&gt;One group of researchers&lt;/a&gt; at the gun safety organization Everytown predicted that COVID-related unemployment would lead to a 20-30% increase in firearm suicides (5000 to 7000 people). As such, a rise in firearm-related background checks may signal an impending surge of gun violence in the forms of both homicide and suicide.&lt;/p&gt;
+&lt;p&gt;Firearm background check data, however, requires close scrutiny. The way that these data are acquired on a state-by-state basis means that we might not be able to safely make comparisons &lt;em&gt;across&lt;/em&gt; states. Moreover, according to &lt;a href=&#34;https://www.thetrace.org/2015/10/private-sale-loophole-background-check-harvard-research/&#34;&gt;one group of Harvard researchers&lt;/a&gt;, upwards of 40% of all gun owners report acquiring their most recent gun &lt;em&gt;without a background check.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Thus, these numbers may tell a different story than one of ‘guns are being purchased more frequently.’ Although not employed in this post, there are some novel ways to develop stories similar to that one, like using &lt;a href=&#34;https://github.com/nytimes/gunsales#getting-gun-sales-estimates-from-background-checks&#34;&gt;NYT’s methodology&lt;/a&gt; to estimate gun sales from background check data. I encourage those interested to pursue their work, alongside the &lt;a href=&#34;https://github.com/BuzzFeedNews/nics-firearm-background-checks&#34;&gt;BuzzFeed News repository&lt;/a&gt; where this data came from, and analyze such questions yourself.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Trends in Refugee Acceptance, 2002 to 2019</title>
-      <link>https://connorrothschild.com/post/refugee-trends/</link>
+      <link>/post/refugee-trends/</link>
       <pubDate>Sat, 01 Feb 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/post/refugee-trends/</guid>
+      <guid>/post/refugee-trends/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;figures/final.svg&#34; alt=&#34;final&#34;&gt;&lt;/p&gt;
 &lt;p&gt;In 
 &lt;a href=&#34;https://connorrothschild.github.io/map-missing-migrants/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;previous projects&lt;/a&gt;, I&amp;rsquo;ve explored how migration has unfolded across &lt;em&gt;places&lt;/em&gt;: where migrants travel, where they go missing, and where their journeys come to a fatal end.&lt;/p&gt;

@@ -1,6 +1,6 @@
 ---
 date: “2020-12-10T00:00:00Z"
-external_link: post/tidy-tuesday-replication/
+external_link: /post/tidy-tuesday-replication/
 image:
   caption: 
   focal_point: Smart

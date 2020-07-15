@@ -1,6 +1,6 @@
 ---
 date: "2020-05-19T00:00:00Z"
-external_link: post/economist-table-replication-using-reactable/
+external_link: /post/economist-table-replication-using-reactable/
 image:
   caption: 
   focal_point: Smart

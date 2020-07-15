@@ -1,6 +1,6 @@
 ---
 date: "2020-02-01T00:00:00Z"
-external_link: post/refugee-trends/
+external_link: /post/refugee-trends/
 image:
   caption: 
   focal_point: Smart

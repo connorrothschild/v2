@@ -1,6 +1,6 @@
 ---
 date: “2020-06-12T00:00:00Z"
-external_link: post/bible-babies/
+external_link: /post/bible-babies/
 image:
   caption: 
   focal_point: Smart

@@ -1,6 +1,6 @@
 ---
 date: “2020-08-08T00:00:00Z"
-external_link: post/introducing-tpltheme/
+external_link: /post/introducing-tpltheme/
 image:
   caption: 
   focal_point: Smart
