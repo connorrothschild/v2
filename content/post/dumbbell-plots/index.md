@@ -8,6 +8,8 @@ image:
 summary: How to create dumbbell plots in R, using {ggalt}.
 ---
 
+{{< figure src="featured.jpg" title="" lightbox="true" >}}
+
 The coronavirus (also known as COVID-19) is a pandemic. As of this writing, nearly [6000](https://www.worldometers.info/coronavirus/coronavirus-death-toll/) people have died and another [150,000](https://www.worldometers.info/coronavirus/coronavirus-death-toll/) have been infected. All signs seem to show that the virus is only growing.
 
 But some groups are less worried about COVID-19 than others. Recent [polling](https://poll.qu.edu/national/release-detail?ReleaseID=3657#.XmaSrM7okEs.twitter) from Quinnipiac University suggests that worries about coronavirus are related to one’s partisan identity, age, and race. 

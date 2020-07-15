@@ -8,7 +8,7 @@ image:
 summary: Or, how a single line of code can create a beautiful small multiples US map.
 ---
 
-![final](figures/final.svg)
+{{< figure src="featured.png" title="" lightbox="true" >}}
 
 In [previous projects](https://connorrothschild.github.io/map-missing-migrants/), I've explored how migration has unfolded across *places*: where migrants travel, where they go missing, and where their journeys come to a fatal end.
 
@@ -173,8 +173,7 @@ I brought that plot to Illustrator and made it a lot prettier. Here's the final 
 
 
 
-![final version](figures/final.svg)
-
+{{< figure src="featured.png" title="" lightbox="true" >}}
 
 
 What do we notice? A few key states (Texas, California, Florida, and Michigan) make up the vast majority of refugee acceptance, while other accept almost *no* *refugees*. Nearly every state has reduced their refugee acceptance since 2017, but the bulk of this decline has come from these larger states.

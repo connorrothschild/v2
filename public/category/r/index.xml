@@ -944,7 +944,38 @@ reactable(data_for_table, pagination = FALSE)&lt;/code&gt;&lt;/pre&gt;
       <link>/post/dumbbell-plots/</link>
       <pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate>
       <guid>/post/dumbbell-plots/</guid>
-      <description>&lt;p&gt;The coronavirus (also known as COVID-19) is a pandemic. As of this writing, nearly 
+      <description>
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;/post/dumbbell-plots/featured_hud3f906394e33c42b903908d2e33c2bfb_211763_2000x2000_fit_q100_lanczos.jpg&#34; &gt;
+
+
+  &lt;img data-src=&#34;/post/dumbbell-plots/featured_hud3f906394e33c42b903908d2e33c2bfb_211763_2000x2000_fit_q100_lanczos.jpg&#34; class=&#34;lazyload&#34; alt=&#34;&#34; width=&#34;2329&#34; height=&#34;1387&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;The coronavirus (also known as COVID-19) is a pandemic. As of this writing, nearly 
 &lt;a href=&#34;https://www.worldometers.info/coronavirus/coronavirus-death-toll/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;6000&lt;/a&gt; people have died and another 
 &lt;a href=&#34;https://www.worldometers.info/coronavirus/coronavirus-death-toll/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;150,000&lt;/a&gt; have been infected. All signs seem to show that the virus is only growing.&lt;/p&gt;
 &lt;p&gt;But some groups are less worried about COVID-19 than others. Recent 
@@ -1094,7 +1125,37 @@ theme(
       <link>/post/refugee-trends/</link>
       <pubDate>Sat, 01 Feb 2020 00:00:00 +0000</pubDate>
       <guid>/post/refugee-trends/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;figures/final.svg&#34; alt=&#34;final&#34;&gt;&lt;/p&gt;
+      <description>
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;/post/refugee-trends/featured_hu49160f3b2aa206b95f3283696ca52509_209771_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;/post/refugee-trends/featured_hu49160f3b2aa206b95f3283696ca52509_209771_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;&#34; width=&#34;1790&#34; height=&#34;1264&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
 &lt;p&gt;In 
 &lt;a href=&#34;https://connorrothschild.github.io/map-missing-migrants/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;previous projects&lt;/a&gt;, I&amp;rsquo;ve explored how migration has unfolded across &lt;em&gt;places&lt;/em&gt;: where migrants travel, where they go missing, and where their journeys come to a fatal end.&lt;/p&gt;
 &lt;p&gt;Next, I wanted to see how &lt;em&gt;host countries&lt;/em&gt; have approached the migrant and refugee crisis, with a particular focus on the United States. In my mind, an effective visualization of the U.S.&amp;lsquo;s response to an increasing number of refugees needs to present two things: how refugee acceptance has changed &lt;em&gt;over time&lt;/em&gt; and how refugee acceptance differs &lt;em&gt;across states.&lt;/em&gt;&lt;/p&gt;
@@ -1210,7 +1271,37 @@ geom_rect(mapping=aes(xmin=2017, xmax=2019, ymin=0, ymax=12000), fill = &amp;quo
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;figures/ref.png&#34; alt=&#34;r version&#34;&gt;&lt;/p&gt;
 &lt;p&gt;I brought that plot to Illustrator and made it a lot prettier. Here&amp;rsquo;s the final version:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;figures/final.svg&#34; alt=&#34;final version&#34;&gt;&lt;/p&gt;
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;/post/refugee-trends/featured_hu49160f3b2aa206b95f3283696ca52509_209771_2000x2000_fit_lanczos_2.png&#34; &gt;
+
+
+  &lt;img data-src=&#34;/post/refugee-trends/featured_hu49160f3b2aa206b95f3283696ca52509_209771_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;&#34; width=&#34;1790&#34; height=&#34;1264&#34;&gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
 &lt;p&gt;What do we notice? A few key states (Texas, California, Florida, and Michigan) make up the vast majority of refugee acceptance, while other accept almost &lt;em&gt;no&lt;/em&gt; &lt;em&gt;refugees&lt;/em&gt;. Nearly every state has reduced their refugee acceptance since 2017, but the bulk of this decline has come from these larger states.&lt;/p&gt;
 &lt;p&gt;While you&amp;rsquo;re here, take a look at my project 
 &lt;a href=&#34;https://connorrothschild.github.io/map-missing-migrants/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;&lt;em&gt;Mapping Missing Migrants.&lt;/em&gt;&lt;/a&gt;&lt;/p&gt;
