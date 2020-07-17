@@ -29,16 +29,16 @@ h1 {
   opacity: 0;
   position: relative;
   right: -1000px;
-  -webkit-animation: slide-left 2s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
-  animation: slide-left 2s forwards cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+  -webkit-animation: slide-left 2s cubic-bezier(0.87, 0, 0.13, 1) forwards;
+  animation: slide-left 2s forwards cubic-bezier(0.87, 0, 0.13, 1) forwards;
   }
 
   .portrait-title {
     opacity: 0;
     position: relative;
     left: -1000px;
-    -webkit-animation: slide-right 2s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
-    animation: slide-right 2s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+    -webkit-animation: slide-right 2s cubic-bezier(0.87, 0, 0.13, 1) forwards;
+    animation: slide-right 2s cubic-bezier(0.87, 0, 0.13, 1) forwards;
   }
   
   @-webkit-keyframes slide-right {
@@ -58,22 +58,29 @@ h1 {
   }
   
   .network-icon {
+    
     .fa-envelope {
       opacity: 0;
-      animation: grow 2s ease forwards;
-      animation-delay: 1s;
+      -webkit-animation: grow 2s ease forwards;
+              animation: grow 2s ease forwards;
+      -webkit-animation-delay: 1s;
+              animation-delay: 1s;
     }
     
     .fa-twitter {
       opacity: 0;
-      animation: grow 2s ease forwards;
-      animation-delay: 1.5s;
+      -webkit-animation: grow 2s ease forwards;
+              animation: grow 2s ease forwards;
+      -webkit-animation-delay: 1.5s;
+              animation-delay: 1.5s;
     }
     
     .fa-github {
       opacity: 0;
-      animation: grow 2s ease forwards;
-      animation-delay: 2s;
+      -webkit-animation: grow 2s ease forwards;
+              animation: grow 2s ease forwards;
+      -webkit-animation-delay: 2s;
+              animation-delay: 2s;
     }
     
     @-webkit-keyframes grow {
@@ -92,27 +99,31 @@ h1 {
   margin: 2.5px;
   padding: .3rem;
   line-height: 1;
-  box-shadow: 3px 3px 0 0 $dark-grey;
+  -webkit-box-shadow: 3px 3px 0 0 $dark-grey;
+          box-shadow: 3px 3px 0 0 $dark-grey;
   color: $dark-grey;
   border-color: $sta-primary-dark;
   background-color: white !important;
-  justify-content: center; 
-}
-
-
-.btn:focus {
-  box-shadow: 3px 3px 0 0 white !important;
-  color: $sta-primary-dark;
-}
-
-.btn:hover {
-  background-color: $light-grey !important;
-  color: $sta-primary-dark;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center; 
+  
+    &:focus {
+    -webkit-box-shadow: 3px 3px 0 0 white !important;
+            box-shadow: 3px 3px 0 0 white !important;
+    color: $sta-primary-dark;
+    }
+  
+  &:hover {
+    background-color: $light-grey !important;
+    color: $sta-primary-dark;
+    }
 }
 
 .btn-toolbar .btn.active  {
   background-color: $sta-primary-dark !important;
-  box-shadow: 3px 3px 0 0 white !important;
+  -webkit-box-shadow: 3px 3px 0 0 white !important;
+          box-shadow: 3px 3px 0 0 white !important;
 }
 
 .btn-links .btn {
@@ -142,6 +153,8 @@ h1 {
    overflow: hidden;
    color: black;
    vertical-align: bottom;
+   -webkit-transition: color .3s ease-out;
+   -o-transition: color .3s ease-out;
    transition: color .3s ease-out;
 }
 
@@ -151,20 +164,34 @@ h1 {
    z-index: -1;
    top: 0;
    left: 0;
-   transform: translateY(calc(100% - 2px));
+   -webkit-transform: translateY(calc(100% - 2px));
+       -ms-transform: translateY(calc(100% - 2px));
+           transform: translateY(calc(100% - 2px));
    width: 100%;
    height: 100%;
    border-radius: 2.5px;
+   background-image: -webkit-gradient(linear, left top, right top, from(rgba(2,0,36,1)), color-stop(35%, rgba(52,52,52,1)), to(rgba(136,136,136,1)));
+   background-image: -o-linear-gradient(left, rgba(2,0,36,1) 0%, rgba(52,52,52,1) 35%, rgba(136,136,136,1) 100%);
    background-image: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(52,52,52,1) 35%, rgba(136,136,136,1) 100%);
+   -webkit-transition: -webkit-transform .25s ease-out;
+   transition: -webkit-transform .25s ease-out;
+   -o-transition: transform .25s ease-out;
    transition: transform .25s ease-out;
+   transition: transform .25s ease-out, -webkit-transform .25s ease-out;
 }
 
 .card-text p a:hover, .powered-by a:hover { 
    color: #fff; 
 }
 .card-text p a:hover::before, .powered-by a:hover::before {
-   transform: translateY(0);
+   -webkit-transform: translateY(0);
+       -ms-transform: translateY(0);
+           transform: translateY(0);
+   -webkit-transition: -webkit-transform .25s ease-out;
+   transition: -webkit-transform .25s ease-out;
+   -o-transition: transform .25s ease-out;
    transition: transform .25s ease-out;
+   transition: transform .25s ease-out, -webkit-transform .25s ease-out;
 }
 
 /* blog formatting */

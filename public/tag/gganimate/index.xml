@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>gganimate | Connor Rothschild</title>
-    <link>/tag/gganimate/</link>
-      <atom:link href="/tag/gganimate/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://connorrothschild.com/tag/gganimate/</link>
+      <atom:link href="https://connorrothschild.com/tag/gganimate/index.xml" rel="self" type="application/rss+xml" />
     <description>gganimate</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2020</copyright><lastBuildDate>Tue, 08 Oct 2019 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>/img/social.png</url>
+      <url>https://connorrothschild.com/img/social.png</url>
       <title>gganimate</title>
-      <link>/tag/gganimate/</link>
+      <link>https://connorrothschild.com/tag/gganimate/</link>
     </image>
     
     <item>
       <title>TidyTuesday: Powerlifting</title>
-      <link>/post/tidy-tuesday-powerlifting/</link>
+      <link>https://connorrothschild.com/post/tidy-tuesday-powerlifting/</link>
       <pubDate>Tue, 08 Oct 2019 00:00:00 +0000</pubDate>
-      <guid>/post/tidy-tuesday-powerlifting/</guid>
+      <guid>https://connorrothschild.com/post/tidy-tuesday-powerlifting/</guid>
       <description>
 
 
@@ -104,7 +104,7 @@ max_lifts_final &amp;lt;- max_lifts %&amp;gt;%
   geom_text(aes(label=diff, y=lift, x=450), fontface=&amp;quot;bold&amp;quot;, size=4) +
   geom_text(aes(x=450, y=3, label=&amp;quot;Difference&amp;quot;),
             color=&amp;quot;grey20&amp;quot;, size=4, vjust=-3, fontface=&amp;quot;bold&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Finally, we animate, using Thomas Pedersen’s wonderful &lt;a href=&#34;https://github.com/thomasp85/gganimate&#34;&gt;gganimate package&lt;/a&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animation &amp;lt;- max_lifts_final %&amp;gt;% 
   ggplot() + 
@@ -134,7 +134,7 @@ a_gif &amp;lt;- animate(animation,
                  renderer = gifski_renderer(&amp;quot;outputs/animation.gif&amp;quot;))
 
 a_gif&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-9-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-9-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;p&gt;I’d like to include another GIF: a line chart of differences over time&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animation2 &amp;lt;- max_lifts_final %&amp;gt;% 
   ungroup %&amp;gt;% 
@@ -162,7 +162,7 @@ b_gif &amp;lt;- animate(animation2,
         renderer = gifski_renderer(&amp;quot;outputs/animation2.gif&amp;quot;))
 
 b_gif&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-10-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-10-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;p&gt;Next, combine them using &lt;code&gt;magick&lt;/code&gt; (thanks to &lt;a href=&#34;https://github.com/thomasp85/gganimate/wiki/Animation-Composition&#34;&gt;this post&lt;/a&gt;):&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(magick)
 a_mgif &amp;lt;- image_read(a_gif)
@@ -175,16 +175,16 @@ for(i in 2:250){
 }
 
 new_gif&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-11-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-11-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
     
     <item>
       <title>Bible Babies: Exploring Biblically-Inspired Baby Names over Time</title>
-      <link>/post/bible-babies/</link>
+      <link>https://connorrothschild.com/post/bible-babies/</link>
       <pubDate>Wed, 12 Jun 2019 00:00:00 +0000</pubDate>
-      <guid>/post/bible-babies/</guid>
+      <guid>https://connorrothschild.com/post/bible-babies/</guid>
       <description>
 
 
@@ -287,7 +287,7 @@ babynames &amp;lt;- babynames %&amp;gt;%
        y=&amp;quot;Percent&amp;quot;,
        caption = &amp;quot;Source: U.S. Social Security Administration
        \n Design: www.connorrothschild.com&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/bible-babies/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/bible-babies/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Biblical names have become significantly less popular over time. We can split up the trend by sex to see if it is primarily driven by one group of babies.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;babynames %&amp;gt;% 
   group_by(year, sex) %&amp;gt;% 
@@ -304,7 +304,7 @@ babynames &amp;lt;- babynames %&amp;gt;%
        color=&amp;quot;Sex&amp;quot;,
        caption = &amp;quot;Source: U.S. Social Security Administration
        \n Design: www.connorrothschild.com&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/bible-babies/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/bible-babies/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Indeed, much of the departure from Biblically-inspired baby names has been driven by girls. While 13% of boys born in 2017 shared a name with some biblical figure, the same was true of only 4% of girls.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;exploring-popular-names-over-time-using-gganimate&#34; class=&#34;section level2&#34;&gt;
@@ -346,7 +346,7 @@ maleanimation &amp;lt;- malebabynames %&amp;gt;%
   ease_aes(&amp;#39;cubic-in-out&amp;#39;)
 
 animate(maleanimation, fps = 25, nframes = 500, width = 800, height = 600)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/bible-babies/index_files/figure-html/unnamed-chunk-5-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/bible-babies/index_files/figure-html/unnamed-chunk-5-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;        #, renderer = gifski_renderer(&amp;quot;boybiblebabies.gif&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Replicating that code with minor tweaks creates the same animation for girls’ names:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# make rank variable
@@ -382,7 +382,7 @@ femaleanimation &amp;lt;- femalebabynames %&amp;gt;%
   ease_aes(&amp;#39;cubic-in-out&amp;#39;)
 
 animate(femaleanimation, fps = 25, nframes = 500, width = 800, height = 600)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/bible-babies/index_files/figure-html/unnamed-chunk-6-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/bible-babies/index_files/figure-html/unnamed-chunk-6-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;        #, renderer = gifski_renderer(&amp;quot;girlbiblebabies.gif&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Finally, we can combine some of the insights from our earlier plot (depicting the popularity of Biblical names by sex) to show which boys’ names are responsible for their sex’s relative dominance over girls’ Biblically-inspired names.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# make rank variable
@@ -417,7 +417,7 @@ babyanimation &amp;lt;- babynamesrank %&amp;gt;%
   ease_aes(&amp;#39;cubic-in-out&amp;#39;)
 
 animate(babyanimation, fps = 25, nframes = 500, width = 800, height = 600)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/bible-babies/index_files/figure-html/unnamed-chunk-7-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/bible-babies/index_files/figure-html/unnamed-chunk-7-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;        #, renderer = gifski_renderer(&amp;quot;combinedbiblebabies.gif&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 </description>
@@ -425,9 +425,9 @@ animate(babyanimation, fps = 25, nframes = 500, width = 800, height = 600)&lt;/c
     
     <item>
       <title>The Race for Media Attention</title>
-      <link>/post/media-mentions/</link>
+      <link>https://connorrothschild.com/post/media-mentions/</link>
       <pubDate>Thu, 30 May 2019 00:00:00 +0000</pubDate>
-      <guid>/post/media-mentions/</guid>
+      <guid>https://connorrothschild.com/post/media-mentions/</guid>
       <description>
 
 
@@ -532,7 +532,7 @@ data &amp;lt;- data %&amp;gt;%
   labs(x=element_blank(),
        y=&amp;quot;Percent of Media Mentions&amp;quot;,
        title=&amp;quot;Average Proportion of Media Coverage on a Weekly Basis&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/media-mentions/index_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/media-mentions/index_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Somewhat unsurprisingly. Joe Biden and Bernie Sanders lead the pack in media attention. Joe Biden tends to receive significantly more media attention than the average candidate (a weekly average of 0.9% of overall media content compared to 0.14% for the average candidate).&lt;/p&gt;
 &lt;p&gt;How has that coverage changed over time?&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
@@ -565,7 +565,7 @@ data &amp;lt;- data %&amp;gt;%
   scale_color_discrete(name=&amp;quot;Candidate&amp;quot;, 
                        limits = c(&amp;quot;Joe Biden&amp;quot;, &amp;quot;Bernie Sanders&amp;quot;, &amp;quot;Elizabeth Warren&amp;quot;, 
                                   &amp;quot;Kamala Harris&amp;quot;, &amp;quot;Beto O&amp;#39;Rourke&amp;quot;, &amp;quot;Cory Booker&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/media-mentions/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/media-mentions/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Evidently, much of Joe Biden’s popularity in the media can be explained by a few large spikes in weekly media mentions. We can explore the distribution of weekly media mentions using a visualization known as a &lt;a href=&#34;https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html&#34;&gt;density ridge plot&lt;/a&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
   group_by(name) %&amp;gt;% 
@@ -581,7 +581,7 @@ ggplot(aes(x = pct_of_all_candidate_clips*100, y = reorder(name,pct_of_all_candi
        y=element_blank(),
        title=&amp;quot;Media Mentions of Each Candidate&amp;quot;,
        subtitle=&amp;quot;With density ridges depicting average mentions on a weekly basis&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/media-mentions/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/media-mentions/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This plot illustrates that most candidates enjoy the same levels of media coverage from one week to another. Joe Biden, however, often has weeks in which he receives much more attention than usual, as evidenced by his small peaks throughout the plot. Bernie Sanders, Kamala Harris, and Beto O’Rourke also experienced a few jumps in attention, likely when they announced their candidacy for the presidency.&lt;/p&gt;
 &lt;p&gt;This raises an interesting question: when did candidates experience the most drastic changes in media attention? For example, were there any weeks in which a candidate who normally enjoys nearly no media attention began to get a lot of it?&lt;/p&gt;
 &lt;p&gt;We can answer this question by calculating the difference between one week’s coverage and the prior week’s coverage (using the &lt;a href=&#34;https://www.rdocumentation.org/packages/stats/versions/3.6.0/topics/lag&#34;&gt;lag&lt;/a&gt; function).&lt;/p&gt;
@@ -597,7 +597,7 @@ ggplot(aes(x = pct_of_all_candidate_clips*100, y = reorder(name,pct_of_all_candi
        y=&amp;quot;Percent Change&amp;quot;,
        title=&amp;quot;Largest Differences in Weekly Media Mentions&amp;quot;,
        subtitle=&amp;quot;Subtracting a given week&amp;#39;s % mentions from the week prior&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/media-mentions/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/media-mentions/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Unsurprisingly, the bars tend to mirror one another. If a candidate enjoys a steep increase in media attention one week, they are likely to see a correlated drop in the following week (if that week were really a spike in attention). The plot suggests that Joe Biden’s announcement (on April 25th) led to the most dramatic change in media attention in the 2020 cycle so far. Bernie Sanders also witnessed a spike in attention in the week following his announcement on February 19th. The same is true for the other candidates included in this plot.&lt;/p&gt;
 &lt;p&gt;Finally, I am interested in who is “winning” the race for media attention. Although a previous plot has shown media attention over time, this data can be somewhat hard to digest and interpret as so many candidates crowd the lower bound of the data (as they receive little media attention compared to Joe Biden).&lt;/p&gt;
 &lt;p&gt;By constructing a &lt;a href=&#34;https://learnr.wordpress.com/2009/05/06/ggplot2-bump-chart/&#34;&gt;bump chart&lt;/a&gt;, I am able to depict the rank of each candidate in terms of their media attention in a given week. This type of visualization assigns each candidate a categorical rank and makes their progress throughout the campaign easier to visualize.&lt;/p&gt;
@@ -653,7 +653,7 @@ recentdata %&amp;gt;%
        y = &amp;quot;Rank&amp;quot;,
        title = &amp;quot;The Race for Media Attention&amp;quot;,
        subtitle = &amp;quot;Candidates ranked by weekly media mentions&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/media-mentions/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/media-mentions/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Let’s focus on the meteoric rise of Pete Buttigieg:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;petedata &amp;lt;- recentdata %&amp;gt;% 
   mutate(pete = ifelse(name == &amp;quot;Pete Buttigieg&amp;quot;, 1, 0))
@@ -692,7 +692,7 @@ petedata %&amp;gt;%
        y = &amp;quot;Rank&amp;quot;,
        title = &amp;quot;Out of Nowhere&amp;quot;,
        subtitle = &amp;quot;Pete Buttigieg&amp;#39;s Rapid Rise in Media Mentions&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/media-mentions/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/media-mentions/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Some takeaways:&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
 &lt;li&gt;Bernie Sanders and Joe Biden consistently receive the most attention from the media.&lt;/li&gt;
