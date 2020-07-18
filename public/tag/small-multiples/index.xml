@@ -2,28 +2,28 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>small multiples | Connor Rothschild</title>
-    <link>https://connorrothschild.com/tag/small-multiples/</link>
-      <atom:link href="https://connorrothschild.com/tag/small-multiples/index.xml" rel="self" type="application/rss+xml" />
+    <link>/tag/small-multiples/</link>
+      <atom:link href="/tag/small-multiples/index.xml" rel="self" type="application/rss+xml" />
     <description>small multiples</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2020</copyright><lastBuildDate>Tue, 14 Jul 2020 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>https://connorrothschild.com/img/social.png</url>
+      <url>/img/social.png</url>
       <title>small multiples</title>
-      <link>https://connorrothschild.com/tag/small-multiples/</link>
+      <link>/tag/small-multiples/</link>
     </image>
     
     <item>
       <title>Spikes in Firearm Background Checks During COVID-19</title>
-      <link>https://connorrothschild.com/post/covid-gun-spikes/</link>
+      <link>/post/covid-gun-spikes/</link>
       <pubDate>Tue, 14 Jul 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/post/covid-gun-spikes/</guid>
+      <guid>/post/covid-gun-spikes/</guid>
       <description>
-&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/core-js/shim.min.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/react/react.min.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/react/react-dom.min.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/reactwidget/react-tools.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/reactable-binding/reactable.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/core-js/shim.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/react/react.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/react/react-dom.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/reactwidget/react-tools.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/reactable-binding/reactable.js&#34;&gt;&lt;/script&gt;
 
 
 
@@ -47,10 +47,10 @@
 &lt;figure &gt;
 
 
-  &lt;a data-fancybox=&#34;&#34; href=&#34;https://connorrothschild.com/post/covid-gun-spikes/featured_hu5c0e9a0959b7c46cfeefb3cca4b2252e_960654_2000x2000_fit_lanczos_2.png&#34; &gt;
+  &lt;a data-fancybox=&#34;&#34; href=&#34;/post/covid-gun-spikes/featured_hu5c0e9a0959b7c46cfeefb3cca4b2252e_960654_2000x2000_fit_lanczos_2.png&#34; &gt;
 
 
-  &lt;img data-src=&#34;https://connorrothschild.com/post/covid-gun-spikes/featured_hu5c0e9a0959b7c46cfeefb3cca4b2252e_960654_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;A small multiples map showing spikes in firearm background checks in 2020, compared to 1999-2019&#34; width=&#34;4173&#34; height=&#34;2917&#34;&gt;
+  &lt;img data-src=&#34;/post/covid-gun-spikes/featured_hu5c0e9a0959b7c46cfeefb3cca4b2252e_960654_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;A small multiples map showing spikes in firearm background checks in 2020, compared to 1999-2019&#34; width=&#34;4173&#34; height=&#34;2917&#34;&gt;
 &lt;/a&gt;
 
 
@@ -130,7 +130,7 @@ data %&amp;gt;%
                        accuracy = 1
                      )) +
   drop_axis(&amp;quot;y&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/covid-gun-spikes/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/covid-gun-spikes/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;And we can better understand the magnitude of these shifts by visualizing year-to-year changes:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;%
   mutate(month = lubridate::month(month)) %&amp;gt;% 
@@ -149,7 +149,7 @@ data %&amp;gt;%
   labs(x = element_blank(), y = element_blank(),
        title = &amp;quot;Year-on-year changes in firearm background checks, 1999-2020&amp;quot;,
        subtitle = &amp;quot;January through June&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/covid-gun-spikes/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/covid-gun-spikes/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Visualized another way, we can explore the temporal change &lt;strong&gt;within each year&lt;/strong&gt; for every year between 1999 and 2020, with 2020 &lt;span style=&#34;color:red&#34;&gt;highlighted in red.&lt;/span&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
   mutate(month = lubridate::month(month)) %&amp;gt;%
@@ -169,7 +169,7 @@ data %&amp;gt;%
        subtitle = &amp;quot;January to June&amp;quot;) +
   drop_axis() +
   theme(plot.title = ggtext::element_markdown())&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/covid-gun-spikes/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/covid-gun-spikes/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The FBI database also includes background check data for each U.S. state. This data allows us to compare trends &lt;em&gt;across&lt;/em&gt; states and over time (using &lt;code&gt;geofacet&lt;/code&gt;):&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;%
   mutate(month = lubridate::month(month)) %&amp;gt;%
@@ -221,10 +221,10 @@ data %&amp;gt;%
 &lt;figure &gt;
 
 
-  &lt;a data-fancybox=&#34;&#34; href=&#34;https://connorrothschild.com/post/covid-gun-spikes/featured_hu5c0e9a0959b7c46cfeefb3cca4b2252e_960654_2000x2000_fit_lanczos_2.png&#34; &gt;
+  &lt;a data-fancybox=&#34;&#34; href=&#34;/post/covid-gun-spikes/featured_hu5c0e9a0959b7c46cfeefb3cca4b2252e_960654_2000x2000_fit_lanczos_2.png&#34; &gt;
 
 
-  &lt;img data-src=&#34;https://connorrothschild.com/post/covid-gun-spikes/featured_hu5c0e9a0959b7c46cfeefb3cca4b2252e_960654_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;A small multiples map showing spikes in firearm background checks in 2020, compared to 1999-2019&#34; width=&#34;4173&#34; height=&#34;2917&#34;&gt;
+  &lt;img data-src=&#34;/post/covid-gun-spikes/featured_hu5c0e9a0959b7c46cfeefb3cca4b2252e_960654_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;A small multiples map showing spikes in firearm background checks in 2020, compared to 1999-2019&#34; width=&#34;4173&#34; height=&#34;2917&#34;&gt;
 &lt;/a&gt;
 
 
@@ -243,9 +243,9 @@ data %&amp;gt;%
     
     <item>
       <title>Trends in Refugee Acceptance, 2002 to 2019</title>
-      <link>https://connorrothschild.com/post/refugee-trends/</link>
+      <link>/post/refugee-trends/</link>
       <pubDate>Sat, 01 Feb 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/post/refugee-trends/</guid>
+      <guid>/post/refugee-trends/</guid>
       <description>
 
 
@@ -267,10 +267,10 @@ data %&amp;gt;%
 &lt;figure &gt;
 
 
-  &lt;a data-fancybox=&#34;&#34; href=&#34;https://connorrothschild.com/post/refugee-trends/featured_hu49160f3b2aa206b95f3283696ca52509_209771_2000x2000_fit_lanczos_2.png&#34; &gt;
+  &lt;a data-fancybox=&#34;&#34; href=&#34;/post/refugee-trends/featured_hu49160f3b2aa206b95f3283696ca52509_209771_2000x2000_fit_lanczos_2.png&#34; &gt;
 
 
-  &lt;img data-src=&#34;https://connorrothschild.com/post/refugee-trends/featured_hu49160f3b2aa206b95f3283696ca52509_209771_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;&#34; width=&#34;1790&#34; height=&#34;1264&#34;&gt;
+  &lt;img data-src=&#34;/post/refugee-trends/featured_hu49160f3b2aa206b95f3283696ca52509_209771_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;&#34; width=&#34;1790&#34; height=&#34;1264&#34;&gt;
 &lt;/a&gt;
 
 
@@ -413,10 +413,10 @@ geom_rect(mapping=aes(xmin=2017, xmax=2019, ymin=0, ymax=12000), fill = &amp;quo
 &lt;figure &gt;
 
 
-  &lt;a data-fancybox=&#34;&#34; href=&#34;https://connorrothschild.com/post/refugee-trends/featured_hu49160f3b2aa206b95f3283696ca52509_209771_2000x2000_fit_lanczos_2.png&#34; &gt;
+  &lt;a data-fancybox=&#34;&#34; href=&#34;/post/refugee-trends/featured_hu49160f3b2aa206b95f3283696ca52509_209771_2000x2000_fit_lanczos_2.png&#34; &gt;
 
 
-  &lt;img data-src=&#34;https://connorrothschild.com/post/refugee-trends/featured_hu49160f3b2aa206b95f3283696ca52509_209771_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;&#34; width=&#34;1790&#34; height=&#34;1264&#34;&gt;
+  &lt;img data-src=&#34;/post/refugee-trends/featured_hu49160f3b2aa206b95f3283696ca52509_209771_2000x2000_fit_lanczos_2.png&#34; class=&#34;lazyload&#34; alt=&#34;&#34; width=&#34;1790&#34; height=&#34;1264&#34;&gt;
 &lt;/a&gt;
 
 

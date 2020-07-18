@@ -5,6 +5,15 @@ $light-grey: #E3E3E5;
 $sta-primary-dark: black;
 $sta-primary-light: grey;
 
+/* icons */
+#profile {
+  .network-icon {
+    li {
+      a { color: white !important;}
+    }
+  }
+}
+
 /* background color for body */
 body {
   background-color: white;
@@ -21,12 +30,66 @@ h1 {
   color: $dark-grey;
 }
 
+/* WOW! */
+@mixin bkg-img-transition( $bkg1, $bkg2, $transTime:1s ){  
+  position: relative;  
+  z-index: 100; 
+  &:before, &:after {
+    background-size: cover;  
+    content: '';    
+    display: block;
+    height: 100%;
+    position: absolute;
+    top: 0; left: 0;  
+    width: 100%;
+    background-color: black;
+    padding: 3em 0;
+    background-repeat: no-repeat;
+    background-position: center;
+  	background-size: cover;
+    transition: opacity $transTime;
+  }
+  &:before {    
+    z-index: -101;
+    background-image: url("#{$bkg1}");
+  }
+  &:after {    
+    z-index: -100;
+    opacity: 0.5;
+    background-image: url("#{bkg1}"), url("#{$bkg2}"); 
+  }
+  &:hover {
+     &:after{
+       opacity: 0; 
+     }
+  }  
+}
+
+#about {  
+  @include bkg-img-transition("/img/headers/me.png","/img/headers/datathon.jpg");
+	height: calc(-70px + 100vh);
+	min-height: 705px;
+}
+
 /* intro animation */
 
 #profile {
+
+  text-align: left;
+  color: white !important;
   
   h1 {
-    font-size: 3rem;
+    font-size: 4rem;
+    color: white !important;
+  }
+  
+  h2 {
+    font-size: 2.5rem;
+  }
+  
+  .black-bg-text {
+    background-color: black;
+    padding: 5px;
   }
   
   .avatar-circle {
@@ -43,6 +106,10 @@ h1 {
     left: -1000px;
     -webkit-animation: slide-right 2s cubic-bezier(0.87, 0, 0.13, 1) forwards;
     animation: slide-right 2s cubic-bezier(0.87, 0, 0.13, 1) forwards;
+    
+    h2 {
+      color: white !important;
+    }
   }
   
   @-webkit-keyframes slide-right {
@@ -62,6 +129,9 @@ h1 {
   }
   
   .network-icon {
+    
+    margin-top: 15px;
+    padding: 5px;
     
     .fa-envelope {
       opacity: 0;
@@ -247,14 +317,14 @@ footer p {
 
 /* scrolling animation */
 .mouse {
-  width: 100px;
+  width: 150px;
   
 }
 
 .mouse-icon {
-   width: 15px;
-   height: 22.5px;
-   border: 2px solid black;
+   width: 25px;
+   height: 33px;
+   border: 3px solid white;
    border-radius: 15px;
    cursor: pointer;
    display: inline-block;
@@ -262,11 +332,11 @@ footer p {
 }
 
 .mouse-wheel {
-  height: 4px;
-  margin: 2px auto 0;
+  height: 6px;
+  margin: 3px auto 0;
   display: block;
-  width: 2px;
-  background-color: black;
+  width: 3px;
+  background-color: white;
   border-radius: 50%;
   -webkit-animation: 1.6s ease infinite wheel-up-down;
  -moz-animation: 1.6s ease infinite wheel-up-down;

@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>rayshader | Connor Rothschild</title>
-    <link>https://connorrothschild.com/tag/rayshader/</link>
-      <atom:link href="https://connorrothschild.com/tag/rayshader/index.xml" rel="self" type="application/rss+xml" />
+    <link>/tag/rayshader/</link>
+      <atom:link href="/tag/rayshader/index.xml" rel="self" type="application/rss+xml" />
     <description>rayshader</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2020</copyright><lastBuildDate>Wed, 24 Jul 2019 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>https://connorrothschild.com/img/social.png</url>
+      <url>/img/social.png</url>
       <title>rayshader</title>
-      <link>https://connorrothschild.com/tag/rayshader/</link>
+      <link>/tag/rayshader/</link>
     </image>
     
     <item>
       <title>Texas Vaccination Rates (How to Use Rayshader)</title>
-      <link>https://connorrothschild.com/post/tx-vaccination-rates-rayshader/</link>
+      <link>/post/tx-vaccination-rates-rayshader/</link>
       <pubDate>Wed, 24 Jul 2019 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/post/tx-vaccination-rates-rayshader/</guid>
+      <guid>/post/tx-vaccination-rates-rayshader/</guid>
       <description>
 
 
@@ -214,7 +214,7 @@ merged &amp;lt;- left_join(tx_county, grouped, by = &amp;quot;subregion&amp;quot
         subtitle = &amp;quot;Among Kindergartners&amp;quot;) + 
   tpltheme::scale_fill_continuous()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Here’s what the plot looks like before animation:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tx-vaccination-rates-rayshader/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/tx-vaccination-rates-rayshader/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;rayshader&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Rayshader&lt;/h3&gt;
