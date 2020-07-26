@@ -373,6 +373,8 @@ Now, we have a final homepage that looks like this:
 
 {{< figure src="./figures/final.gif" link="./figures/final.gif" >}}
 
+To make our SCSS file more robust across different browsers, we can take our completed file and put it into the [CSS Autoprefixer](https://autoprefixer.github.io/). This adds additional lines of code to our CSS file so that all browsers render the same animations upon page load. Your completed SCSS file should look like [this](https://github.com/connorrothschild/animate-hugo-academic/blob/master/assets/scss/custom.scss).
+
 ## Extending Animations
 
 This tutorial is meant to teach you the essentials of *how* to animate your homepage (for any Hugo site, not just Academic). Specifically, you should be able to 1) create and identify CSS elements via their classes and IDs, 2) target them using CSS, and 3) animate them using `@keyframes` rules. Although easier said then done, applying these three rules will go a long way in making your homepage much more appealling to new visitors.
