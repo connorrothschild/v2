@@ -7,6 +7,15 @@ toc: true
 categories: [R]
 image:
   preview_only: true
+links:
+ - name: ""
+   url: https://github.com/connorrothschild/animate-hugo-academic
+   icon_pack: fab
+   icon: github
+ - name: ""
+   url: https://twitter.com/CL_Rothschild/status/1284651953025429511?s=20
+   icon_pack: fab
+   icon: twitter
 tags: [R, CSS, HTML]
 summary: Make your Hugo Academic homepage more engaging with a few lines of code.
 ---

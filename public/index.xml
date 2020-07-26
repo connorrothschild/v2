@@ -56,7 +56,7 @@
   &lt;div&gt;
     &lt;p&gt;This tutorial assumes you are starting a Hugo Academic site from scratch. If you already have a Hugo Academic website up and running, you should be able to &lt;a href=&#34;#step-1-create-abouthtml&#34;&gt;skip step 0&lt;/a&gt; and modify the remaining steps slightly.&lt;/p&gt;
 &lt;p&gt;It also assumes that you have little to no knowledge about HTML and CSS (which is fine!). If that’s &lt;em&gt;not&lt;/em&gt; the case, you can likely go ahead and skip to &lt;a href=&#34;#step-3-add-css&#34;&gt;step 3&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;If you’d like to skip this tutorial and just start a Hugo Academic site that’s animated, feel free to &lt;a href=&#34;https://github.com/connorrothschild/hugo-academic-animated&#34;&gt;fork my repository&lt;/a&gt; which includes all the code you need for an animated homepage. The repo includes my &lt;a href=&#34;https://github.com/connorrothschild/hugo-academic-animated/blob/master/layouts/partials/widgets/about.html&#34;&gt;&lt;code&gt;about.html&lt;/code&gt; page&lt;/a&gt; and a &lt;a href=&#34;https://github.com/connorrothschild/hugo-academic-animated/blob/master/assets/scss/custom.scss&#34;&gt;custom SCSS file&lt;/a&gt;!&lt;/p&gt;
+&lt;p&gt;If you’d like to skip this tutorial and just start a Hugo Academic site that’s animated, feel free to &lt;a href=&#34;https://github.com/connorrothschild/animate-hugo-academic&#34;&gt;fork my repository&lt;/a&gt; which includes all the code you need for an animated homepage. The repo includes my &lt;a href=&#34;https://github.com/connorrothschild/animate-hugo-academic/blob/master/layouts/partials/widgets/about.html&#34;&gt;&lt;code&gt;about.html&lt;/code&gt; page&lt;/a&gt; and a &lt;a href=&#34;https://github.com/connorrothschild/animate-hugo-academic/blob/master/assets/scss/custom.scss&#34;&gt;custom SCSS file&lt;/a&gt;!&lt;/p&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 id=&#34;step-0-make-your-about-page-your-actual-homepage&#34;&gt;Step 0) Make your ‘about’ page your actual homepage&lt;/h2&gt;
@@ -76,7 +76,7 @@
 &lt;p&gt;Now, create &lt;em&gt;a new file path&lt;/em&gt; in your root directory titled &lt;code&gt;layouts/partials/widgets/&lt;/code&gt;. Copy your &lt;code&gt;about.html&lt;/code&gt; file here. (Look familiar? All we’re doing is recreating &lt;code&gt;about.html&lt;/code&gt; in a &lt;em&gt;personal&lt;/em&gt; version of our project, thus overriding the &lt;code&gt;about.html&lt;/code&gt; that Hugo Academic provides.)&lt;/p&gt;
 &lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
-    Alternatively, you can copy the about.html file that I used for this project and paste it into &lt;code&gt;layouts/partials/widgets/&lt;/code&gt;. &lt;a href=&#34;https://github.com/connorrothschild/hugo-academic-animated/blob/master/layouts/partials/widgets/about.html&#34;&gt;You can find my file here&lt;/a&gt;. This will also allow you to skip step 2 and move on to &lt;a href=&#34;#step-3-add-css&#34;&gt;step 3&lt;/a&gt;!
+    Alternatively, you can copy the about.html file that I used for this project and paste it into &lt;code&gt;layouts/partials/widgets/&lt;/code&gt;. &lt;a href=&#34;https://github.com/connorrothschild/animate-hugo-academic/blob/master/layouts/partials/widgets/about.html&#34;&gt;You can find my file here&lt;/a&gt;. This will also allow you to skip step 2 and move on to &lt;a href=&#34;#step-3-add-css&#34;&gt;step 3&lt;/a&gt;!
   &lt;/div&gt;
 &lt;/div&gt;
 &lt;h2 id=&#34;step-2-customize-your-file&#34;&gt;Step 2) Customize your file&lt;/h2&gt;
@@ -86,7 +86,7 @@
 &lt;p&gt;Throughout step 3, we’ll use each element’s ‘class’ to target it for animations. In the above screenshot (and in your &lt;code&gt;about.html&lt;/code&gt; page!), you’ll see classes scattered throughout. Although learning everything about CSS and CSS selectors is beyond the scope of this tutorial, I would recommend reading a brief primer on classes and selectors in CSS, which can be found 
 &lt;a href=&#34;https://www.w3schools.com/cssref/sel_class.asp&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;In this step, we’ll add classes to the elements we want to animate. (Again, if this seems to be overwhelming, feel free to copy 
-&lt;a href=&#34;https://github.com/connorrothschild/hugo-academic-animated/blob/master/layouts/partials/widgets/about.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;my HTML file.&lt;/a&gt;) Specifically, we’ll make three changes.&lt;/p&gt;
+&lt;a href=&#34;https://github.com/connorrothschild/animate-hugo-academic/blob/master/layouts/partials/widgets/about.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;my HTML file.&lt;/a&gt;) Specifically, we’ll make three changes.&lt;/p&gt;
 &lt;p&gt;First, we’ll add a class of &lt;code&gt;biography-title&lt;/code&gt; to our h1 (header 1) element. Here, we will change&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;h1&amp;gt;{{ $page.Title | markdownify | emojify }}&amp;lt;/h1&amp;gt;{{ end }}
 &lt;/code&gt;&lt;/pre&gt;

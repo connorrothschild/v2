@@ -239,7 +239,7 @@
       
         <meta property="article:published_time" content="2020-07-25T00:00:00&#43;00:00">
       
-      <meta property="article:modified_time" content="2020-07-25T00:00:00&#43;00:00">
+      <meta property="article:modified_time" content="2020-07-26T00:20:55-04:00">
     
   
     
@@ -272,7 +272,7 @@
   ],
   
   "datePublished": "2020-07-25T00:00:00Z",
-  "dateModified": "2020-07-25T00:00:00Z",
+  "dateModified": "2020-07-26T00:20:55-04:00",
   
   "author": {
     "@type": "Person",
@@ -641,8 +641,10 @@
     
     
       
+          Last updated on
+      
     
-    Jul 25, 2020
+    Jul 26, 2020
   </span>
   
 
@@ -681,6 +683,71 @@
 
 
 
+
+<div class="btn-links mb-3">
+  
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  
+  
+    
+  
+  <a class="btn btn-outline-primary my-1 mr-1" href="https://github.com/connorrothschild/animate-hugo-academic" target="_blank" rel="noopener">
+    <i class="fab fa-github "></i>
+    
+  </a>
+
+  
+  
+  
+    
+  
+  
+  
+  
+  
+    
+  
+  <a class="btn btn-outline-primary my-1 mr-1" href="https://twitter.com/CL_Rothschild/status/1284651953025429511?s=20" target="_blank" rel="noopener">
+    <i class="fab fa-twitter "></i>
+    
+  </a>
+
+
+</div>
 
 
   
@@ -728,7 +795,7 @@
   <div>
     <p>This tutorial assumes you are starting a Hugo Academic site from scratch. If you already have a Hugo Academic website up and running, you should be able to <a href="#step-1-create-abouthtml">skip step 0</a> and modify the remaining steps slightly.</p>
 <p>It also assumes that you have little to no knowledge about HTML and CSS (which is fine!). If that’s <em>not</em> the case, you can likely go ahead and skip to <a href="#step-3-add-css">step 3</a>.</p>
-<p>If you’d like to skip this tutorial and just start a Hugo Academic site that’s animated, feel free to <a href="https://github.com/connorrothschild/hugo-academic-animated">fork my repository</a> which includes all the code you need for an animated homepage. The repo includes my <a href="https://github.com/connorrothschild/hugo-academic-animated/blob/master/layouts/partials/widgets/about.html"><code>about.html</code> page</a> and a <a href="https://github.com/connorrothschild/hugo-academic-animated/blob/master/assets/scss/custom.scss">custom SCSS file</a>!</p>
+<p>If you’d like to skip this tutorial and just start a Hugo Academic site that’s animated, feel free to <a href="https://github.com/connorrothschild/animate-hugo-academic">fork my repository</a> which includes all the code you need for an animated homepage. The repo includes my <a href="https://github.com/connorrothschild/animate-hugo-academic/blob/master/layouts/partials/widgets/about.html"><code>about.html</code> page</a> and a <a href="https://github.com/connorrothschild/animate-hugo-academic/blob/master/assets/scss/custom.scss">custom SCSS file</a>!</p>
   </div>
 </div>
 <h2 id="step-0-make-your-about-page-your-actual-homepage">Step 0) Make your ‘about’ page your actual homepage</h2>
@@ -748,7 +815,7 @@
 <p>Now, create <em>a new file path</em> in your root directory titled <code>layouts/partials/widgets/</code>. Copy your <code>about.html</code> file here. (Look familiar? All we’re doing is recreating <code>about.html</code> in a <em>personal</em> version of our project, thus overriding the <code>about.html</code> that Hugo Academic provides.)</p>
 <div class="alert alert-note">
   <div>
-    Alternatively, you can copy the about.html file that I used for this project and paste it into <code>layouts/partials/widgets/</code>. <a href="https://github.com/connorrothschild/hugo-academic-animated/blob/master/layouts/partials/widgets/about.html">You can find my file here</a>. This will also allow you to skip step 2 and move on to <a href="#step-3-add-css">step 3</a>!
+    Alternatively, you can copy the about.html file that I used for this project and paste it into <code>layouts/partials/widgets/</code>. <a href="https://github.com/connorrothschild/animate-hugo-academic/blob/master/layouts/partials/widgets/about.html">You can find my file here</a>. This will also allow you to skip step 2 and move on to <a href="#step-3-add-css">step 3</a>!
   </div>
 </div>
 <h2 id="step-2-customize-your-file">Step 2) Customize your file</h2>
@@ -758,7 +825,7 @@
 <p>Throughout step 3, we’ll use each element’s ‘class’ to target it for animations. In the above screenshot (and in your <code>about.html</code> page!), you’ll see classes scattered throughout. Although learning everything about CSS and CSS selectors is beyond the scope of this tutorial, I would recommend reading a brief primer on classes and selectors in CSS, which can be found 
 <a href="https://www.w3schools.com/cssref/sel_class.asp" target="_blank" rel="noopener">here</a>.</p>
 <p>In this step, we’ll add classes to the elements we want to animate. (Again, if this seems to be overwhelming, feel free to copy 
-<a href="https://github.com/connorrothschild/hugo-academic-animated/blob/master/layouts/partials/widgets/about.html" target="_blank" rel="noopener">my HTML file.</a>) Specifically, we’ll make three changes.</p>
+<a href="https://github.com/connorrothschild/animate-hugo-academic/blob/master/layouts/partials/widgets/about.html" target="_blank" rel="noopener">my HTML file.</a>) Specifically, we’ll make three changes.</p>
 <p>First, we’ll add a class of <code>biography-title</code> to our h1 (header 1) element. Here, we will change</p>
 <pre><code class="language-html">&lt;h1&gt;{{ $page.Title | markdownify | emojify }}&lt;/h1&gt;{{ end }}
 </code></pre>
