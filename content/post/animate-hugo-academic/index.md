@@ -27,7 +27,7 @@ This tutorial assumes you are starting a Hugo Academic site from scratch. If you
 
 It also assumes that you have little to no knowledge about HTML and CSS (which is fine!). If that’s *not* the case, you can likely go ahead and skip to [step 3](#step-3-add-css).
 
-If you’d like to skip this tutorial and just start a Hugo Academic site that’s animated, feel free to [fork my repository](https://github.com/connorrothschild/hugo-academic-animated) which includes all the code you need for an animated homepage. The repo includes my [`about.html` page](https://github.com/connorrothschild/hugo-academic-animated/blob/master/layouts/partials/widgets/about.html) and a [custom SCSS file](https://github.com/connorrothschild/hugo-academic-animated/blob/master/assets/scss/custom.scss)!
+If you’d like to skip this tutorial and just start a Hugo Academic site that’s animated, feel free to [fork my repository](https://github.com/connorrothschild/animate-hugo-academic) which includes all the code you need for an animated homepage. The repo includes my [`about.html` page](https://github.com/connorrothschild/hugo-academic-animated/blob/master/layouts/partials/widgets/about.html) and a [custom SCSS file](https://github.com/connorrothschild/hugo-academic-animated/blob/master/assets/scss/custom.scss)!
 
 {{% /alert %}}
 
@@ -310,7 +310,7 @@ In combination with above, this creates a transition that looks like this:
 
 Nice! That looks clean. It looks like those two text blocks are racing to greet your new site visitor :)
 
---- 
+---
 
 ### Step 3C) To the Left!
 
