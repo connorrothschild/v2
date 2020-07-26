@@ -27,7 +27,7 @@ This tutorial assumes you are starting a Hugo Academic site from scratch. If you
 
 It also assumes that you have little to no knowledge about HTML and CSS (which is fine!). If that’s *not* the case, you can likely go ahead and skip to [step 3](#step-3-add-css).
 
-If you’d like to skip this tutorial and just start a Hugo Academic site that’s animated, feel free to [fork my repository](https://github.com/connorrothschild/animate-hugo-academic) which includes all the code you need for an animated homepage. The repo includes my [`about.html` page](https://github.com/connorrothschild/hugo-academic-animated/blob/master/layouts/partials/widgets/about.html) and a [custom SCSS file](https://github.com/connorrothschild/hugo-academic-animated/blob/master/assets/scss/custom.scss)!
+If you’d like to skip this tutorial and just start a Hugo Academic site that’s animated, feel free to [fork my repository](https://github.com/connorrothschild/animate-hugo-academic) which includes all the code you need for an animated homepage. The repo includes my [`about.html` page](https://github.com/connorrothschild/animate-hugo-academic/blob/master/layouts/partials/widgets/about.html) and a [custom SCSS file](https://github.com/connorrothschild/animate-hugo-academic/blob/master/assets/scss/custom.scss)!
 
 {{% /alert %}}
 
@@ -58,7 +58,7 @@ In order to override Hugo Academic’s about page, we need to copy their existin
 Now, create *a new file path* in your root directory titled `layouts/partials/widgets/`. Copy your `about.html` file here. (Look familiar? All we’re doing is recreating `about.html` in a *personal* version of our project, thus overriding the `about.html` that Hugo Academic provides.)
 
 {{% alert note %}}
-Alternatively, you can copy the about.html file that I used for this project and paste it into `layouts/partials/widgets/`. [You can find my file here](https://github.com/connorrothschild/hugo-academic-animated/blob/master/layouts/partials/widgets/about.html). This will also allow you to skip step 2 and move on to [step 3](#step-3-add-css)!
+Alternatively, you can copy the about.html file that I used for this project and paste it into `layouts/partials/widgets/`. [You can find my file here](https://github.com/connorrothschild/animate-hugo-academic/blob/master/layouts/partials/widgets/about.html). This will also allow you to skip step 2 and move on to [step 3](#step-3-add-css)!
 {{% /alert %}}
 
 ## Step 2) Customize your file
@@ -71,7 +71,7 @@ Within `about.html`, you’ll notice all of your page’s elements in order of a
 
 Throughout step 3, we’ll use each element’s ‘class’ to target it for animations. In the above screenshot (and in your `about.html` page!), you’ll see classes scattered throughout. Although learning everything about CSS and CSS selectors is beyond the scope of this tutorial, I would recommend reading a brief primer on classes and selectors in CSS, which can be found [here](https://www.w3schools.com/cssref/sel_class.asp). 
 
-In this step, we’ll add classes to the elements we want to animate. (Again, if this seems to be overwhelming, feel free to copy [my HTML file.](https://github.com/connorrothschild/hugo-academic-animated/blob/master/layouts/partials/widgets/about.html)) Specifically, we’ll make three changes. 
+In this step, we’ll add classes to the elements we want to animate. (Again, if this seems to be overwhelming, feel free to copy [my HTML file.](https://github.com/connorrothschild/animate-hugo-academic/blob/master/layouts/partials/widgets/about.html)) Specifically, we’ll make three changes. 
 
 First, we’ll add a class of `biography-title` to our h1 (header 1) element. Here, we will change
 
