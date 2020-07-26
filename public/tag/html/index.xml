@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>HTML | Connor Rothschild</title>
+    <link>/tag/html/</link>
+      <atom:link href="/tag/html/index.xml" rel="self" type="application/rss+xml" />
+    <description>HTML</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2020</copyright><lastBuildDate>Sat, 25 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/img/social.png</url>
+      <title>HTML</title>
+      <link>/tag/html/</link>
+    </image>
+    
+    <item>
+      <title>Three Simple Steps to Bring Impressive Animations to your Hugo Academic Site Using Blogdown</title>
+      <link>/post/animate-hugo-academic/</link>
+      <pubDate>Sat, 25 Jul 2020 00:00:00 +0000</pubDate>
+      <guid>/post/animate-hugo-academic/</guid>
+      <description>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;./figures/final.gif&#34; &gt;
+
+
+  &lt;img src=&#34;./figures/final.gif&#34; alt=&#34;&#34;  &gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;The R package &lt;code&gt;blogdown&lt;/code&gt; is an incredibly powerful tool—it allows R users with little to no familiarity in web development to build a fully functional, content-oriented, beautiful website using a language they’re already familiar with. It&amp;rsquo;s built on top of 
+&lt;a href=&#34;https://gohugo.io/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Hugo&lt;/a&gt;, the world’s (self-proclaimed) ‘fastest framework for building websites,’ which comes with a 
+&lt;a href=&#34;https://themes.gohugo.io/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;variety of themes&lt;/a&gt; suitable for a variety of different uses.&lt;/p&gt;
+&lt;p&gt;Within the R community, perhaps one of the most popular themes is 
+&lt;a href=&#34;https://themes.gohugo.io/academic/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Hugo Academic&lt;/a&gt;. As the name implies, the theme is geared toward those working academia—more generally, it provides a great starter kit for those interested in showcasing blog posts, projects, and other media on a minimalist site.&lt;/p&gt;
+&lt;p&gt;Given its popularity, the Hugo Academic landing page is far-too-familiar. Although not unattractive, no one is particularly surprised or engaged by the standard Academic homepage.&lt;/p&gt;
+&lt;p&gt;One way to spice up Hugo Academic is to use animations on our home pages. In this post, I outline three simple steps and a few lines of code to create a fully functional, beautifully-animated landing page. By leveraging the flexibility of Hugo&amp;rsquo;s framework, and introducing a little bit of HTML and CSS, we can take our Hugo Academic home pages from zero to hero (at least, in terms of animation!).&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;This tutorial assumes you are starting a Hugo Academic site from scratch. If you already have a Hugo Academic website up and running, you should be able to &lt;a href=&#34;#step-1-create-abouthtml&#34;&gt;skip step 0&lt;/a&gt; and modify the remaining steps slightly.&lt;/p&gt;
+&lt;p&gt;It also assumes that you have little to no knowledge about HTML and CSS (which is fine!). If that’s &lt;em&gt;not&lt;/em&gt; the case, you can likely go ahead and skip to &lt;a href=&#34;#step-3-add-css&#34;&gt;step 3&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If you’d like to skip this tutorial and just start a Hugo Academic site that’s animated, feel free to &lt;a href=&#34;https://github.com/connorrothschild/hugo-academic-animated&#34;&gt;fork my repository&lt;/a&gt; which includes all the code you need for an animated homepage. The repo includes my &lt;a href=&#34;https://github.com/connorrothschild/hugo-academic-animated/blob/master/layouts/partials/widgets/about.html&#34;&gt;&lt;code&gt;about.html&lt;/code&gt; page&lt;/a&gt; and a &lt;a href=&#34;https://github.com/connorrothschild/hugo-academic-animated/blob/master/assets/scss/custom.scss&#34;&gt;custom SCSS file&lt;/a&gt;!&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 id=&#34;step-0-make-your-about-page-your-actual-homepage&#34;&gt;Step 0) Make your ‘about’ page your actual homepage&lt;/h2&gt;
+&lt;p&gt;By default, the Hugo Academic theme’s first section is a grandiose self-introduction (I guess the creators of the theme do deserve such credit). Before we incorporate any of our animations, lets go ahead and make our ‘about’ page the landing page users first see when they visit our site. This requires us to find the files &lt;code&gt;hero.md&lt;/code&gt; and &lt;code&gt;demo.md&lt;/code&gt;, and in each of those files, set &lt;code&gt;active&lt;/code&gt; equal to &lt;code&gt;false&lt;/code&gt;. That takes our home page from this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;./figures/before-demo-hero-remove.png&#34; alt=&#34;before-demo-hero-remove&#34;&gt;&lt;/p&gt;
+&lt;p&gt;to this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;./figures/after-demo-hero-remove.png&#34; alt=&#34;after-demo-hero-remove&#34;&gt;&lt;/p&gt;
+&lt;p&gt;(As you progress, you might have to make additional small changes, such as removing ‘Demo’ from the navbar menu.)&lt;/p&gt;
+&lt;h2 id=&#34;step-1-create-abouthtml&#34;&gt;Step 1) Create about.html&lt;/h2&gt;
+&lt;p&gt;The first &lt;em&gt;real&lt;/em&gt; step in our process is modifying the default layout of our about page. More specifically, our animations will rely on CSS selectors which our about page currently doesn’t have. In order to animate certain elements, we will need unique identifiers, such as CSS classes and IDs, to target.&lt;/p&gt;
+&lt;p&gt;To play around with our about page, we take advantage of Hugo’s flexibility toward structural changes. As they 
+&lt;a href=&#34;https://bwaycer.github.io/hugo_tutorial.hugo/themes/customizing/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;say&lt;/a&gt; on their website:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Hugo permits you to &lt;strong&gt;supplement or override&lt;/strong&gt; any theme template or static file, with files in your working directory.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;In order to override Hugo Academic’s about page, we need to copy their existing structure into our own folder and modify it there. To do so, navigate to &lt;code&gt;themes/hugo-academic/layouts/partials/widgets/&lt;/code&gt; and copy the file titled &lt;code&gt;about.html&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Now, create &lt;em&gt;a new file path&lt;/em&gt; in your root directory titled &lt;code&gt;layouts/partials/widgets/&lt;/code&gt;. Copy your &lt;code&gt;about.html&lt;/code&gt; file here. (Look familiar? All we’re doing is recreating &lt;code&gt;about.html&lt;/code&gt; in a &lt;em&gt;personal&lt;/em&gt; version of our project, thus overriding the &lt;code&gt;about.html&lt;/code&gt; that Hugo Academic provides.)&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    Alternatively, you can copy the about.html file that I used for this project and paste it into &lt;code&gt;layouts/partials/widgets/&lt;/code&gt;. &lt;a href=&#34;https://github.com/connorrothschild/hugo-academic-animated/blob/master/layouts/partials/widgets/about.html&#34;&gt;You can find my file here&lt;/a&gt;. This will also allow you to skip step 2 and move on to &lt;a href=&#34;#step-3-add-css&#34;&gt;step 3&lt;/a&gt;!
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 id=&#34;step-2-customize-your-file&#34;&gt;Step 2) Customize your file&lt;/h2&gt;
+&lt;p&gt;With that newly created &lt;code&gt;about.html&lt;/code&gt; living in &lt;code&gt;layouts/partials/widgets/&lt;/code&gt;, you may notice that your homepage looks the exact same. This is correct! In this step, we’ll customize that html file so that it can be animated.&lt;/p&gt;
+&lt;p&gt;Within &lt;code&gt;about.html&lt;/code&gt;, you’ll notice all of your page’s elements in order of appearance, despite a lot of extra characters that don’t make much sense. It should look like this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;./figures/about.png&#34; alt=&#34;about&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Throughout step 3, we’ll use each element’s ‘class’ to target it for animations. In the above screenshot (and in your &lt;code&gt;about.html&lt;/code&gt; page!), you’ll see classes scattered throughout. Although learning everything about CSS and CSS selectors is beyond the scope of this tutorial, I would recommend reading a brief primer on classes and selectors in CSS, which can be found 
+&lt;a href=&#34;https://www.w3schools.com/cssref/sel_class.asp&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In this step, we’ll add classes to the elements we want to animate. (Again, if this seems to be overwhelming, feel free to copy 
+&lt;a href=&#34;https://github.com/connorrothschild/hugo-academic-animated/blob/master/layouts/partials/widgets/about.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;my HTML file.&lt;/a&gt;) Specifically, we’ll make three changes.&lt;/p&gt;
+&lt;p&gt;First, we’ll add a class of &lt;code&gt;biography-title&lt;/code&gt; to our h1 (header 1) element. Here, we will change&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;h1&amp;gt;{{ $page.Title | markdownify | emojify }}&amp;lt;/h1&amp;gt;{{ end }}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;to&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;h1 class=&#39;biography-title&#39;&amp;gt;{{ $page.Title | markdownify | emojify }}&amp;lt;/h1&amp;gt;{{ end }}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next, we need to wrap the main content, aka the big text blocks in the middle of the page, in their own class too. Here, we take&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;{{ $person_page.Content }}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and wrap it in a &lt;code&gt;div&lt;/code&gt;, so it looks like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;div class=&#39;main-content&#39;&amp;gt;
+  {{ $person_page.Content }}
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, we’ll add a class to our interests and and education blocks. We can take this row:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;div class=&amp;quot;row&amp;quot;&amp;gt;
+
+  {{ with $person.interests }}
+  &amp;lt;div class=&amp;quot;col-md-5&amp;quot;&amp;gt;
+    &amp;lt;h3&amp;gt;{{ i18n &amp;quot;interests&amp;quot; | markdownify }}&amp;lt;/h3&amp;gt;
+    &amp;lt;ul class=&amp;quot;ul-interests&amp;quot;&amp;gt;
+      {{ range . }}
+      &amp;lt;li&amp;gt;{{ . | markdownify | emojify }}&amp;lt;/li&amp;gt;
+      {{ end }}
+    &amp;lt;/ul&amp;gt;
+  &amp;lt;/div&amp;gt;
+  {{ end }}
+
+  {{ with $person.education }}
+  &amp;lt;div class=&amp;quot;col-md-7&amp;quot;&amp;gt;
+    &amp;lt;h3&amp;gt;{{ i18n &amp;quot;education&amp;quot; | markdownify }}&amp;lt;/h3&amp;gt;
+    &amp;lt;ul class=&amp;quot;ul-edu fa-ul&amp;quot;&amp;gt;
+      {{ range .courses }}
+      &amp;lt;li&amp;gt;
+        &amp;lt;i class=&amp;quot;fa-li fas fa-graduation-cap&amp;quot;&amp;gt;&amp;lt;/i&amp;gt;
+        &amp;lt;div class=&amp;quot;description&amp;quot;&amp;gt;
+          &amp;lt;p class=&amp;quot;course&amp;quot;&amp;gt;{{ .course }}{{ with .year }}, {{ . }}{{ end }}&amp;lt;/p&amp;gt;
+          &amp;lt;p class=&amp;quot;institution&amp;quot;&amp;gt;{{ .institution }}&amp;lt;/p&amp;gt;
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/li&amp;gt;
+      {{ end }}
+    &amp;lt;/ul&amp;gt;
+  &amp;lt;/div&amp;gt;
+  {{ end }}
+
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and replace it with this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;div class=&amp;quot;row&amp;quot;&amp;gt;
+
+  {{ with $person.interests }}
+  &amp;lt;div class=&amp;quot;interests-div col-md-5&amp;quot;&amp;gt;
+    &amp;lt;h3&amp;gt;{{ i18n &amp;quot;interests&amp;quot; | markdownify }}&amp;lt;/h3&amp;gt;
+    &amp;lt;ul class=&amp;quot;ul-interests&amp;quot;&amp;gt;
+      {{ range . }}
+      &amp;lt;li&amp;gt;{{ . | markdownify | emojify }}&amp;lt;/li&amp;gt;
+      {{ end }}
+    &amp;lt;/ul&amp;gt;
+  &amp;lt;/div&amp;gt;
+  {{ end }}
+
+  {{ with $person.education }}
+  &amp;lt;div class=&amp;quot;education-div col-md-7&amp;quot;&amp;gt;
+    &amp;lt;h3&amp;gt;{{ i18n &amp;quot;education&amp;quot; | markdownify }}&amp;lt;/h3&amp;gt;
+    &amp;lt;ul class=&amp;quot;ul-edu fa-ul&amp;quot;&amp;gt;
+      {{ range .courses }}
+      &amp;lt;li&amp;gt;
+        &amp;lt;i class=&amp;quot;fa-li fas fa-graduation-cap&amp;quot;&amp;gt;&amp;lt;/i&amp;gt;
+        &amp;lt;div class=&amp;quot;description&amp;quot;&amp;gt;
+          &amp;lt;p class=&amp;quot;course&amp;quot;&amp;gt;{{ .course }}{{ with .year }}, {{ . }}{{ end }}&amp;lt;/p&amp;gt;
+          &amp;lt;p class=&amp;quot;institution&amp;quot;&amp;gt;{{ .institution }}&amp;lt;/p&amp;gt;
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/li&amp;gt;
+      {{ end }}
+    &amp;lt;/ul&amp;gt;
+  &amp;lt;/div&amp;gt;
+  {{ end }}
+
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    A quick tip to identify the classes and IDs of individual elements is to use the browser’s &lt;strong&gt;inspect element&lt;/strong&gt; tool. To do so, right click on the element you’re interested in and click inspect element; what you’ll see is a highlighted box that tells you that object’s class and/or ID. For more on inspect element and your browser, &lt;a href=&#34;https://blog.devmountain.com/how-to-use-inspect-element-jump-into-what-makes-a-web-page-tick/&#34;&gt;see this page&lt;/a&gt;.
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Now, we can reference the existing CSS classes, and our new ones, in our pretty animation in Step 3!&lt;/p&gt;
+&lt;h2 id=&#34;step-3-add-css&#34;&gt;Step 3) Add CSS&lt;/h2&gt;
+&lt;p&gt;Now that we’ve created our classes, we can target them in a CSS file and tell them exactly &lt;em&gt;how&lt;/em&gt; to animate.&lt;/p&gt;
+&lt;p&gt;But first, you’ll need to create a custom CSS file in your root directly. In your &lt;code&gt;assets/&lt;/code&gt; folder, create a &lt;em&gt;new&lt;/em&gt; folder called &lt;code&gt;scss/&lt;/code&gt; and within this folder, create a &lt;em&gt;new&lt;/em&gt; file called &lt;code&gt;custom.scss&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    An SCSS file is essentially a CSS file but extended with Sass, which describes &lt;a href=&#34;https://sass-lang.com/&#34;&gt;itself&lt;/a&gt; as ‘CSS with superpowers.’ For an overview of the intricacies of Sass, like nesting selectors, visit &lt;a href=&#34;https://sass-lang.com/guide&#34;&gt;their guide&lt;/a&gt;.
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Within &lt;code&gt;custom.scss&lt;/code&gt;, we’re going to target everything &lt;em&gt;within our about section&lt;/em&gt;. In order to do so, we create a selector that targets everything within the ID of &lt;code&gt;about&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-scss&#34;&gt;#about {
+  /* Some CSS will go here soon! :) */
+  /* This is a comment, by the way. */
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To ensure that we’ve targeted the right section, we can go ahead and add the property &lt;code&gt;background-color: red&lt;/code&gt; to that element. As the name implies, this will make the section ✨ red. ✨&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-scss&#34;&gt;#about {
+  background-color: red
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;As we expected, our section background is now an (unbelievably ugly shade of) red.&lt;img src=&#34;./figures/bg-red.png&#34; alt=&#34;bg-red&#34;&gt;&lt;/p&gt;
+&lt;p&gt;(Now remove that property immediately! This is not quite the welcome we want for our visitors.) We can also target elements &lt;em&gt;within&lt;/em&gt; the section by nesting new selectors inside of &lt;code&gt;#about&lt;/code&gt;. For example, if we wanted to change the color of our ‘biography’ title text, we could do so with the following code. (This is because we created a class named &lt;code&gt;biography-title&lt;/code&gt; in step 1):&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-scss&#34;&gt;#about {
+  
+  .biography-title {
+    color: red;
+  }
+  
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;./figures/font-red.png&#34; alt=&#34;font-red&#34;&gt;&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    You may notice that &lt;code&gt;about&lt;/code&gt; is targeted with a pound (#) and &lt;code&gt;biography-title&lt;/code&gt; is targeted with a period (.). This is the difference between CSS &lt;em&gt;IDs&lt;/em&gt; and &lt;em&gt;classes&lt;/em&gt;. If you’re curious about the distinction, here’s a &lt;a href=&#34;https://www.htmldog.com/guides/css/intermediate/classid/&#34;&gt;helpful guide&lt;/a&gt;.
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Now that we know how to target specific objects within our &lt;code&gt;about&lt;/code&gt; section, we can animate our first element!&lt;/p&gt;
+&lt;h3 id=&#34;step-3a-your-first-animation&#34;&gt;Step 3A) Your first animation!&lt;/h3&gt;
+&lt;p&gt;Creating your first animation is as simple as a few lines of code. To illustrate, we’ll test out an animation which changes our text from red and invisible to black and visible. In the code, we&amp;rsquo;ll have to do two things:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Create an animation with &lt;code&gt;@keyframes&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-scss&#34;&gt;@keyframes yourfirstanimation {
+  from {opacity: 0; color: red;}
+  to {opacity: 1; color: black;}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;Bind the animation to an element&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class=&#34;language-scss&#34;&gt;.biography-title {
+  animation: yourfirstanimation 5s forwards;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To break down the above code, we create an animation that has a &lt;em&gt;start point&lt;/em&gt; (&lt;code&gt;0%&lt;/code&gt;) and an &lt;em&gt;end point&lt;/em&gt; (&lt;code&gt;100%&lt;/code&gt;). At both of these points, we define CSS properties, such as color and opacity, seen above. When we bind the animation to an element, which is as simple as &lt;code&gt;animation: &amp;lt;animation_name&amp;gt; &amp;lt;duration&amp;gt; &amp;lt;fill_mode&amp;gt;&lt;/code&gt;, CSS deals with all the inbetween and automatically creates a smooth transition! (Fill mode is the most complicated of these three properties, but for our purposes we will always be using &lt;code&gt;forwards&lt;/code&gt;. For more information, visit 
+&lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/CSS/animation-fill-mode&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this page&lt;/a&gt;.)&lt;/p&gt;
+&lt;p&gt;Altogether, this code creates this output:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-scss&#34;&gt;#about {
+  
+  @keyframes yourfirstanimation {
+    0% {opacity: 0; color: red;}
+    100% {opacity: 1; color: black;}
+  }
+
+  .biography-title {
+    animation: yourfirstanimation 5s forwards;
+  }
+  
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;./figures/red.gif&#34; alt=&#34;red&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Of course, we don’t want a 5 second animation, nor do we want our text to start off as red. A cleaner animation might leverage the power of CSS to modify an element’s &lt;em&gt;position&lt;/em&gt;. In our case, we want an element to &lt;strong&gt;slide in from the right side of the screen&lt;/strong&gt;, and so we make a few tweaks to the code above. Let’s make a new animation called &lt;code&gt;slide-from-right&lt;/code&gt; which starts (at keyframe 0%) with our element 150% to the right of its original position (therefore off the screen) and ends (at keyframe 100%) with it at its original position. This involves the use of &lt;code&gt;translateX&lt;/code&gt;, which you can read about 
+&lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/translateX&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-scss&#34;&gt;@keyframes slide-from-right {
+  0% {transform: translateX(150%)}
+  100% { transform: translateX(0%); }
+}
+
+.biography-title {
+  animation: slide-from-right 1s forwards;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;./figures/slide-from-right.gif&#34; alt=&#34;slide-from-right&#34;&gt;&lt;/p&gt;
+&lt;p&gt;There is one slight improvement we can make on the above transition. Specifically, we can call an &lt;em&gt;easing function&lt;/em&gt; on our animation. 
+&lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Easing functions&lt;/a&gt; give a more natural feel to a transition’s flow—rather than our object flying in at a perfectly linear rate, we can add some personality by specifying its speed at different points in the transition. To find an easing function, visit 
+&lt;a href=&#34;https://easings.net/en#&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;easings.net&lt;/a&gt;, which allows you to visualize all of the different ways to modify your transition’s ease. (For this tutorial, I chose a clean-looking “&lt;em&gt;easeInOutQuint&lt;/em&gt;“ function, which looks like this: &lt;code&gt;cubic-bezier(0.83, 0, 0.17, 1)&lt;/code&gt;.)&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;step-3b-dont-wait-to-delay&#34;&gt;Step 3B) Don’t Wait to Delay&lt;/h3&gt;
+&lt;p&gt;We want our homepage to have more than just one title animation. We might also want to &lt;strong&gt;animate the paragraphs below it&lt;/strong&gt;, with the same ’slide from right’ transition we defined earlier. While doing this, we can add one property to our element to make the overall transition seem more fluid: &lt;code&gt;animation-delay&lt;/code&gt;. As the name suggests, this property defines how long the browser should wait before it &lt;em&gt;begins&lt;/em&gt; the transition you’ve specified. Animating our &lt;code&gt;main-content&lt;/code&gt; div is as simple as copying the above code and adding a 100 millisecond animation delay.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-scss&#34;&gt;.main-content {
+  animation: slide-from-right 1s cubic-bezier(0.87, 0, 0.13, 1) forwards;
+  animation-delay: 100ms;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In combination with above, this creates a transition that looks like this:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;./figures/double-slide.gif&#34; alt=&#34;double-slide&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Nice! That looks clean. It looks like those two text blocks are racing to greet your new site visitor :)&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;step-3c-to-the-left&#34;&gt;Step 3C) To the Left!&lt;/h3&gt;
+&lt;p&gt;Let’s go ahead and replicate that ’slide in’ transition for our profile on the left side of our webpage. As you could probably gather, this is as simple as copying the above code and changing the value in &lt;code&gt;translateX&lt;/code&gt; from 150% to -150% (from just outside the right side of our webpage 
+&lt;a href=&#34;https://www.youtube.com/watch?v=2EwViQxSJJQ&amp;amp;feature=youtu.be&amp;amp;t=25&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;to the left!&lt;/a&gt;). As above, we’ll define this transition in a &lt;code&gt;@keyframes&lt;/code&gt; rule and apply it to our CSS transition afterward.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-scss&#34;&gt;@keyframes slide-from-left {
+  0% {transform: translateX(-150%)}
+  100% { transform: translateX(0%); }
+}
+
+#profile {
+  animation: slide-from-left 1s cubic-bezier(0.87, 0, 0.13, 1) forwards;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;./figures/left-and-right.gif&#34; alt=&#34;left-and-right&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;step-3d-finally-the-fade&#34;&gt;Step 3D) Finally, the Fade&lt;/h3&gt;
+&lt;p&gt;The only thing not yet animated on our page are the ‘interests’ and ‘education’ content blocks. Of course, you might not want these on your homepage (my educational journey isn’t yet formidable enough to warrant its own section on my homepage!). But for the sake of animating the homepage &lt;em&gt;as its configured by default&lt;/em&gt;, let’s go ahead and have those content blocks fade in &lt;em&gt;once the sliding transitions complete&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;If you’ve been paying attention to the prior &lt;code&gt;@keyframes&lt;/code&gt; rules, you might have guessed that the code would look like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-scss&#34;&gt;@keyframes fade-in {
+  0% {opacity: 0}
+  100% {opacity: 1}
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&amp;hellip; and you would be correct!&lt;/p&gt;
+&lt;p&gt;Now, we apply this &lt;code&gt;fade-in&lt;/code&gt; rule to both our &lt;code&gt;interests-div&lt;/code&gt; and our &lt;code&gt;education-div&lt;/code&gt;, which we created in step 1. But notably, we want to wait to fade in each of these divs until &lt;em&gt;after our content has slid in from either side of the webpage.&lt;/em&gt; And so, we’ll once again use the &lt;code&gt;animation-delay&lt;/code&gt; property. Because our slide-in animations take one second to complete, we can begin our fade-in animations after a one-second delay. To make the transition a little more visually appealling, we can also stagger them, so the &lt;code&gt;education-div&lt;/code&gt; fades in half a second &lt;em&gt;after&lt;/em&gt; &lt;code&gt;interests-div&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-scss&#34;&gt;.interests-div {
+  opacity: 0;
+  animation: fade-in 1s forwards;
+  animation-delay: 1s;
+}
+
+.education-div {
+  opacity: 0;
+  animation: fade-in 1s forwards;
+  animation-delay: 1.5s;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, we have a final homepage that looks like this:&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;./figures/final.gif&#34; &gt;
+
+
+  &lt;img src=&#34;./figures/final.gif&#34; alt=&#34;&#34;  &gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;h2 id=&#34;extending-animations&#34;&gt;Extending Animations&lt;/h2&gt;
+&lt;p&gt;This tutorial is meant to teach you the essentials of &lt;em&gt;how&lt;/em&gt; to animate your homepage (for any Hugo site, not just Academic). Specifically, you should be able to 1) create and identify CSS elements via their classes and IDs, 2) target them using CSS, and 3) animate them using &lt;code&gt;@keyframes&lt;/code&gt; rules. Although easier said then done, applying these three rules will go a long way in making your homepage much more appealling to new visitors.&lt;/p&gt;
+&lt;p&gt;The complete power of CSS animations is not covered in this tutorial. Further applications of animations could do &lt;strong&gt;much&lt;/strong&gt; more than just animate an object’s position. I leave that to you!&lt;/p&gt;
+&lt;p&gt;For those that are interested, 
+&lt;a href=&#34;https://www.connorrothschild.com&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;my homepage&lt;/a&gt; is chock-full of CSS properties which make it unique from most; some visitors are surprised to hear that my site is Hugo Academic at all!&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure &gt;
+
+
+  &lt;a data-fancybox=&#34;&#34; href=&#34;./figures/mine.gif&#34; &gt;
+
+
+  &lt;img src=&#34;./figures/mine.gif&#34; alt=&#34;&#34;  &gt;
+&lt;/a&gt;
+
+
+
+&lt;/figure&gt;
+
+&lt;p&gt;For those interested, the code for my personal site (which, like this one, has an &lt;code&gt;about.html&lt;/code&gt; and a &lt;code&gt;custom.scss&lt;/code&gt; file that are carrying the load) can be found 
+&lt;a href=&#34;https://github.com/connorrothschild/connorrothschild.com&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;. I look forward to seeing your animated homepages!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

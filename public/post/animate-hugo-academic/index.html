@@ -1,0 +1,1450 @@
+<!DOCTYPE html><html lang="en-us" >
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="generator" content="Source Themes Academic 4.8.0">
+  
+    
+  
+    
+    
+    
+    
+    
+      
+      
+      
+    
+    
+  
+    <meta name="author" content="Connor Rothschild">
+  
+    
+    
+    
+      
+    
+    <meta name="description" content="Make your Hugo Academic homepage more engaging with a few lines of code.">
+  
+    
+    <link rel="alternate" hreflang="en-us" href="/post/animate-hugo-academic/">
+  
+    
+
+
+    
+    
+    
+    <meta name="theme-color" content="black">
+    
+  
+    
+    
+  
+    
+    
+    
+    
+      
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  
+      
+      
+      
+        
+      
+      
+        
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github-gist.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github-gist.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+  
+      
+  
+      
+  
+      
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+          
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+  
+    
+  
+    
+    
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:400,500,600,700,800,900%7CLato:400,500,600,700,800,900%7CRoboto+Mono:400,500,600,700,800,900%7CKhula:400,500,600,700%7CInter:400,500,600,700,800,900&display=swap">
+    
+  
+    
+    
+    
+    
+    <link rel="stylesheet" href="/css/academic.css">
+  
+    
+
+
+
+
+    
+
+  
+    
+    
+  
+    
+  
+    <link rel="manifest" href="/index.webmanifest">
+    <link rel="icon" type="image/png" href="/images/icon_hu0188231a098412f92e188b9e094eeb1f_333201_32x32_fill_lanczos_center_2.png">
+    <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0188231a098412f92e188b9e094eeb1f_333201_192x192_fill_lanczos_center_2.png">
+  
+    <link rel="canonical" href="/post/animate-hugo-academic/">
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    <meta property="twitter:card" content="summary_large_image">
+    
+    <meta property="twitter:site" content="@CL_Rothschild">
+    <meta property="twitter:creator" content="@CL_Rothschild">
+    
+    <meta property="og:site_name" content="Connor Rothschild">
+    <meta property="og:url" content="/post/animate-hugo-academic/">
+    <meta property="og:title" content="Three Simple Steps to Bring Impressive Animations to your Hugo Academic Site Using Blogdown | Connor Rothschild">
+    <meta property="og:description" content="Make your Hugo Academic homepage more engaging with a few lines of code."><meta property="og:image" content="/post/animate-hugo-academic/featured.jpg">
+    <meta property="twitter:image" content="/post/animate-hugo-academic/featured.jpg"><meta property="og:locale" content="en-us">
+    
+      
+        <meta property="article:published_time" content="2020-07-25T00:00:00&#43;00:00">
+      
+      <meta property="article:modified_time" content="2020-07-25T00:00:00&#43;00:00">
+    
+  
+    
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "/post/animate-hugo-academic/"
+  },
+  "headline": "Three Simple Steps to Bring Impressive Animations to your Hugo Academic Site Using Blogdown",
+  
+  "image": [
+    "/post/animate-hugo-academic/featured.jpg"
+  ],
+  
+  "datePublished": "2020-07-25T00:00:00Z",
+  "dateModified": "2020-07-25T00:00:00Z",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Connor Rothschild"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Connor Rothschild",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "/images/icon_hu0188231a098412f92e188b9e094eeb1f_333201_192x192_fill_lanczos_center_2.png"
+    }
+  },
+  "description": "Make your Hugo Academic homepage more engaging with a few lines of code."
+}
+</script>
+
+  
+
+  
+
+  
+    
+
+  
+    
+
+
+
+
+  
+    
+  
+    <title>Three Simple Steps to Bring Impressive Animations to your Hugo Academic Site Using Blogdown | Connor Rothschild</title>
+  
+  </head>
+  
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Connor Rothschild</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Connor Rothschild</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/post"><span>Blog</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#experience"><span>Experience</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#accomplishments"><span>Awards</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#projects"><span>Projects</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#contact"><span>Contact</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/cv.pdf"><span>Resume</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="d-none d-xl-block col-xl-2 docs-toc">
+      <ul class="nav toc-top">
+        <li><a href="#" id="back_to_top" class="docs-toc-title">Contents</a></li>
+          </ul>
+          <nav id="TableOfContents">
+  <ul>
+    <li><a href="#step-0-make-your-about-page-your-actual-homepage">Step 0) Make your ‘about’ page your actual homepage</a></li>
+    <li><a href="#step-1-create-abouthtml">Step 1) Create about.html</a></li>
+    <li><a href="#step-2-customize-your-file">Step 2) Customize your file</a></li>
+    <li><a href="#step-3-add-css">Step 3) Add CSS</a>
+      <ul>
+        <li><a href="#step-3a-your-first-animation">Step 3A) Your first animation!</a></li>
+        <li><a href="#step-3b-dont-wait-to-delay">Step 3B) Don’t Wait to Delay</a></li>
+        <li><a href="#step-3c-to-the-left">Step 3C) To the Left!</a></li>
+        <li><a href="#step-3d-finally-the-fade">Step 3D) Finally, the Fade</a></li>
+      </ul>
+    </li>
+    <li><a href="#extending-animations">Extending Animations</a></li>
+  </ul>
+</nav>
+        
+        </div>
+          <main class="col-12 col-md-0 col-xl-10 py-md-3 pl-md-5 docs-content" role="main">
+            
+          <article class="article">
+            
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>Three Simple Steps to Bring Impressive Animations to your Hugo Academic Site Using Blogdown</h1>
+
+  
+
+  
+    
+
+
+<div class="article-metadata">
+
+  
+  
+  
+  
+  <div>
+    
+
+  
+  <span>Connor Rothschild</span>
+  </div>
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    Jul 25, 2020
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    13 min read
+  </span>
+  
+
+  
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/category/r/">R</a></span>
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+</div>
+
+
+          <div class="article-container">
+            <div class="article-style">
+              
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure >
+
+
+  <a data-fancybox="" href="./figures/final.gif" >
+
+
+  <img src="./figures/final.gif" alt=""  >
+</a>
+
+
+
+</figure>
+
+<p>The R package <code>blogdown</code> is an incredibly powerful tool—it allows R users with little to no familiarity in web development to build a fully functional, content-oriented, beautiful website using a language they’re already familiar with. It&rsquo;s built on top of 
+<a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a>, the world’s (self-proclaimed) ‘fastest framework for building websites,’ which comes with a 
+<a href="https://themes.gohugo.io/" target="_blank" rel="noopener">variety of themes</a> suitable for a variety of different uses.</p>
+<p>Within the R community, perhaps one of the most popular themes is 
+<a href="https://themes.gohugo.io/academic/" target="_blank" rel="noopener">Hugo Academic</a>. As the name implies, the theme is geared toward those working academia—more generally, it provides a great starter kit for those interested in showcasing blog posts, projects, and other media on a minimalist site.</p>
+<p>Given its popularity, the Hugo Academic landing page is far-too-familiar. Although not unattractive, no one is particularly surprised or engaged by the standard Academic homepage.</p>
+<p>One way to spice up Hugo Academic is to use animations on our home pages. In this post, I outline three simple steps and a few lines of code to create a fully functional, beautifully-animated landing page. By leveraging the flexibility of Hugo&rsquo;s framework, and introducing a little bit of HTML and CSS, we can take our Hugo Academic home pages from zero to hero (at least, in terms of animation!).</p>
+<div class="alert alert-note">
+  <div>
+    <p>This tutorial assumes you are starting a Hugo Academic site from scratch. If you already have a Hugo Academic website up and running, you should be able to <a href="#step-1-create-abouthtml">skip step 0</a> and modify the remaining steps slightly.</p>
+<p>It also assumes that you have little to no knowledge about HTML and CSS (which is fine!). If that’s <em>not</em> the case, you can likely go ahead and skip to <a href="#step-3-add-css">step 3</a>.</p>
+<p>If you’d like to skip this tutorial and just start a Hugo Academic site that’s animated, feel free to <a href="https://github.com/connorrothschild/hugo-academic-animated">fork my repository</a> which includes all the code you need for an animated homepage. The repo includes my <a href="https://github.com/connorrothschild/hugo-academic-animated/blob/master/layouts/partials/widgets/about.html"><code>about.html</code> page</a> and a <a href="https://github.com/connorrothschild/hugo-academic-animated/blob/master/assets/scss/custom.scss">custom SCSS file</a>!</p>
+  </div>
+</div>
+<h2 id="step-0-make-your-about-page-your-actual-homepage">Step 0) Make your ‘about’ page your actual homepage</h2>
+<p>By default, the Hugo Academic theme’s first section is a grandiose self-introduction (I guess the creators of the theme do deserve such credit). Before we incorporate any of our animations, lets go ahead and make our ‘about’ page the landing page users first see when they visit our site. This requires us to find the files <code>hero.md</code> and <code>demo.md</code>, and in each of those files, set <code>active</code> equal to <code>false</code>. That takes our home page from this:</p>
+<p><img src="./figures/before-demo-hero-remove.png" alt="before-demo-hero-remove"></p>
+<p>to this:</p>
+<p><img src="./figures/after-demo-hero-remove.png" alt="after-demo-hero-remove"></p>
+<p>(As you progress, you might have to make additional small changes, such as removing ‘Demo’ from the navbar menu.)</p>
+<h2 id="step-1-create-abouthtml">Step 1) Create about.html</h2>
+<p>The first <em>real</em> step in our process is modifying the default layout of our about page. More specifically, our animations will rely on CSS selectors which our about page currently doesn’t have. In order to animate certain elements, we will need unique identifiers, such as CSS classes and IDs, to target.</p>
+<p>To play around with our about page, we take advantage of Hugo’s flexibility toward structural changes. As they 
+<a href="https://bwaycer.github.io/hugo_tutorial.hugo/themes/customizing/" target="_blank" rel="noopener">say</a> on their website:</p>
+<blockquote>
+<p>Hugo permits you to <strong>supplement or override</strong> any theme template or static file, with files in your working directory.</p>
+</blockquote>
+<p>In order to override Hugo Academic’s about page, we need to copy their existing structure into our own folder and modify it there. To do so, navigate to <code>themes/hugo-academic/layouts/partials/widgets/</code> and copy the file titled <code>about.html</code>.</p>
+<p>Now, create <em>a new file path</em> in your root directory titled <code>layouts/partials/widgets/</code>. Copy your <code>about.html</code> file here. (Look familiar? All we’re doing is recreating <code>about.html</code> in a <em>personal</em> version of our project, thus overriding the <code>about.html</code> that Hugo Academic provides.)</p>
+<div class="alert alert-note">
+  <div>
+    Alternatively, you can copy the about.html file that I used for this project and paste it into <code>layouts/partials/widgets/</code>. <a href="https://github.com/connorrothschild/hugo-academic-animated/blob/master/layouts/partials/widgets/about.html">You can find my file here</a>. This will also allow you to skip step 2 and move on to <a href="#step-3-add-css">step 3</a>!
+  </div>
+</div>
+<h2 id="step-2-customize-your-file">Step 2) Customize your file</h2>
+<p>With that newly created <code>about.html</code> living in <code>layouts/partials/widgets/</code>, you may notice that your homepage looks the exact same. This is correct! In this step, we’ll customize that html file so that it can be animated.</p>
+<p>Within <code>about.html</code>, you’ll notice all of your page’s elements in order of appearance, despite a lot of extra characters that don’t make much sense. It should look like this:</p>
+<p><img src="./figures/about.png" alt="about"></p>
+<p>Throughout step 3, we’ll use each element’s ‘class’ to target it for animations. In the above screenshot (and in your <code>about.html</code> page!), you’ll see classes scattered throughout. Although learning everything about CSS and CSS selectors is beyond the scope of this tutorial, I would recommend reading a brief primer on classes and selectors in CSS, which can be found 
+<a href="https://www.w3schools.com/cssref/sel_class.asp" target="_blank" rel="noopener">here</a>.</p>
+<p>In this step, we’ll add classes to the elements we want to animate. (Again, if this seems to be overwhelming, feel free to copy 
+<a href="https://github.com/connorrothschild/hugo-academic-animated/blob/master/layouts/partials/widgets/about.html" target="_blank" rel="noopener">my HTML file.</a>) Specifically, we’ll make three changes.</p>
+<p>First, we’ll add a class of <code>biography-title</code> to our h1 (header 1) element. Here, we will change</p>
+<pre><code class="language-html">&lt;h1&gt;{{ $page.Title | markdownify | emojify }}&lt;/h1&gt;{{ end }}
+</code></pre>
+<p>to</p>
+<pre><code class="language-html">&lt;h1 class='biography-title'&gt;{{ $page.Title | markdownify | emojify }}&lt;/h1&gt;{{ end }}
+</code></pre>
+<p>Next, we need to wrap the main content, aka the big text blocks in the middle of the page, in their own class too. Here, we take</p>
+<pre><code class="language-html">{{ $person_page.Content }}
+</code></pre>
+<p>and wrap it in a <code>div</code>, so it looks like this:</p>
+<pre><code class="language-html">&lt;div class='main-content'&gt;
+  {{ $person_page.Content }}
+&lt;/div&gt;
+</code></pre>
+<p>Finally, we’ll add a class to our interests and and education blocks. We can take this row:</p>
+<pre><code class="language-html">&lt;div class=&quot;row&quot;&gt;
+
+  {{ with $person.interests }}
+  &lt;div class=&quot;col-md-5&quot;&gt;
+    &lt;h3&gt;{{ i18n &quot;interests&quot; | markdownify }}&lt;/h3&gt;
+    &lt;ul class=&quot;ul-interests&quot;&gt;
+      {{ range . }}
+      &lt;li&gt;{{ . | markdownify | emojify }}&lt;/li&gt;
+      {{ end }}
+    &lt;/ul&gt;
+  &lt;/div&gt;
+  {{ end }}
+
+  {{ with $person.education }}
+  &lt;div class=&quot;col-md-7&quot;&gt;
+    &lt;h3&gt;{{ i18n &quot;education&quot; | markdownify }}&lt;/h3&gt;
+    &lt;ul class=&quot;ul-edu fa-ul&quot;&gt;
+      {{ range .courses }}
+      &lt;li&gt;
+        &lt;i class=&quot;fa-li fas fa-graduation-cap&quot;&gt;&lt;/i&gt;
+        &lt;div class=&quot;description&quot;&gt;
+          &lt;p class=&quot;course&quot;&gt;{{ .course }}{{ with .year }}, {{ . }}{{ end }}&lt;/p&gt;
+          &lt;p class=&quot;institution&quot;&gt;{{ .institution }}&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/li&gt;
+      {{ end }}
+    &lt;/ul&gt;
+  &lt;/div&gt;
+  {{ end }}
+
+&lt;/div&gt;
+</code></pre>
+<p>and replace it with this:</p>
+<pre><code class="language-html">&lt;div class=&quot;row&quot;&gt;
+
+  {{ with $person.interests }}
+  &lt;div class=&quot;interests-div col-md-5&quot;&gt;
+    &lt;h3&gt;{{ i18n &quot;interests&quot; | markdownify }}&lt;/h3&gt;
+    &lt;ul class=&quot;ul-interests&quot;&gt;
+      {{ range . }}
+      &lt;li&gt;{{ . | markdownify | emojify }}&lt;/li&gt;
+      {{ end }}
+    &lt;/ul&gt;
+  &lt;/div&gt;
+  {{ end }}
+
+  {{ with $person.education }}
+  &lt;div class=&quot;education-div col-md-7&quot;&gt;
+    &lt;h3&gt;{{ i18n &quot;education&quot; | markdownify }}&lt;/h3&gt;
+    &lt;ul class=&quot;ul-edu fa-ul&quot;&gt;
+      {{ range .courses }}
+      &lt;li&gt;
+        &lt;i class=&quot;fa-li fas fa-graduation-cap&quot;&gt;&lt;/i&gt;
+        &lt;div class=&quot;description&quot;&gt;
+          &lt;p class=&quot;course&quot;&gt;{{ .course }}{{ with .year }}, {{ . }}{{ end }}&lt;/p&gt;
+          &lt;p class=&quot;institution&quot;&gt;{{ .institution }}&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/li&gt;
+      {{ end }}
+    &lt;/ul&gt;
+  &lt;/div&gt;
+  {{ end }}
+
+&lt;/div&gt;
+</code></pre>
+<div class="alert alert-note">
+  <div>
+    A quick tip to identify the classes and IDs of individual elements is to use the browser’s <strong>inspect element</strong> tool. To do so, right click on the element you’re interested in and click inspect element; what you’ll see is a highlighted box that tells you that object’s class and/or ID. For more on inspect element and your browser, <a href="https://blog.devmountain.com/how-to-use-inspect-element-jump-into-what-makes-a-web-page-tick/">see this page</a>.
+  </div>
+</div>
+<p>Now, we can reference the existing CSS classes, and our new ones, in our pretty animation in Step 3!</p>
+<h2 id="step-3-add-css">Step 3) Add CSS</h2>
+<p>Now that we’ve created our classes, we can target them in a CSS file and tell them exactly <em>how</em> to animate.</p>
+<p>But first, you’ll need to create a custom CSS file in your root directly. In your <code>assets/</code> folder, create a <em>new</em> folder called <code>scss/</code> and within this folder, create a <em>new</em> file called <code>custom.scss</code>.</p>
+<div class="alert alert-note">
+  <div>
+    An SCSS file is essentially a CSS file but extended with Sass, which describes <a href="https://sass-lang.com/">itself</a> as ‘CSS with superpowers.’ For an overview of the intricacies of Sass, like nesting selectors, visit <a href="https://sass-lang.com/guide">their guide</a>.
+  </div>
+</div>
+<p>Within <code>custom.scss</code>, we’re going to target everything <em>within our about section</em>. In order to do so, we create a selector that targets everything within the ID of <code>about</code>.</p>
+<pre><code class="language-scss">#about {
+  /* Some CSS will go here soon! :) */
+  /* This is a comment, by the way. */
+}
+</code></pre>
+<p>To ensure that we’ve targeted the right section, we can go ahead and add the property <code>background-color: red</code> to that element. As the name implies, this will make the section ✨ red. ✨</p>
+<pre><code class="language-scss">#about {
+  background-color: red
+}
+</code></pre>
+<p>As we expected, our section background is now an (unbelievably ugly shade of) red.<img src="./figures/bg-red.png" alt="bg-red"></p>
+<p>(Now remove that property immediately! This is not quite the welcome we want for our visitors.) We can also target elements <em>within</em> the section by nesting new selectors inside of <code>#about</code>. For example, if we wanted to change the color of our ‘biography’ title text, we could do so with the following code. (This is because we created a class named <code>biography-title</code> in step 1):</p>
+<pre><code class="language-scss">#about {
+  
+  .biography-title {
+    color: red;
+  }
+  
+}
+</code></pre>
+<p><img src="./figures/font-red.png" alt="font-red"></p>
+<div class="alert alert-note">
+  <div>
+    You may notice that <code>about</code> is targeted with a pound (#) and <code>biography-title</code> is targeted with a period (.). This is the difference between CSS <em>IDs</em> and <em>classes</em>. If you’re curious about the distinction, here’s a <a href="https://www.htmldog.com/guides/css/intermediate/classid/">helpful guide</a>.
+  </div>
+</div>
+<p>Now that we know how to target specific objects within our <code>about</code> section, we can animate our first element!</p>
+<h3 id="step-3a-your-first-animation">Step 3A) Your first animation!</h3>
+<p>Creating your first animation is as simple as a few lines of code. To illustrate, we’ll test out an animation which changes our text from red and invisible to black and visible. In the code, we&rsquo;ll have to do two things:</p>
+<ol>
+<li>Create an animation with <code>@keyframes</code></li>
+</ol>
+<pre><code class="language-scss">@keyframes yourfirstanimation {
+  from {opacity: 0; color: red;}
+  to {opacity: 1; color: black;}
+}
+</code></pre>
+<ol start="2">
+<li>Bind the animation to an element</li>
+</ol>
+<pre><code class="language-scss">.biography-title {
+  animation: yourfirstanimation 5s forwards;
+}
+</code></pre>
+<p>To break down the above code, we create an animation that has a <em>start point</em> (<code>0%</code>) and an <em>end point</em> (<code>100%</code>). At both of these points, we define CSS properties, such as color and opacity, seen above. When we bind the animation to an element, which is as simple as <code>animation: &lt;animation_name&gt; &lt;duration&gt; &lt;fill_mode&gt;</code>, CSS deals with all the inbetween and automatically creates a smooth transition! (Fill mode is the most complicated of these three properties, but for our purposes we will always be using <code>forwards</code>. For more information, visit 
+<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/animation-fill-mode" target="_blank" rel="noopener">this page</a>.)</p>
+<p>Altogether, this code creates this output:</p>
+<pre><code class="language-scss">#about {
+  
+  @keyframes yourfirstanimation {
+    0% {opacity: 0; color: red;}
+    100% {opacity: 1; color: black;}
+  }
+
+  .biography-title {
+    animation: yourfirstanimation 5s forwards;
+  }
+  
+}
+</code></pre>
+<p><img src="./figures/red.gif" alt="red"></p>
+<p>Of course, we don’t want a 5 second animation, nor do we want our text to start off as red. A cleaner animation might leverage the power of CSS to modify an element’s <em>position</em>. In our case, we want an element to <strong>slide in from the right side of the screen</strong>, and so we make a few tweaks to the code above. Let’s make a new animation called <code>slide-from-right</code> which starts (at keyframe 0%) with our element 150% to the right of its original position (therefore off the screen) and ends (at keyframe 100%) with it at its original position. This involves the use of <code>translateX</code>, which you can read about 
+<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/translateX" target="_blank" rel="noopener">here</a>.</p>
+<pre><code class="language-scss">@keyframes slide-from-right {
+  0% {transform: translateX(150%)}
+  100% { transform: translateX(0%); }
+}
+
+.biography-title {
+  animation: slide-from-right 1s forwards;
+}
+</code></pre>
+<p><img src="./figures/slide-from-right.gif" alt="slide-from-right"></p>
+<p>There is one slight improvement we can make on the above transition. Specifically, we can call an <em>easing function</em> on our animation. 
+<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function" target="_blank" rel="noopener">Easing functions</a> give a more natural feel to a transition’s flow—rather than our object flying in at a perfectly linear rate, we can add some personality by specifying its speed at different points in the transition. To find an easing function, visit 
+<a href="https://easings.net/en#" target="_blank" rel="noopener">easings.net</a>, which allows you to visualize all of the different ways to modify your transition’s ease. (For this tutorial, I chose a clean-looking “<em>easeInOutQuint</em>“ function, which looks like this: <code>cubic-bezier(0.83, 0, 0.17, 1)</code>.)</p>
+<hr>
+<h3 id="step-3b-dont-wait-to-delay">Step 3B) Don’t Wait to Delay</h3>
+<p>We want our homepage to have more than just one title animation. We might also want to <strong>animate the paragraphs below it</strong>, with the same ’slide from right’ transition we defined earlier. While doing this, we can add one property to our element to make the overall transition seem more fluid: <code>animation-delay</code>. As the name suggests, this property defines how long the browser should wait before it <em>begins</em> the transition you’ve specified. Animating our <code>main-content</code> div is as simple as copying the above code and adding a 100 millisecond animation delay.</p>
+<pre><code class="language-scss">.main-content {
+  animation: slide-from-right 1s cubic-bezier(0.87, 0, 0.13, 1) forwards;
+  animation-delay: 100ms;
+}
+</code></pre>
+<p>In combination with above, this creates a transition that looks like this:</p>
+<p><img src="./figures/double-slide.gif" alt="double-slide"></p>
+<p>Nice! That looks clean. It looks like those two text blocks are racing to greet your new site visitor :)</p>
+<hr>
+<h3 id="step-3c-to-the-left">Step 3C) To the Left!</h3>
+<p>Let’s go ahead and replicate that ’slide in’ transition for our profile on the left side of our webpage. As you could probably gather, this is as simple as copying the above code and changing the value in <code>translateX</code> from 150% to -150% (from just outside the right side of our webpage 
+<a href="https://www.youtube.com/watch?v=2EwViQxSJJQ&amp;feature=youtu.be&amp;t=25" target="_blank" rel="noopener">to the left!</a>). As above, we’ll define this transition in a <code>@keyframes</code> rule and apply it to our CSS transition afterward.</p>
+<pre><code class="language-scss">@keyframes slide-from-left {
+  0% {transform: translateX(-150%)}
+  100% { transform: translateX(0%); }
+}
+
+#profile {
+  animation: slide-from-left 1s cubic-bezier(0.87, 0, 0.13, 1) forwards;
+}
+</code></pre>
+<p><img src="./figures/left-and-right.gif" alt="left-and-right"></p>
+<h3 id="step-3d-finally-the-fade">Step 3D) Finally, the Fade</h3>
+<p>The only thing not yet animated on our page are the ‘interests’ and ‘education’ content blocks. Of course, you might not want these on your homepage (my educational journey isn’t yet formidable enough to warrant its own section on my homepage!). But for the sake of animating the homepage <em>as its configured by default</em>, let’s go ahead and have those content blocks fade in <em>once the sliding transitions complete</em>.</p>
+<p>If you’ve been paying attention to the prior <code>@keyframes</code> rules, you might have guessed that the code would look like this:</p>
+<pre><code class="language-scss">@keyframes fade-in {
+  0% {opacity: 0}
+  100% {opacity: 1}
+}
+</code></pre>
+<p>&hellip; and you would be correct!</p>
+<p>Now, we apply this <code>fade-in</code> rule to both our <code>interests-div</code> and our <code>education-div</code>, which we created in step 1. But notably, we want to wait to fade in each of these divs until <em>after our content has slid in from either side of the webpage.</em> And so, we’ll once again use the <code>animation-delay</code> property. Because our slide-in animations take one second to complete, we can begin our fade-in animations after a one-second delay. To make the transition a little more visually appealling, we can also stagger them, so the <code>education-div</code> fades in half a second <em>after</em> <code>interests-div</code>.</p>
+<pre><code class="language-scss">.interests-div {
+  opacity: 0;
+  animation: fade-in 1s forwards;
+  animation-delay: 1s;
+}
+
+.education-div {
+  opacity: 0;
+  animation: fade-in 1s forwards;
+  animation-delay: 1.5s;
+}
+</code></pre>
+<p>Now, we have a final homepage that looks like this:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure >
+
+
+  <a data-fancybox="" href="./figures/final.gif" >
+
+
+  <img src="./figures/final.gif" alt=""  >
+</a>
+
+
+
+</figure>
+
+<h2 id="extending-animations">Extending Animations</h2>
+<p>This tutorial is meant to teach you the essentials of <em>how</em> to animate your homepage (for any Hugo site, not just Academic). Specifically, you should be able to 1) create and identify CSS elements via their classes and IDs, 2) target them using CSS, and 3) animate them using <code>@keyframes</code> rules. Although easier said then done, applying these three rules will go a long way in making your homepage much more appealling to new visitors.</p>
+<p>The complete power of CSS animations is not covered in this tutorial. Further applications of animations could do <strong>much</strong> more than just animate an object’s position. I leave that to you!</p>
+<p>For those that are interested, 
+<a href="https://www.connorrothschild.com" target="_blank" rel="noopener">my homepage</a> is chock-full of CSS properties which make it unique from most; some visitors are surprised to hear that my site is Hugo Academic at all!</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure >
+
+
+  <a data-fancybox="" href="./figures/mine.gif" >
+
+
+  <img src="./figures/mine.gif" alt=""  >
+</a>
+
+
+
+</figure>
+
+<p>For those interested, the code for my personal site (which, like this one, has an <code>about.html</code> and a <code>custom.scss</code> file that are carrying the load) can be found 
+<a href="https://github.com/connorrothschild/connorrothschild.com" target="_blank" rel="noopener">here</a>. I look forward to seeing your animated homepages!</p>
+
+            </div>
+              
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tag/css/">CSS</a>
+  
+  <a class="badge badge-light" href="/tag/html/">HTML</a>
+  
+  <a class="badge badge-light" href="/tag/r/">R</a>
+  
+</div>
+
+
+
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=/post/animate-hugo-academic/&amp;text=Three%20Simple%20Steps%20to%20Bring%20Impressive%20Animations%20to%20your%20Hugo%20Academic%20Site%20Using%20Blogdown" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=/post/animate-hugo-academic/&amp;t=Three%20Simple%20Steps%20to%20Bring%20Impressive%20Animations%20to%20your%20Hugo%20Academic%20Site%20Using%20Blogdown" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Three%20Simple%20Steps%20to%20Bring%20Impressive%20Animations%20to%20your%20Hugo%20Academic%20Site%20Using%20Blogdown&amp;body=/post/animate-hugo-academic/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=/post/animate-hugo-academic/&amp;title=Three%20Simple%20Steps%20to%20Bring%20Impressive%20Animations%20to%20your%20Hugo%20Academic%20Site%20Using%20Blogdown" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://web.whatsapp.com/send?text=Three%20Simple%20Steps%20to%20Bring%20Impressive%20Animations%20to%20your%20Hugo%20Academic%20Site%20Using%20Blogdown%20/post/animate-hugo-academic/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=/post/animate-hugo-academic/&amp;title=Three%20Simple%20Steps%20to%20Bring%20Impressive%20Animations%20to%20your%20Hugo%20Academic%20Site%20Using%20Blogdown" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+
+
+
+
+
+  
+    
+    
+    
+      
+    
+    
+    
+    <div class="media author-card content-widget-hr">
+      
+        
+        <img class="avatar mr-3 avatar-circle" src="/author/connor-rothschild/avatar_hu7fba9da1679ce4a56c592454604cb9c1_715589_270x270_fill_q100_lanczos_center.jpg" alt="Connor Rothschild">
+      
+
+      <div class="media-body">
+        <h5 class="card-title"><a href="/">Connor Rothschild</a></h5>
+        <h6 class="card-subtitle">Undergraduate at Rice University</h6>
+        <p class="card-text">I&rsquo;m a senior at Rice University interested in public policy, data science and their intersection. I&rsquo;m most passionate about translating complex data into informative and entertaining visualizations.</p>
+        <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/#contact" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://twitter.com/CL_Rothschild" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/connorrothschild" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+</ul>
+
+      </div>
+    </div>
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <div class="article-widget content-widget-hr">
+    <h3>Related</h3>
+    <ul>
+      
+      <li><a href="/project/economist-table-replication/">Recreating a Table by the Economist Using Reactable</a></li>
+      
+      <li><a href="/project/coronavirus-houston-response-projects/">Mobility and Predictors of Movement During COVID-19</a></li>
+      
+      <li><a href="/project/covid-has-become-a-partisan-issue/">COVID-19 Has Become a Partisan Issue</a></li>
+      
+      <li><a href="/project/refugee-trends/">Trends in Refugee Acceptance, 2002 to 2019</a></li>
+      
+      <li><a href="/project/bible-babies/">Bible Babies</a></li>
+      
+    </ul>
+  </div>
+  
+
+
+            </div>
+              </article>
+              
+            </main>
+              </div>
+              </div>
+              
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/css.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/bash.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/javascript.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/markdown.min.js"></script>
+        
+      
+
+    
+
+    
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.37431be2d92d7fb0160054761ab79602.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+  <div class="container">
+    <footer class="site-footer">
+
+    <p class="powered-by">
+  
+      © Connor Rothschild, 2020  | Browse the source code <a href="https://github.com/connorrothschild/connorrothschild.com" target ="_blank" rel="noopener">here</a>.
+      <br>
+      Built with <i class="far fa-heart"></i> and <i class="fa fa-coffee"></i> (and also 
+      <a href="https://www.netlify.com/" target ="_blank" rel="noopener">Netlify</a>, 
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>,
+      and the R <a href="https://github.com/rstudio/blogdown" target="_blank" rel="noopener">blogdown</a> package).
+      
+      </p>
+    
+ 
+  </footer>
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
