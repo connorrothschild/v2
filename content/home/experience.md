@@ -23,10 +23,9 @@ date_format = "Jan 2006"
   company_url = "https://www.socom.mil/"
   location = "Tampa, Florida"
   date_start = "2020-05-30"
-  date_end = ""
+  date_end = “2020-08-08"
   description = """
-Through a fellowship with [Coding It Forward](https://www.codingitforward.com/), I am working as a data science intern with the US Special Operations Command. Along with another intern, I am assisting in the creation of an algorithm geared toward the predictive maintenance of helicopters.
-  """
+Through a fellowship with [Coding It Forward](https://www.codingitforward.com/), I worked as a data science intern with the US Special Operations Command. I assisted in the creation a machine learning model for predictive maintenance on CV-22 helicopters to reduce downtime & improve readiness. I also built a fullstack web application from scratch that automates the process of verifying inventory data. The tool is expected to save roughly 2500 man hours and $102,000 annually.
 
 [[experience]]
   title = "Data Science and Research Intern"
@@ -61,7 +60,7 @@ Under the direction of Dr. Elaine Howard Ecklund, I worked as one of three under
   description = """
 Under the direction of Dr. Ed Egan, I helped create a comprehensive database of startups and accelerators in the United States at the [Baker Institute for Public Policy](https://www.bakerinstitute.org/). I matched and organized 13,000 companies from a spreadsheet to public data using SQL and Excel. I assisted in the strategic development of web crawlers to detect and classify the industry of a company.
   """
-  
+
 [design.background]
   # Apply a background color, gradient, or image.
   #   Uncomment (by removing `#`) an option to apply it.
@@ -70,7 +69,7 @@ Under the direction of Dr. Ed Egan, I helped create a comprehensive database of 
 
   # Background color.
   # color = "navy"
-  
+
   # Background gradient.
   gradient_start = "white"
   gradient_end = "#ECCCC2"
