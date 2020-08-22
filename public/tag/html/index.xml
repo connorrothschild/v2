@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>HTML | Connor Rothschild</title>
-    <link>/tag/html/</link>
-      <atom:link href="/tag/html/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://connorrothschild.com/tag/html/</link>
+      <atom:link href="https://connorrothschild.com/tag/html/index.xml" rel="self" type="application/rss+xml" />
     <description>HTML</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2020</copyright><lastBuildDate>Sat, 25 Jul 2020 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>/img/social.png</url>
+      <url>https://connorrothschild.com/img/social.png</url>
       <title>HTML</title>
-      <link>/tag/html/</link>
+      <link>https://connorrothschild.com/tag/html/</link>
     </image>
     
     <item>
       <title>Three Simple Steps to Bring Impressive Animations to your Hugo Academic Site Using Blogdown</title>
-      <link>/post/animate-hugo-academic/</link>
+      <link>https://connorrothschild.com/post/animate-hugo-academic/</link>
       <pubDate>Sat, 25 Jul 2020 00:00:00 +0000</pubDate>
-      <guid>/post/animate-hugo-academic/</guid>
+      <guid>https://connorrothschild.com/post/animate-hugo-academic/</guid>
       <description>
 
 
@@ -334,6 +334,9 @@
 
 &lt;/figure&gt;
 
+&lt;p&gt;To make our SCSS file more robust across different browsers, we can take our completed file and put it into the 
+&lt;a href=&#34;https://autoprefixer.github.io/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CSS Autoprefixer&lt;/a&gt;. This adds additional lines of code to our CSS file so that all browsers render the same animations upon page load. Your completed SCSS file should look like 
+&lt;a href=&#34;https://github.com/connorrothschild/animate-hugo-academic/blob/master/assets/scss/custom.scss&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;this&lt;/a&gt;.&lt;/p&gt;
 &lt;h2 id=&#34;extending-animations&#34;&gt;Extending Animations&lt;/h2&gt;
 &lt;p&gt;This tutorial is meant to teach you the essentials of &lt;em&gt;how&lt;/em&gt; to animate your homepage (for any Hugo site, not just Academic). Specifically, you should be able to 1) create and identify CSS elements via their classes and IDs, 2) target them using CSS, and 3) animate them using &lt;code&gt;@keyframes&lt;/code&gt; rules. Although easier said then done, applying these three rules will go a long way in making your homepage much more appealling to new visitors.&lt;/p&gt;
 &lt;p&gt;The complete power of CSS animations is not covered in this tutorial. Further applications of animations could do &lt;strong&gt;much&lt;/strong&gt; more than just animate an object’s position. I leave that to you!&lt;/p&gt;

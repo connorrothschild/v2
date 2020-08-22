@@ -23,9 +23,10 @@ date_format = "Jan 2006"
   company_url = "https://www.socom.mil/"
   location = "Tampa, Florida"
   date_start = "2020-05-30"
-  date_end = “2020-08-08"
+  date_end = "2020-08-08"
   description = """
 Through a fellowship with [Coding It Forward](https://www.codingitforward.com/), I worked as a data science intern with the US Special Operations Command. I assisted in the creation a machine learning model for predictive maintenance on CV-22 helicopters to reduce downtime & improve readiness. I also built a fullstack web application from scratch that automates the process of verifying inventory data. The tool is expected to save roughly 2500 man hours and $102,000 annually.
+"""
 
 [[experience]]
   title = "Data Science and Research Intern"
@@ -35,7 +36,6 @@ Through a fellowship with [Coding It Forward](https://www.codingitforward.com/),
   date_start = "2018-08-30"
   date_end = ""
   description = """
-
 I conduct policy research and assist with data for the [Texas Policy Lab](https://www.texaspolicylab.org/). I create engaging data visualizations for internal and external use, develop reports detailing analyses of existing programs, and produce data dashboards for government partners. 
   """
 
