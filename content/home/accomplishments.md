@@ -19,6 +19,21 @@ date_format = "Jan 2006"
 #   Begin/end multi-line descriptions with 3 quotes `"""`.
 
 [[item]]
+  organization = "28th Annual Malofiej Awards"
+  organization_url = "https://www.malofiejgraphics.com/"
+  title = "Bronze, Student Category"
+  url = "https://www.malofiejgraphics.com/2020/08/general/students-have-won-awards-too/"
+  certificate_url = ""
+  date_start = "2020-08-05"
+  date_end = ""
+  description = """
+Awarded the Bronze in the Student Category at the 28th Annual Malofiej Awards (the self-described "Pulitzer for Infographics"). The award was in recognition of my visualization, 'Mapping Missing Migrants.'
+
+See media [here](https://www.malofiejgraphics.com/2020/08/general/students-have-won-awards-too/).
+Find the project [here](https://connorrothschild.github.io/map-missing-migrants/).
+  """
+
+[[item]]
   organization = "Rice University Data2Knowledge Lab"
   organization_url = "https://d2k.rice.edu/"
   title = "First Place, COVID-19 Houston Response Projects"
@@ -175,7 +190,14 @@ See media [here](http://www.news-leader.com/story/news/business/2017/06/28/kicka
   # color = "navy"
 
   # Background gradient.
-  gradient_start = "#ECCCC2"
-  gradient_end = "lightgrey"
+  # gradient_start = "#ECCCC2"
+  # gradient_end = "lightgrey"
+  
+  # Background image.
+  # image = "background.jpg"  # Name of image in `static/img/`.
+  # image_darken = 0.6  # Darken the image? Range 0-1 where 0 is transparent and 1 is opaque.
+
+  # Text color (true=light or false=dark).
+  # text_color_light = true  
 
 +++

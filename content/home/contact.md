@@ -7,7 +7,7 @@ weight = 130  # Order that this section will appear.
 
 title = "Let's Connect."
 subtitle = """
-I love learning and teaching new things. Feel free  to reach out through any of the mediums below to get in touch!
+I love learning and teaching new things. If you have questions about my work or see an opportunity to collaborate, please reach out.
 """
 
 # Automatically link email and phone?
@@ -29,7 +29,7 @@ email_form = 1
   # color = "navy"
   
   # Background gradient.
-  gradient_start = "#CBE9F6"
-  gradient_end = "#E3E3E5"
+  # gradient_start = "#CBE9F6"
+  # gradient_end = "#E3E3E5"
 +++
 

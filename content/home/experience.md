@@ -19,6 +19,7 @@ date_format = "Jan 2006"
 #   Begin/end multi-line descriptions with 3 quotes `"""`.
 [[experience]]
   title = "Data Scientist"
+  logo = "experience-logos/socom.png"
   company = "US Special Operations Command"
   company_url = "https://www.socom.mil/"
   location = "Tampa, Florida"
@@ -29,7 +30,20 @@ Through a fellowship with [Coding It Forward](https://www.codingitforward.com/),
 """
 
 [[experience]]
+  title = "Associate Data Scientist"
+  logo = "experience-logos/moksha.png"
+  company = "Moksha Data"
+  company_url = "https://www.mokshadata.com"
+  location = "Houston, Texas"
+  date_start = "2020-05-01"
+  date_end = ""
+  description = """
+At Moksha, I have developed static and interactive reports for clients including Harvey Home Connect and the City of Houston. Most recently, I assisted in the development of an 'equity analysis' for the City of Houston's first-round COVID-19 rental assistance program.
+"""
+
+[[experience]]
   title = "Data Science and Research Intern"
+  logo = "experience-logos/tpl.png"
   company = "Texas Policy Lab"
   company_url = "https://www.texaspolicylab.org/"
   location = "Houston, Texas"
@@ -41,6 +55,7 @@ I conduct policy research and assist with data for the [Texas Policy Lab](https:
 
 [[experience]]
   title = "Undergraduate Research Fellow"
+  logo = "experience-logos/rplp.png"
   company = "Religion and Public Life Program"
   company_url = "https://rplp.rice.edu/"
   location = "Houston, Texas"
@@ -52,6 +67,7 @@ Under the direction of Dr. Elaine Howard Ecklund, I worked as one of three under
 
 [[experience]]
   title = "Research Intern"
+  logo = "experience-logos/bipp.png"
   company = "Baker Institute for Public Policy, McNair Center"
   company_url = "https://www.bakerinstitute.org/"
   location = "Houston, Texas"
@@ -68,10 +84,11 @@ Under the direction of Dr. Ed Egan, I helped create a comprehensive database of 
   #   Any HTML color name or Hex value is valid.
 
   # Background color.
-  # color = "navy"
+  # color = "black"
+  # text_color_light = true
 
   # Background gradient.
-  gradient_start = "white"
-  gradient_end = "#ECCCC2"
+  # gradient_start = "white"
+  # gradient_end = "black"
 
 +++
