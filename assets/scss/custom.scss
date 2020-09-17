@@ -55,14 +55,9 @@ h1 {
   }
   &:after {    
     z-index: -100;
-    opacity: 0.5;
-    background-image: url("#{bkg1}"), url("#{$bkg2}"); 
+    opacity: 0;
+    background-image: url("#{bkg1}"); 
   }
-  &:hover {
-     &:after{
-       opacity: 0; 
-     }
-  }  
 }
 
 #about {  
