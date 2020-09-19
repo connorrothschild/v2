@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>theory | Connor Rothschild</title>
-    <link>https://connorrothschild.com/tag/theory/</link>
-      <atom:link href="https://connorrothschild.com/tag/theory/index.xml" rel="self" type="application/rss+xml" />
+    <link>/tag/theory/</link>
+      <atom:link href="/tag/theory/index.xml" rel="self" type="application/rss+xml" />
     <description>theory</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2020</copyright><lastBuildDate>Fri, 10 Jan 2020 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>https://connorrothschild.com/img/social.png</url>
+      <url>/img/social.png</url>
       <title>theory</title>
-      <link>https://connorrothschild.com/tag/theory/</link>
+      <link>/tag/theory/</link>
     </image>
     
     <item>
       <title>Color in Data Visualization: Less How, More Why</title>
-      <link>https://connorrothschild.com/post/color-in-data-vis/</link>
+      <link>/post/color-in-data-vis/</link>
       <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.com/post/color-in-data-vis/</guid>
+      <guid>/post/color-in-data-vis/</guid>
       <description>&lt;p&gt;If our use of color in visualizations follows the 
 &lt;a href=&#34;https://en.wikipedia.org/wiki/Five_Ws&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Five Ws (and one H)&lt;/a&gt;, we&amp;rsquo;re spending too much time on &lt;em&gt;how&lt;/em&gt;, and not enough time on &lt;em&gt;why&lt;/em&gt;. Color is too often seen as a tool to make pretty pictures, when it should be used to inform our audiences.&lt;/p&gt;
 &lt;p&gt;For one example, look at this &amp;ldquo;Color Emotion Guide&amp;rdquo; from marketing site 
