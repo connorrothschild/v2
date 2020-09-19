@@ -1,5 +1,5 @@
 ---
-date: "2020-05-19T00:00:00Z"
+date: "2020-05-19"
 external_link: /post/economist-table-replication-using-reactable/
 image:
   caption: 

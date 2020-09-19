@@ -1,5 +1,5 @@
 ---
-date: “2020-05-12T00:00:00Z"
+date: “2019-05-12T00:00:00Z"
 external_link: https://connorrothschild.shinyapps.io/kanye/
 image:
   caption: 

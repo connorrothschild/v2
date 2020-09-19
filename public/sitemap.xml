@@ -3,416 +3,424 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://connorrothschild.com/authors/</loc>
+    <loc>/authors/</loc>
     <lastmod>2020-07-26T12:42:43-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/categories/</loc>
+    <loc>/categories/</loc>
     <lastmod>2020-07-26T12:42:43-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/css/</loc>
+    <loc>/tag/css/</loc>
     <lastmod>2020-07-26T12:42:43-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/html/</loc>
+    <loc>/tag/html/</loc>
     <lastmod>2020-07-26T12:42:43-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/r/</loc>
+    <loc>/tag/r/</loc>
     <lastmod>2020-07-26T12:42:43-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/category/r/</loc>
+    <loc>/category/r/</loc>
     <lastmod>2020-07-26T12:42:43-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tags/</loc>
+    <loc>/tags/</loc>
     <lastmod>2020-07-26T12:42:43-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/animate-hugo-academic/</loc>
+    <loc>/post/animate-hugo-academic/</loc>
     <lastmod>2020-07-26T12:42:43-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/illustrator/</loc>
+    <loc>/tag/illustrator/</loc>
     <lastmod>2020-07-14T22:59:01-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/small-multiples/</loc>
+    <loc>/tag/small-multiples/</loc>
     <lastmod>2020-07-14T23:12:09-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/covid-gun-spikes/</loc>
+    <loc>/post/covid-gun-spikes/</loc>
     <lastmod>2020-07-14T22:59:01-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/visualization/</loc>
+    <loc>/tag/visualization/</loc>
     <lastmod>2020-07-14T23:12:09-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/for-fun/</loc>
+    <loc>/tag/for-fun/</loc>
     <lastmod>2020-07-14T22:59:01-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/</loc>
+    <loc>/project/</loc>
     <lastmod>2020-07-14T22:59:01-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/economist-table-replication/</loc>
+    <loc>/project/economist-table-replication/</loc>
     <lastmod>2020-07-14T22:59:01-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/interactive/</loc>
+    <loc>/tag/interactive/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/economist-table-replication-using-reactable/</loc>
+    <loc>/post/economist-table-replication-using-reactable/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/replication/</loc>
+    <loc>/tag/replication/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/table/</loc>
+    <loc>/tag/table/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/d3/</loc>
+    <loc>/tag/d3/</loc>
     <lastmod>2020-07-12T12:16:13-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/for-work/</loc>
+    <loc>/tag/for-work/</loc>
     <lastmod>2020-07-14T22:59:01-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/mapping-police-violence/</loc>
+    <loc>/project/mapping-police-violence/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/coronavirus-houston-response-projects/</loc>
+    <loc>/project/coronavirus-houston-response-projects/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/multiple-views-covid-19/</loc>
+    <loc>/project/multiple-views-covid-19/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/covid-has-become-a-partisan-issue/</loc>
+    <loc>/project/covid-has-become-a-partisan-issue/</loc>
     <lastmod>2020-07-14T22:59:01-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/dumbbell-plots/</loc>
+    <loc>/post/dumbbell-plots/</loc>
     <lastmod>2020-07-14T23:12:09-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/are-you-smarter-than-compas/</loc>
+    <loc>/project/are-you-smarter-than-compas/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/javascript/</loc>
+    <loc>/tag/javascript/</loc>
     <lastmod>2020-06-11T12:26:05-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/what-are-you-doing/</loc>
+    <loc>/project/what-are-you-doing/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/refugee-trends/</loc>
+    <loc>/post/refugee-trends/</loc>
     <lastmod>2020-07-14T23:12:09-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/refugee-trends/</loc>
+    <loc>/project/refugee-trends/</loc>
     <lastmod>2020-07-14T22:59:01-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/color/</loc>
+    <loc>/tag/color/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/color-in-data-vis/</loc>
+    <loc>/post/color-in-data-vis/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/category/data-viz/</loc>
+    <loc>/category/data-viz/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/category/theory/</loc>
+    <loc>/category/theory/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/theory/</loc>
+    <loc>/tag/theory/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/d3.js/</loc>
+    <loc>/tag/d3.js/</loc>
     <lastmod>2020-07-12T12:16:13-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/category/d3.js/</loc>
+    <loc>/category/d3.js/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/adding-a-chart-to-your-d3-tooltip/</loc>
+    <loc>/post/adding-a-chart-to-your-d3-tooltip/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/tooltips/</loc>
+    <loc>/tag/tooltips/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/who-mentions-who-in-the-office/</loc>
+    <loc>/post/who-mentions-who-in-the-office/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/tidy-tuesday/</loc>
+    <loc>/tag/tidy-tuesday/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/tidy-tuesday-replication/</loc>
+    <loc>/post/tidy-tuesday-replication/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/map-springfield/</loc>
+    <loc>/post/map-springfield/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/animation/</loc>
+    <loc>/tag/animation/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/automation-scrollytell/</loc>
+    <loc>/post/automation-scrollytell/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/scrollytelling/</loc>
+    <loc>/tag/scrollytelling/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/gganimate/</loc>
+    <loc>/tag/gganimate/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/tidy-tuesday-powerlifting/</loc>
+    <loc>/post/tidy-tuesday-powerlifting/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/games-and-guns/</loc>
+    <loc>/post/games-and-guns/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/building-my-first-shiny-app/</loc>
+    <loc>/post/building-my-first-shiny-app/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/shiny/</loc>
+    <loc>/tag/shiny/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/rayshader/</loc>
+    <loc>/tag/rayshader/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/tx-vaccination-rates-rayshader/</loc>
+    <loc>/post/tx-vaccination-rates-rayshader/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/introducing-tpltheme/</loc>
+    <loc>/post/introducing-tpltheme/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/package/</loc>
+    <loc>/tag/package/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/texas-policy-lab/</loc>
+    <loc>/tag/texas-policy-lab/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/bible-babies/</loc>
+    <loc>/post/bible-babies/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/media-mentions/</loc>
+    <loc>/post/media-mentions/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/stem-igration/</loc>
+    <loc>/post/stem-igration/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/automation/</loc>
+    <loc>/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/automation-d3/</loc>
+    <loc>/privacy/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/bible-babies/</loc>
+    <loc>/terms/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/automation/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/project/automation-d3/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/project/map-springfield/</loc>
     <lastmod>2020-07-14T22:59:01-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/post/</loc>
-    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://connorrothschild.com/project/map-springfield/</loc>
-    <lastmod>2020-07-14T22:59:01-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://connorrothschild.com/</loc>
-    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://connorrothschild.com/author/connor-rothschild/</loc>
+    <loc>/author/connor-rothschild/</loc>
     <lastmod>2020-06-01T17:05:05-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/state-police-spending/</loc>
+    <loc>/project/state-police-spending/</loc>
     <lastmod>2020-06-11T12:26:05-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/born-again-kanye/</loc>
+    <loc>/project/born-again-kanye/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/tag/mapbox/</loc>
+    <loc>/tag/mapbox/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/map-houston-homicides/</loc>
+    <loc>/project/map-houston-homicides/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/map-missing-migrants/</loc>
+    <loc>/project/map-missing-migrants/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/map-opioids/</loc>
+    <loc>/project/map-opioids/</loc>
     <lastmod>2020-07-12T12:16:13-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/police-killings-waffle/</loc>
+    <loc>/project/mask-wearing/</loc>
+  </url>
+  
+  <url>
+    <loc>/project/police-killings-waffle/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/publication_types/</loc>
+    <loc>/publication_types/</loc>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/tt-replication/</loc>
+    <loc>/project/tt-replication/</loc>
     <lastmod>2020-07-14T22:59:01-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/r-scrollytell/</loc>
+    <loc>/project/r-scrollytell/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/tx-vaccination-rates/</loc>
-    <lastmod>2020-07-14T22:59:01-04:00</lastmod>
+    <loc>/project/firearm-background-checks/</loc>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/death-rebirth-kanye/</loc>
+    <loc>/project/death-rebirth-kanye/</loc>
     <lastmod>2020-06-24T17:09:30-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/race-for-media-attention/</loc>
+    <loc>/project/race-for-media-attention/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/tt-powerlifting/</loc>
+    <loc>/project/tt-powerlifting/</loc>
     <lastmod>2020-07-14T22:59:01-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/tpl-theme/</loc>
+    <loc>/project/tpl-theme/</loc>
     <lastmod>2020-07-14T22:59:01-04:00</lastmod>
   </url>
   
   <url>
-    <loc>https://connorrothschild.com/project/the-office/</loc>
+    <loc>/project/the-office/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   

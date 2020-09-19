@@ -1,5 +1,5 @@
 ---
-date: “2020-11-10T00:00:00Z"
+date: “2019-11-10T00:00:00Z"
 external_link: https://connorrothschild.shinyapps.io/automation/
 image:
   caption: 

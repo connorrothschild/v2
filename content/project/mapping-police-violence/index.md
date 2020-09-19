@@ -1,5 +1,5 @@
 ---
-date: "2020-04-22T00:00:00Z"
+date: "2020-04-22"
 external_link: https://connorrothschild.github.io/police-killings
 image:
   caption: 

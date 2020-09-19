@@ -1,5 +1,5 @@
 ---
-date: “2019-10-26T00:00:00Z"
+date: “2019-10-26"
 external_link: https://connorrothschild.github.io/D3.js/automation/
 image:
   caption: 

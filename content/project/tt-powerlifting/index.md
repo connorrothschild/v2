@@ -1,5 +1,5 @@
 ---
-date: “2020-10-08T00:00:00Z"
+date: “2019-10-08T00:00:00Z"
 external_link: /post/tidy-tuesday-powerlifting/
 image:
   caption: 
