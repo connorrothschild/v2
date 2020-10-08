@@ -397,3 +397,36 @@ footer p {
 	    opacity: 0;
 	}
 }
+
+//custom css for awards
+#accomplishments {
+  .card-title {
+    font-size: 1.4rem;
+  }
+  .card-subtitle {
+    font-size: 1.2rem;
+  }
+  .card {
+    box-shadow: none;
+    border: none;
+    
+    .card-body {
+      padding: 0;
+    }   
+      
+    .init-hidden {
+      p {
+        max-height: 0;
+        transition: max-height 1s ease-out;
+        overflow: hidden;
+        }
+      }
+    
+    &:hover {
+    .init-hidden p {
+      max-height: 1000px;
+      transition: max-height 1s ease-in;
+    }
+  }
+}
+}

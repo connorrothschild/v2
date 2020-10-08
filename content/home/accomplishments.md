@@ -57,7 +57,9 @@ Find the project [here](https://github.com/connorrothschild/covid-mobility).
   date_start = "2020-04-18"
   date_end = ""
   description = """
-Awarded the Marian Fox Martel Scholar Award for the 2019-2020 academic year. The award is in recognition of a Martel junior who 'demonstrates extraordinary citizenship in various area of College life, focusing on academic excellence and who has a GPA greater than 3.5.'
+Awarded the Marian Fox Martel Scholar Award for the 2019-2020 academic year. 
+
+The award is in recognition of a Martel junior who 'demonstrates extraordinary citizenship in various area of College life, focusing on academic excellence and who has a GPA greater than 3.5.'
 """
 
 [[item]]

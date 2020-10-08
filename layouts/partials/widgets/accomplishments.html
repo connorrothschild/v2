@@ -3,13 +3,16 @@
 
 <!-- Accomplishments widget -->
 <div class="row">
-  <div class="col-12 col-lg-4 section-heading">
-    <h1>{{ with $page.Title }}{{ . | markdownify }}{{ end }}</h1>
-    {{ with $page.Params.subtitle }}<p>{{ . | markdownify }}</p>{{ end }}
+  <div class="margin-auto">
+    <div class="center-text">
+      <div class="section-heading">
+        <h1>{{ with $page.Title }}{{ . | markdownify }}{{ end }}</h1>
+        {{ with $page.Params.subtitle }}<p>{{ . | markdownify }}</p>{{ end }}
+      </div>
+    </div>
   </div>
-  </div>
-  <div class="row">
-
+</div>
+<div class="row">
   <div class="col-12 col-lg-8">
     {{ with $page.Content }}{{ . }}{{ end }}
 
@@ -35,7 +38,7 @@
           </div>
 
           {{with .description}}
-            <div class="card-text">{{. | markdownify | emojify}}</div>
+            <div class="init-hidden card-text">{{. | markdownify | emojify}}</div>
           {{end}}
 
           {{ with .certificate_url }}
