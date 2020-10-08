@@ -407,18 +407,17 @@ footer p {
     font-size: 1.2rem;
   }
   .card {
-    box-shadow: none;
-    border: none;
-    
-    .card-body {
-      padding: 0;
-    }   
-      
+
     .init-hidden {
-      p {
-        max-height: 0;
-        transition: max-height 1s ease-out;
-        overflow: hidden;
+        p {
+          max-height: 0;
+          transition: max-height 1s ease-out;
+          overflow: hidden;
+          margin-bottom: 0 !important;
+        }
+        
+        &.card-text {
+          padding: 0 !important;
         }
       }
     
