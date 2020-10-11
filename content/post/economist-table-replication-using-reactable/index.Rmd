@@ -4,9 +4,10 @@ date: "2020-05-18"
 authors: 
  - admin
 categories: ["R"]
+codefolding_show: show
 image:
   preview_only: true
-tags: ["r", "visualization", "interactive", "table", "replication"]
+tags: ["r", "visualization", "interactive", "reactable", "replication"]
 summary: "Recreating a table by The Economist entirely in R, using {reactable}."
 ---
 
@@ -98,7 +99,10 @@ Then, we loop!
 
 ```{r}
 for (country in country_names) {
-  create_dataframe(country)
+  tryCatch({create_dataframe(country)},
+           error = function(e) {
+             return(NULL)
+           })
 }
 ```
 

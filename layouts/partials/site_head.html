@@ -141,6 +141,11 @@
     {{ if .IsHome | and (site.Params.cms.netlify_cms | default true) }}
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     {{ end }}
+
+    {{ if not site.Params.disable_codefolding }}
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <link rel="stylesheet" href="{{ "css/codefolding.css" | relURL }}" />
+{{ end }}
   
     {{ with .OutputFormats.Get "RSS" }}
     <link rel="alternate" href="{{.RelPermalink}}" type="application/rss+xml" title="{{site.Title}}">

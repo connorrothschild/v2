@@ -278,3 +278,14 @@ plugins_js  = []
 [cms]
   # See https://sourcethemes.com/academic/docs/install/#install-with-web-browser
   netlify_cms = true
+
+############################
+## Code folding
+############################
+
+# Set to true to disable code folding
+disable_codefolding = false
+# Set to "hide" or "show" all codes by default
+codefolding_show = "hide"
+# Set to true to exclude the "Show/hide all" button
+codefolding_nobutton = true

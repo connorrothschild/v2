@@ -4,12 +4,52 @@
   
   <url>
     <loc>/authors/</loc>
-    <lastmod>2020-07-26T12:42:43-04:00</lastmod>
+    <lastmod>2020-10-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>/categories/</loc>
-    <lastmod>2020-07-26T12:42:43-04:00</lastmod>
+    <lastmod>2020-10-10T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/covid-on-campus/</loc>
+    <lastmod>2020-10-10T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/illustrator/</loc>
+    <lastmod>2020-10-10T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/r/</loc>
+    <lastmod>2020-10-10T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/category/r/</loc>
+    <lastmod>2020-10-10T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/reactable/</loc>
+    <lastmod>2020-10-10T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/small-multiples/</loc>
+    <lastmod>2020-10-10T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2020-10-10T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/visualization/</loc>
+    <lastmod>2020-10-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -23,43 +63,13 @@
   </url>
   
   <url>
-    <loc>/tag/r/</loc>
-    <lastmod>2020-09-18T20:15:26-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/category/r/</loc>
-    <lastmod>2020-07-26T12:42:43-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
-    <lastmod>2020-09-18T20:15:26-05:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/post/animate-hugo-academic/</loc>
     <lastmod>2020-07-26T12:42:43-04:00</lastmod>
   </url>
   
   <url>
-    <loc>/tag/illustrator/</loc>
-    <lastmod>2020-07-14T22:59:01-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tag/small-multiples/</loc>
-    <lastmod>2020-07-14T23:12:09-04:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/post/covid-gun-spikes/</loc>
     <lastmod>2020-07-14T22:59:01-04:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tag/visualization/</loc>
-    <lastmod>2020-07-14T23:12:09-04:00</lastmod>
   </url>
   
   <url>
@@ -89,11 +99,6 @@
   
   <url>
     <loc>/tag/replication/</loc>
-    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tag/table/</loc>
     <lastmod>2020-06-01T11:13:28-05:00</lastmod>
   </url>
   
