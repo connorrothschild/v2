@@ -12,10 +12,10 @@ links:
    url: https://github.com/connorrothschild/connorrothschild.com/tree/master/content/post/covid-on-campus/index.Rmd
    icon_pack: fab
    icon: github
- # - name: ""
- #   url: https://twitter.com/CL_Rothschild/status/1284651953025429511?s=20
- #   icon_pack: fab
- #   icon: twitter
+ - name: ""
+   url: https://twitter.com/CL_Rothschild/status/1315353704388866048
+   icon_pack: fab
+   icon: twitter
 tags: ["r", "visualization", "illustrator", "small multiples", "reactable"]
 summary: "Where university reopenings led to spikes in COVID-19 case counts."
 ---
