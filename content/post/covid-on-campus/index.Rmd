@@ -440,7 +440,7 @@ ggplot(processed_states, aes("", pct_college)) +
 
 ```{r}
 blogdown::shortcode("figure", 
-          src = "./figures/geofacet_processed.svg", 
+          src = "./figures/geofacet_processed.png", 
           alt = "A small multiples map showing proportions of COVID cases attributable to university students",
           lightbox = 'true')
 ```
