@@ -137,10 +137,9 @@ processed <- joined %>%
          college_cases > 0)
 ```
 
-On July 17, Rice University announced [its plan](https://coronavirus.rice.edu/news/message-president-leebron-july-17) for the fall semester, which included a hybrid mode of instruction where students could attend classes either virtually or in person. The decision wasn't without controversy; in the weeks that followed, [multiple](https://www.ricethresher.org/article/2020/08/return-to-campus-but-to-what-end) [faculty](https://www.ricethresher.org/article/2020/07/letter-to-the-editor-on-returning-to-the-classroom) [members](https://www.ricethresher.org/article/2020/07/letter-to-the-editor-re-evaluate-return-to-campus) at Rice wrote of their concerns with the plan began classes, eventually culminating in a [petition](https://www.ricethresher.org/article/2020/08/faculty-senate-will-meet-to-discuss-risks-and-benefits-of-returning-to-campus) to convene a campus-wide discussion regarding the risks and benefits of opening campus. The petition garnered nearly 100 faculty signatures.
+On July 17, Rice University announced [its plan](https://coronavirus.rice.edu/news/message-president-leebron-july-17) for the fall semester, which included a hybrid mode of instruction where students could attend classes either virtually or in person. The decision wasn't without controversy; in the weeks that followed, [multiple](https://www.ricethresher.org/article/2020/08/return-to-campus-but-to-what-end) [faculty](https://www.ricethresher.org/article/2020/07/letter-to-the-editor-on-returning-to-the-classroom) [members](https://www.ricethresher.org/article/2020/07/letter-to-the-editor-re-evaluate-return-to-campus) at Rice wrote of their concerns with the plan to begin classes, eventually culminating in a [petition](https://www.ricethresher.org/article/2020/08/faculty-senate-will-meet-to-discuss-risks-and-benefits-of-returning-to-campus) to convene a campus-wide discussion regarding the risks and benefits of opening campus. The petition garnered nearly 100 faculty signatures.
 
 Despite such complaints, Rice opened its doors to in-person students on August 11th. And despite all of the concerns, the university has done a remarkable job at keeping COVID case counts relatively low. 
-
 ```{r}
 blogdown::shortcode('tweet', '1296495845664272386')
 ```
