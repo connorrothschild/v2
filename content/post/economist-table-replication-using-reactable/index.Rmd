@@ -7,6 +7,15 @@ categories: ["R"]
 codefolding_show: show
 image:
   preview_only: true
+links:
+ - name: ""
+   url: https://github.com/connorrothschild/economist-table-replication
+   icon_pack: fab
+   icon: github
+ - name: ""
+   url: https://twitter.com/CL_Rothschild/status/1262793890144432128
+   icon_pack: fab
+   icon: twitter
 tags: ["r", "visualization", "interactive", "reactable", "replication"]
 summary: "Recreating a table by The Economist entirely in R, using {reactable}."
 ---
