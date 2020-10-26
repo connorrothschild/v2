@@ -665,21 +665,57 @@
 
 
 
+<div class="btn-links mb-3">
+  
+  
 
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
     
-
-<div id="code-folding-buttons" class="dropdown btn-group pull-right">
-  <a class="btn btn-light btn-sm dropdown-toggle" href="#" role="button" id="allCodeToggleButton"
-     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Code
+  
+  
+  
+  
+  
+    
+  
+  <a class="btn btn-outline-primary my-1 mr-1" href="https://github.com/connorrothschild/shiny-scrollytell/" target="_blank" rel="noopener">
+    <i class="fab fa-github "></i>
+    
   </a>
-  <div class="dropdown-menu" aria-labelledby="allCodeToggleButton">
-    <a id="rmd-show-all-code" class="dropdown-item small" href="#">Show all</a>
-    <a id="rmd-hide-all-code" class="dropdown-item small" href="#">Hide all</a>
-  </div>
+
+
 </div>
 
 
+    
 
   
 </div>
@@ -1050,10 +1086,7 @@ column(1)
   renderText(paste0(&quot;Section: &quot;, input$scr))
   observe({cat(&quot;section:&quot;, input$scr, &quot;\n&quot;)})
   
-}
-
-# Run the application
-shinyApp(ui = ui, server = server)</code></pre>
+}</code></pre>
 </div>
 </div>
 <div id="the-output" class="section level2">
@@ -1434,13 +1467,6 @@ shinyApp(ui = ui, server = server)</code></pre>
       </p>
 
       
- 
-  <script>
-  $(document).ready(function () {
-    window.initializeCodeFolding("show" === "hide");
-  });
-  </script>
-  <script src="/js/codefolding.js"></script>
 
 
     

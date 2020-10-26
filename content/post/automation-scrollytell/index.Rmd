@@ -4,6 +4,12 @@ date: "2019-10-26"
 authors: 
  - admin
 categories: ["R"]
+disable_codefolding: true
+links:
+ - name: ""
+   url: https://github.com/connorrothschild/shiny-scrollytell/
+   icon_pack: fab
+   icon: github
 image:
   preview_only: true
 tags: ["r", "visualization", "animation", "scrollytelling"]
@@ -454,9 +460,6 @@ server <- function(input, output, session) {
   observe({cat("section:", input$scr, "\n")})
   
 }
-
-# Run the application
-shinyApp(ui = ui, server = server)
 ```
 
 ## The Output

@@ -3507,10 +3507,7 @@ column(1)
   renderText(paste0(&amp;quot;Section: &amp;quot;, input$scr))
   observe({cat(&amp;quot;section:&amp;quot;, input$scr, &amp;quot;\n&amp;quot;)})
   
-}
-
-# Run the application
-shinyApp(ui = ui, server = server)&lt;/code&gt;&lt;/pre&gt;
+}&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;the-output&#34; class=&#34;section level2&#34;&gt;
