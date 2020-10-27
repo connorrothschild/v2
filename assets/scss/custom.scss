@@ -219,72 +219,20 @@ h1 {
 /* link styling */
 .card-text p a, .powered-by a {
   text-decoration: none;
-   line-height: 1;
-   position: relative;
-   z-index: 0;
-   display: inline-block;
-   padding: 5px 5px;
-   overflow: hidden;
-   color: black;
-   vertical-align: bottom;
-   -webkit-transition: color .3s ease-out;
-   -o-transition: color .3s ease-out;
-   transition: color .3s ease-out;
-}
-
-.card-text p a::before, .powered-by a::before {
-   content: "";
-   position: absolute;
-   z-index: -1;
-   top: 0;
-   left: 0;
-   -webkit-transform: translateY(calc(100% - 2px));
-       -ms-transform: translateY(calc(100% - 2px));
-           transform: translateY(calc(100% - 2px));
-   width: 100%;
-   height: 100%;
-   border-radius: 2.5px;
-   background-image: -webkit-gradient(linear, left top, right top, from(rgba(2,0,36,1)), color-stop(35%, rgba(52,52,52,1)), to(rgba(136,136,136,1)));
-   background-image: -o-linear-gradient(left, rgba(2,0,36,1) 0%, rgba(52,52,52,1) 35%, rgba(136,136,136,1) 100%);
-   background-image: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(52,52,52,1) 35%, rgba(136,136,136,1) 100%);
-   -webkit-transition: -webkit-transform .25s ease-out;
-   transition: -webkit-transform .25s ease-out;
-   -o-transition: transform .25s ease-out;
-   transition: transform .25s ease-out;
-   transition: transform .25s ease-out, -webkit-transform .25s ease-out;
+  padding: 3px;
+  border-radius: 3px;
+  background: $light-grey;
 }
 
 .card-text p a:hover, .powered-by a:hover { 
-   color: #fff; 
-}
-.card-text p a:hover::before, .powered-by a:hover::before {
-   -webkit-transform: translateY(0);
-       -ms-transform: translateY(0);
-           transform: translateY(0);
-   -webkit-transition: -webkit-transform .25s ease-out;
-   transition: -webkit-transform .25s ease-out;
-   -o-transition: transform .25s ease-out;
-   transition: transform .25s ease-out;
-   transition: transform .25s ease-out, -webkit-transform .25s ease-out;
+   background: black;
+   color: white;
 }
 
 /* blog formatting */
 .hljs {
   background: $light-grey !important;
 }
-
-.article-style {
-  a {
-    color: red;
-    border-bottom: 1px dotted grey;
-  }
-  
-  a:hover {
-    border-bottom: 1px solid red;
-    text-decoration: none;
-  }
-}
-
 
 /* footer */
 .powered-by {
@@ -400,6 +348,12 @@ footer p {
 
 //custom css for awards
 #accomplishments {
+  .margin-top {
+    margin-top: 20px;
+  }
+  .vertical-center {
+    justify-content: center;
+  }
   .card-title {
     font-size: 1.4rem;
   }
