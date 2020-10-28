@@ -383,3 +383,18 @@ footer p {
   }
 }
 }
+
+/* article styling */
+.article {
+  p a {
+  text-decoration: none;
+  padding: 3px;
+  border-radius: 3px;
+  background: $light-grey;
+}
+
+ p a:hover { 
+   background: black;
+   color: white;
+ }
+}

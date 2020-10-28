@@ -1,0 +1,1202 @@
+<!DOCTYPE html><html lang="en-us" >
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="generator" content="Source Themes Academic 4.8.0">
+  
+    
+  
+    
+    
+    
+    
+    
+      
+      
+      
+    
+    
+  
+    <meta name="author" content="Connor Rothschild">
+  
+    
+    
+    
+      
+    
+    <meta name="description" content="Making hundreds of COVID-19 blog posts from the R community available for public use.">
+  
+    
+    <link rel="alternate" hreflang="en-us" href="/post/covid-posts/">
+  
+    
+
+
+    
+    
+    
+    <meta name="theme-color" content="black">
+    
+  
+    
+    
+  
+    
+    
+    
+    
+      
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  
+      
+      
+      
+        
+      
+      
+        
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github-gist.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github-gist.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+  
+      
+  
+      
+  
+      
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+          
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+  
+    
+  
+    
+    
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:400,500,600,700,800,900%7CLato:400,500,600,700,800,900%7CRoboto+Mono:400,500,600,700,800,900%7CKhula:400,500,600,700%7CInter:400,500,600,700,800,900&display=swap">
+    
+  
+    
+    
+    
+    
+    <link rel="stylesheet" href="/css/academic.css">
+  
+    
+
+
+
+
+    
+
+  
+    
+    
+
+    
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <link rel="stylesheet" href="/css/codefolding.css" />
+
+  
+    
+  
+    <link rel="manifest" href="/index.webmanifest">
+    <link rel="icon" type="image/png" href="/images/icon_hu82528eb29b5d31779afb6f1becdf1c8e_5759_32x32_fill_lanczos_center_2.png">
+    <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu82528eb29b5d31779afb6f1becdf1c8e_5759_192x192_fill_lanczos_center_2.png">
+  
+    <link rel="canonical" href="/post/covid-posts/">
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    <meta property="twitter:card" content="summary_large_image">
+    
+    <meta property="twitter:site" content="@CL_Rothschild">
+    <meta property="twitter:creator" content="@CL_Rothschild">
+    
+    <meta property="og:site_name" content="Connor Rothschild">
+    <meta property="og:url" content="/post/covid-posts/">
+    <meta property="og:title" content="COVID-19 Posts: A Public Dataset Containing 400&#43; COVID-19 Blog Posts | Connor Rothschild">
+    <meta property="og:description" content="Making hundreds of COVID-19 blog posts from the R community available for public use."><meta property="og:image" content="/post/covid-posts/featured.png">
+    <meta property="twitter:image" content="/post/covid-posts/featured.png"><meta property="og:locale" content="en-us">
+    
+      
+        <meta property="article:published_time" content="2020-10-28T00:00:00&#43;00:00">
+      
+      <meta property="article:modified_time" content="2020-10-28T00:00:00&#43;00:00">
+    
+  
+    
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "/post/covid-posts/"
+  },
+  "headline": "COVID-19 Posts: A Public Dataset Containing 400+ COVID-19 Blog Posts",
+  
+  "image": [
+    "/post/covid-posts/featured.png"
+  ],
+  
+  "datePublished": "2020-10-28T00:00:00Z",
+  "dateModified": "2020-10-28T00:00:00Z",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Connor Rothschild"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Connor Rothschild",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "/images/icon_hu82528eb29b5d31779afb6f1becdf1c8e_5759_192x192_fill_lanczos_center_2.png"
+    }
+  },
+  "description": "Making hundreds of COVID-19 blog posts from the R community available for public use."
+}
+</script>
+
+  
+
+  
+
+  
+    
+
+  
+    
+
+
+
+
+  
+    
+  
+    <title>COVID-19 Posts: A Public Dataset Containing 400&#43; COVID-19 Blog Posts | Connor Rothschild</title>
+  
+  </head>
+  
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Connor Rothschild</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Connor Rothschild</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/post"><span>Blog</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#experience"><span>Experience</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#accomplishments"><span>Awards</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#projects"><span>Projects</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#contact"><span>Contact</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://docs.google.com/document/d/1qBH-wNMe2nv9Xa4uzHZ5wBevohwKuB3h2i9M2yk4POk/edit?usp=sharing" target="_blank" rel="noopener"><span>Resume</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+          <article class="article">
+            
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>COVID-19 Posts: A Public Dataset Containing 400&#43; COVID-19 Blog Posts</h1>
+
+  
+
+  
+    
+
+
+<div class="article-metadata">
+
+  
+  
+  
+  
+  <div>
+    
+
+  
+  <span>Connor Rothschild</span>, <span>Rees Morrison</span>
+  </div>
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    Oct 28, 2020
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    6 min read
+  </span>
+  
+
+  
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/category/r/">R</a></span>
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="btn-links mb-3">
+  
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  
+  
+    
+  
+  <a class="btn btn-outline-primary my-1 mr-1" href="https://github.com/connorrothschild/covid-posts/" target="_blank" rel="noopener">
+    <i class="fab fa-github "></i>
+    
+  </a>
+
+
+</div>
+
+
+    
+
+  
+</div>
+
+
+          <div class="article-container">
+            <div class="article-style">
+               
+
+<script src="/rmarkdown-libs/core-js/shim.min.js"></script>
+<script src="/rmarkdown-libs/react/react.min.js"></script>
+<script src="/rmarkdown-libs/react/react-dom.min.js"></script>
+<script src="/rmarkdown-libs/reactwidget/react-tools.js"></script>
+<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/rmarkdown-libs/reactable-binding/reactable.js"></script>
+
+
+<p>Over the last few months, we’ve been collecting hundreds of COVID-19 blog posts from the R community. Today, we are excited to share this dataset publicly, to help bloggers who want to analyze COVID-19 data by unleashing R and the resources of its community by being able to research such posts.</p>
+<p>So far, we have found and recorded 423 COVID posts in English. In an effort to encourage others to explore such posts, we’ve published a <a href="https://connorrothschild.shinyapps.io/covid-posts/">Shiny web app</a> which allow users to find the names of the 231 bloggers who wrote those posts, their roles, and their country of focus The app also lets users interactively search the collection of posts by primary topic, post title, date, and whether the post used a particular mathematical technique or data source. To learn more about the evolution of this dataset, one of the authors (Rees) has published nine articles on Medium. The most recent <a href="https://medium.com/@rees_32356/my-previous-nine-articles-have-each-focused-on-a-different-finding-from-an-ever-growing-set-of-e774fb608dbd">Medium article</a> links to the series.</p>
+<p>We encourage users to submit their own posts for inclusion, which can be done on this <a href="https://docs.google.com/forms/d/e/1FAIpQLScfob3uBoumXIRcSW83T0GhXCfi-KI_psGxIqtl_rQ5VHu9ZQ/viewform?usp=sf_link">Google Form</a>. Our dataset, as well as the code for the Shiny app and this post, is available on <a href="https://github.com/connorrothschild/covid-posts">GitHub</a>. If anyone has corrections to the dataset, please write Rees (at) ReesMorrison (dot) com.</p>
+<p>The remainder of this post highlights some of the findings from the dataset of COVID-19 posts. As will be made evident by the plots that follow, this is by no means a comprehensive review of <em>every</em> COVID-19 R blog post, but rather an overview of the data <em>that we have found</em>.</p>
+<div id="analysis" class="section level1">
+<h1>Analysis</h1>
+<div id="posts-over-time" class="section level3">
+<h3>Posts Over Time</h3>
+<p>As the pandemic has progressed, fewer bloggers have engaged with COVID-related data, as we notice that blog posts peaked in March of 2020.</p>
+<p><img src="/post/covid-posts/index_files/figure-html/weekly-1.png" width="100%" /></p>
+<p>Some bloggers have been prolific; many more have been one and done. The plot below shows the names and posts of the 23 bloggers who have so far published at least four posts. For an example of how to read the plot, Tim Churches, at the bottom of the y-axis, has published a total of nine posts, but none after early April.</p>
+<p>The color of the points corresponds to the work role of the blogger as explained in the legend at the bottom. It is immediately apparent that professors (blue) and academic researchers (red) predominate in this group of bloggers. If you include the postgraduate students, universities writ large account for nearly all of the prolific bloggers.</p>
+<p><img src="/post/covid-posts/index_files/figure-html/prolificVer2-1.png" width="100%" /></p>
+</div>
+<div id="roles-of-authors" class="section level3">
+<h3>Roles of Authors</h3>
+<p>We should explain “role” a bit more. The bloggers in our dataset describe their work-day roles in a variety of ways. One of the authors (Rees) recorded job roles by standardizing the multitude of terms and descriptions, but it is quite possible that this effort misrepresented what some of these bloggers do for a living. We welcome corrections.</p>
+<p>We’ve further categorized roles into a broad typology where professions fall into one of five categories: <em>university</em>, <em>corporate</em>, <em>professional</em>, <em>government</em>, and <em>nonprofit</em>. Those broader categories are represented as columns in the following chart.</p>
+<p><img src="/post/covid-posts/index_files/figure-html/authorVer2-1.png" width="100%" /></p>
+</div>
+<div id="data-sources" class="section level3">
+<h3>Data Sources</h3>
+<p>A greater number of data sources related to COVID-19 will yield richer insights. Combining different datasets can shed new light on an issue, yield improvements, and allow authors to contruct better indices and measures. For that reason, one of the authors (Rees) extracted <em>dataset information</em> from our collection of blog posts.</p>
+<p>For the most part, bloggers identified the data source they drew on for their analysis. On occasion, we had to manually record the data source, or apply some effort to standardize the 140 data sources.</p>
+<p>By far the most prevalent data source is Johns Hopkins University, who early, comprehensively and consistently has set the standard for COVID-19 data collection and dissemination to the public.</p>
+<style type="text/css">
+.header {
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 400;
+  border-bottom: 2px solid #555;
+}
+</style>
+<p><img src="/post/covid-posts/index_files/figure-html/dataTable-1.png" width="100%" /></p>
+<p>Below, you can look at <em>all</em> data sources and how often they were referenced in COVID-19 blog posts.</p>
+<div id="htmlwidget-1" class="reactable html-widget" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"data":["Johns Hopkins Univ.","New York Times","Wikipedia","Apple Mobility","COVID Tracking Project","World Bank","European Centre for Disease Control (ECDC)","U.S. Census Bureau","Our World in Data","Twitter","Assessment Capacities Project (ACAPS)","COVID19 package","Google Mobility","World Population Review (WPR)","coronavirus package","Human Mortality Database","Kaggle","Office for National Statistics (UK)","OHA (Oregon)","The Guardian (Australia)","The Office for National Statistics (ONS)","U.S. Bureau of Labor Statistics","WHO","Worldometers","American Health Rankings( AHR)","Bureau of Transportation Statistics (BTS) (US)","data.gouv.fr","data.london.gov.uk/","Financial Times","Google Trends","INSEE","Japan National Land Numeric Information","New England Journal of Medicine","Oxford Covid-19 Government Response Tracker","Sciensano","United States Project","ABS Characteristics of Employment","ABS Survey of Income and Housing","AEMET ( Agencia Estatal de Meteorologia )","American Public Media Research Lab","Australian Bureau of Statistics","Bing","BNO","boxofficemojo.com","BuzzFeed News","CDC","CDC FlueView","CDC NREVSS","CDC's 500 Cities","cdccovidview","CDFI Fund","Centro de Datos Covid-19 (Spain)","Citymapper (Australia)","Claude Bouchers google spreadsheet","Connecticut Open Data","corona.jakarta.go.id/id/data-pemantauan","Coronavirus in the United States (USAFACTS)","COVID Act Now","COVID-19 Data Hub","COVID-NET (CDC)","covid19 colorado website ","COVID19 Data Hub","covid19 package","Covid19R","COVIDAustralia.com","Covidtracking.com","CRAN","Cuebiq","data.ct.gov","data.data.gouv.fr/fr/datasets/","data.europa.eu/ euodp / en /data/dataset/covid-19-coronavirus-data","DataCamp","Datadista","DeKalb County Board of Health","Department of Health (Australia)","Department of the Treasury","Descartes","Dow Jones Dataset","Economic Policy Uncertainty Index (Australia)","Economist","esri","European Centre for Disease Control (ECDC) (ECDC)","Exposome Data Warehouse","Federal Agency for Cartography and Geodesy","Federal Election Commission","Federal Reserve Board","Georgia Dept. of Public Health","geoservices.ign.fr","GitHub of authors","github.com/datasets/covid-19","Google COVID-19 Community Mobility Reports","Google Maps Live Popularity","Grattan Institute","Healthcare.gov","Henry J. Kaiser Family Foundation","ICNARC Case Mix Programme Database","Imperial College London YouGov Covid 19 Behaviour Tracker Data Hub","INE ( Instituto Nacional de Estadistica )","Instituto Superiore di Sanit , Roma","Italy Department of Civil Protection","Kaiser Family Foundation","MAPA ( Ministerio de Agricultura , Pesca y Alimentacion )","Marshall Project (US)","Memeorandum","Michigan.gov","Ministerio de Sanidad MSCBS","Ministry of Health (NZ)","moving average","Mozilla Firefox Users","National Institute for Public Health and the Environment RIVM (Netherlands)","National Platform for Geographic Dat a  Germany","Natl. Bureau of Economic Research (US)","naturalearthdata.com","NSW Health (Australia)","OEC World","OpenTable","Oregon data","Oz COVID 19 Visualization","presidency.gov.gh (Ghana)","Protezione Civile (Italy)","ProvidencialData19","Public Health (Cobb, Douglas: Georgia)","Public Health Authority (Sweden)","Public Health England","RamiKrispins Github","Robert-Koch Institute","Sant Publique Franc","Tencent","Tennessee Data Center","Tennessee Dep artment of Health","TFL Santander Cycle (London)","U.S. Employment and Training Administration","United Nations World Population Prospects","US stock market","USDA Rural-Urban Classification Codes","Victoria DHHS","World Bank Open Data"],"Count":[51,14,13,8,8,7,6,6,5,5,4,4,4,4,3,3,3,3,3,3,3,3,3,3,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]},"columns":[{"accessor":"data","name":"Data Source","type":"character","na":"–","headerClassName":"header"},{"accessor":"Count","name":"Count","type":"numeric","na":"–","headerClassName":"header"}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"striped":true,"compact":true,"dataKey":"93c41fe0b00b461b74c51b056000551e","key":"93c41fe0b00b461b74c51b056000551e"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="blog-post-topics" class="section level3">
+<h3>Blog Post Topics</h3>
+<p>It may also be the case that readers want a summary of blogs, or to only look at posts that pertain to a certain topic. Assigning each blog post a primary topic introduces a fair amount of subjectivity, to be sure, but the hope is that these broad topics will help researchers find content and colleagues who share similar interests.</p>
+<p>Here, a balloon plot shows nine categories that the 423 posts address as their primary topic. Epidemiology leads the way, as might be expected, but quite a few posts seem to use COVID data to showcase something else, or apply R in novel ways.</p>
+<p><img src="/post/covid-posts/index_files/figure-html/topicsVer2-1.png" width="100%" /></p>
+</div>
+</div>
+<div id="concluding-thoughts" class="section level1">
+<h1>Concluding Thoughts</h1>
+<p>We encourage you to use our <a href="https://connorrothschild.shinyapps.io/covid-posts/">Shiny application</a> to explore the data for yourself. If you’d like to submit your post to be included, fill out this <a href="https://docs.google.com/forms/d/e/1FAIpQLScfob3uBoumXIRcSW83T0GhXCfi-KI_psGxIqtl_rQ5VHu9ZQ/viewform?usp=sf_link">Google Form</a>.</p>
+<p>As we note in the footer of the application, the R community is lovely–and intelligent–but not all of us are experts when it comes to COVID-19. Engaging with these posts will allow you to better understand the application of R to our current moment, and perhaps provide feedback to post authors. We do not endorse the findings of any particular author and encourage you to find accurate, relevant, and recent information from reputable sources such as the <a href="https://www.cdc.gov/">CDC</a> and the <a href="https://www.who.int/">WHO</a>.</p>
+<p>As always, thanks for reading.</p>
+</div>
+
+            </div>
+              
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tag/dataset/">dataset</a>
+  
+  <a class="badge badge-light" href="/tag/r/">R</a>
+  
+  <a class="badge badge-light" href="/tag/shiny/">shiny</a>
+  
+</div>
+
+
+
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=/post/covid-posts/&amp;text=COVID-19%20Posts:%20A%20Public%20Dataset%20Containing%20400&#43;%20COVID-19%20Blog%20Posts" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=/post/covid-posts/&amp;t=COVID-19%20Posts:%20A%20Public%20Dataset%20Containing%20400&#43;%20COVID-19%20Blog%20Posts" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=COVID-19%20Posts:%20A%20Public%20Dataset%20Containing%20400&#43;%20COVID-19%20Blog%20Posts&amp;body=/post/covid-posts/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=/post/covid-posts/&amp;title=COVID-19%20Posts:%20A%20Public%20Dataset%20Containing%20400&#43;%20COVID-19%20Blog%20Posts" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://web.whatsapp.com/send?text=COVID-19%20Posts:%20A%20Public%20Dataset%20Containing%20400&#43;%20COVID-19%20Blog%20Posts%20/post/covid-posts/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=/post/covid-posts/&amp;title=COVID-19%20Posts:%20A%20Public%20Dataset%20Containing%20400&#43;%20COVID-19%20Blog%20Posts" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+
+
+
+
+
+  
+    
+    
+    
+      
+    
+    
+    
+    <div class="media author-card content-widget-hr">
+      
+        
+        <img class="avatar mr-3 avatar-circle" src="/author/connor-rothschild/avatar_hu7fba9da1679ce4a56c592454604cb9c1_715589_270x270_fill_q100_lanczos_center.jpg" alt="Connor Rothschild">
+      
+
+      <div class="media-body">
+        <h5 class="card-title"><a href="/">Connor Rothschild</a></h5>
+        <h6 class="card-subtitle">Undergraduate at Rice University</h6>
+        <p class="card-text">I&rsquo;m a senior at Rice University interested in public policy, data science and their intersection. I&rsquo;m most passionate about translating complex data into informative and entertaining visualizations.</p>
+        <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/#contact" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://twitter.com/CL_Rothschild" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/connorrothschild" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+</ul>
+
+      </div>
+    </div>
+  
+
+
+  
+    
+    
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <div class="article-widget content-widget-hr">
+    <h3>Related</h3>
+    <ul>
+      
+      <li><a href="/post/building-my-first-shiny-app/">Building my First Shiny App</a></li>
+      
+      <li><a href="/post/covid-on-campus/">COVID on Campus</a></li>
+      
+      <li><a href="/post/covid-gun-spikes/">Spikes in Firearm Background Checks During COVID-19</a></li>
+      
+      <li><a href="/post/economist-table-replication-using-reactable/">Recreating a Table by The Economist Using Reactable</a></li>
+      
+      <li><a href="/post/dumbbell-plots/">Create Dumbbell Plots to Visualize Group Differences in R</a></li>
+      
+    </ul>
+  </div>
+  
+
+
+            </div>
+              </article>
+              
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/css.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/bash.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/javascript.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/markdown.min.js"></script>
+        
+      
+
+    
+
+    
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.37431be2d92d7fb0160054761ab79602.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+  <div class="container">
+    <footer class="site-footer">
+
+    <p class="powered-by">
+  
+      © Connor Rothschild, 2020  | Browse the source code <a href="https://github.com/connorrothschild/connorrothschild.com" target ="_blank" rel="noopener">here</a>.
+      <br>
+      Built with <i class="far fa-heart"></i> and <i class="fa fa-coffee"></i> (and also 
+      <a href="https://www.netlify.com/" target ="_blank" rel="noopener">Netlify</a>, 
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>,
+      and the R <a href="https://github.com/rstudio/blogdown" target="_blank" rel="noopener">blogdown</a> package).
+      
+      </p>
+
+      
+
+
+    
+ 
+  </footer>
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
