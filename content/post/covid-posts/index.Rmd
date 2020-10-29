@@ -45,9 +45,9 @@ num_posts <- nrow(posts)
 
 Over the last few months, we've been collecting hundreds of COVID-19 blog posts from the R community. Today, we are excited to share this dataset publicly, to help bloggers who want to analyze COVID-19 data by unleashing R and the resources of its community by being able to research such posts. 
 
-So far, we have found and recorded `r num_posts` COVID posts in English. In an effort to encourage others to explore such posts, we've published a [Shiny web app](https://connorrothschild.shinyapps.io/covid-posts/) which allow users to find the names of the `r posts %>% select(Author) %>% distinct() %>% nrow()` bloggers who wrote those posts, their roles, and their country of focus The app also lets users interactively search the collection of posts by primary topic, post title, date, and whether the post used a particular mathematical technique or data source. To learn more about the evolution of this dataset, one of the authors (Rees) has published nine articles on Medium. The most recent [Medium article](https://medium.com/@rees_32356/my-previous-nine-articles-have-each-focused-on-a-different-finding-from-an-ever-growing-set-of-e774fb608dbd ) links to the series.
+So far, we have found and recorded `r num_posts` COVID posts in English. In an effort to encourage others to explore such posts, we've published a [Shiny web app](https://connorrothschild.shinyapps.io/covid-posts/){target="_blank"} which allow users to find the names of the `r posts %>% select(Author) %>% distinct() %>% nrow()` bloggers who wrote those posts, their roles, and their country of focus. The app also lets users interactively search the collection of posts by primary topic, post title, date, and whether the post used a particular mathematical technique or data source. To learn more about the evolution of this dataset, one of the authors (Rees) has published nine articles on Medium. The most recent [Medium article](https://medium.com/@rees_32356/my-previous-nine-articles-have-each-focused-on-a-different-finding-from-an-ever-growing-set-of-e774fb608dbd){target="_blank"} links to the series.
 
-We encourage users to submit their own posts for inclusion, which can be done on this [Google Form](https://docs.google.com/forms/d/e/1FAIpQLScfob3uBoumXIRcSW83T0GhXCfi-KI_psGxIqtl_rQ5VHu9ZQ/viewform?usp=sf_link). Our dataset, as well as the code for the Shiny app and this post, is available on [GitHub](https://github.com/connorrothschild/covid-posts). If anyone has corrections to the dataset, please write Rees (at) ReesMorrison (dot) com.
+We encourage users to submit their own posts for inclusion, which can be done on this [Google Form](https://docs.google.com/forms/d/e/1FAIpQLScfob3uBoumXIRcSW83T0GhXCfi-KI_psGxIqtl_rQ5VHu9ZQ/viewform?usp=sf_link){target="_blank"}. Our dataset, as well as the code for the Shiny app and this post, is available on [GitHub](https://github.com/connorrothschild/covid-posts){target="_blank"}. If anyone has corrections to the dataset, please write Rees (at) ReesMorrison (dot) com.
 
 The remainder of this post highlights some of the findings from the dataset of COVID-19 posts. As will be made evident by the plots that follow, this is by no means a comprehensive review of *every* COVID-19 R blog post, but rather an overview of the data *that we have found*.
 
@@ -81,7 +81,7 @@ ggplot(posts, aes(x = Week)) +
 
 Some bloggers have been prolific; many more have been one and done. The plot below shows the names and posts of the 23 bloggers who have so far published at least four posts. For an example of how to read the plot, Tim Churches, at the bottom of the y-axis, has published a total of nine posts, but none after early April.
 
-The color of the points corresponds to the work role of the blogger as explained in the legend at the bottom. It is immediately apparent that professors (blue) and academic researchers (red) predominate in this group of bloggers. If you include the postgraduate students, universities writ large account for nearly all of the prolific bloggers.
+The color of the points corresponds to the work role of the blogger as explained in the legend at the bottom. It is immediately apparent that professors and academic researchers predominate in this group of bloggers. If you include the postgraduate students, universities writ large account for nearly all of the prolific bloggers.
 
 ```{r prolificVer2}
 prolific <-
@@ -119,7 +119,7 @@ graphProlific %>%
 
 ### Roles of Authors
 
-We should explain "role" a bit more. The bloggers in our dataset describe their work-day roles in a variety of ways. One of the authors (Rees) recorded job roles by standardizing the multitude of terms and descriptions, but it is quite possible that this effort misrepresented what some of these bloggers do for a living. We welcome corrections. 
+The bloggers in our dataset describe their work-day roles in a variety of ways. One of the authors (Rees) recorded job roles by standardizing the multitude of terms and descriptions, but it is quite possible that this effort misrepresented what some of these bloggers do for a living. We welcome corrections. 
 
 We've further categorized roles into a broad typology where professions fall into one of five categories: *university*, *corporate*, *professional*, *government*, and *nonprofit*. Those broader categories are represented as columns in the following chart.
 
@@ -213,7 +213,8 @@ reactable(
   striped = TRUE,
   defaultColDef = colDef(headerClass = "header",
                          na = "–"),
-  columns = list(data = colDef(name = 'Data Source'))
+  columns = list(data = colDef(name = 'Data Source',
+                               width = 300))
 )
 ```
 
@@ -307,8 +308,8 @@ ggplot(topics,
 
 # Concluding Thoughts
 
-We encourage you to use our [Shiny application](https://connorrothschild.shinyapps.io/covid-posts/) to explore the data for yourself. If you'd like to submit your post to be included, fill out this [Google Form](https://docs.google.com/forms/d/e/1FAIpQLScfob3uBoumXIRcSW83T0GhXCfi-KI_psGxIqtl_rQ5VHu9ZQ/viewform?usp=sf_link).
+We encourage you to use our [Shiny application](https://connorrothschild.shinyapps.io/covid-posts/){target="_blank"} to explore the data for yourself. If you'd like to submit your post to be included, fill out this [Google Form](https://docs.google.com/forms/d/e/1FAIpQLScfob3uBoumXIRcSW83T0GhXCfi-KI_psGxIqtl_rQ5VHu9ZQ/viewform?usp=sf_link){target="_blank"}.
 
-As we note in the footer of the application, the R community is lovely--and intelligent--but not all of us are experts when it comes to COVID-19. Engaging with these posts will allow you to better understand the application of R to our current moment, and perhaps provide feedback to post authors. We do not endorse the findings of any particular author and encourage you to find accurate, relevant, and recent information from reputable sources such as the [CDC](https://www.cdc.gov/) and the [WHO](https://www.who.int/). 
+As we note in the footer of the application, the R community is intelligent and produces interesting content, but not all of us are experts when it comes to COVID-19. Engaging with these posts will allow you to better understand the application of R to our current moment, and perhaps provide feedback to post authors. We do not endorse the findings of any particular author and encourage you to find accurate, relevant, and recent information from reputable sources such as the [CDC](https://www.cdc.gov/){target="_blank"} and the [WHO](https://www.who.int/){target="_blank"}. 
 
 As always, thanks for reading.
