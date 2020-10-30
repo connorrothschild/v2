@@ -37,17 +37,40 @@ library(reactable)
 library(cr)
 set_cr_theme()
 
-posts <- readxl::read_excel("./data/postsTopicsRoles1019.xlsx") %>% 
-  mutate(CoreRole = ifelse(CoreRole == "NotForProfit", "Nonprofit", CoreRole))
+posts <- readr::read_csv('./data/oct29PostsData.csv') %>%
+    mutate(
+        Date = lubridate::as_date(Date),
+        GeoSpecific = ifelse(is.na(GeoSpecific), Geo, GeoSpecific),
+        Country = ifelse(Country == 'United States of America', 'USA', Country),
+        Author = str_replace(Author, ", NA", ""),
+        Author = sub("(\\w+),\\s(\\w+)", "\\2 \\1", Author),
+        Author = ifelse(Author == 'NA', NA, Author),
+        CoreRole = ifelse(CoreRole == "NotForProfit", "Nonprofit", CoreRole),
+        Role = str_replace(
+            Role,
+            'Actuary|Architect|Government|MacroStrategist|PhD Student|Public Health|Lawyer|Educator',
+            'Other'
+        ),
+        Role = str_replace(Role,
+                           'Post Grad',
+                           'Post-Grad'),
+        Topic = str_replace(Topic,
+                            'CompSci',
+                            'Computer Science'),
+        Topic = str_replace(Topic,
+                            'DataViz',
+                            'Data Visualization')
+    )
+
 today <- format(Sys.Date(), format="%b. %d")
 num_posts <- nrow(posts)
 ```
 
 Over the last few months, we've been collecting hundreds of COVID-19 blog posts from the R community. Today, we are excited to share this dataset publicly, to help bloggers who want to analyze COVID-19 data by unleashing R and the resources of its community by being able to research such posts. 
 
-So far, we have found and recorded `r num_posts` COVID posts in English. In an effort to encourage others to explore such posts, we've published a [Shiny web app](https://connorrothschild.shinyapps.io/covid-posts/){target="_blank"} which allow users to find the names of the `r posts %>% select(Author) %>% distinct() %>% nrow()` bloggers who wrote those posts, their roles, and their country of focus. The app also lets users interactively search the collection of posts by primary topic, post title, date, and whether the post used a particular mathematical technique or data source. To learn more about the evolution of this dataset, one of the authors (Rees) has published nine articles on Medium. The most recent [Medium article](https://medium.com/@rees_32356/my-previous-nine-articles-have-each-focused-on-a-different-finding-from-an-ever-growing-set-of-e774fb608dbd){target="_blank"} links to the series.
+So far, we have found and recorded `r num_posts` COVID posts in English. In an effort to encourage others to explore such posts, we've published a [Shiny web app](https://connorrothschild.shinyapps.io/covid-posts/){target="_blank"} which allow users to find the names of the `r posts %>% select(Author) %>% distinct() %>% nrow()` bloggers who wrote those posts, their roles, and their country of focus. The app also lets users interactively search the collection of posts by primary topic, post title, date, and whether the post uses a particular mathematical technique or data source. To learn more about the evolution of this dataset, one of the authors (Rees) has published nine articles on Medium, which you can find [here](https://medium.com/@rees_32356){target="_blank"}.
 
-We encourage users to submit their own posts for inclusion, which can be done on this [Google Form](https://docs.google.com/forms/d/e/1FAIpQLScfob3uBoumXIRcSW83T0GhXCfi-KI_psGxIqtl_rQ5VHu9ZQ/viewform?usp=sf_link){target="_blank"}. Our dataset, as well as the code for the Shiny app and this post, is available on [GitHub](https://github.com/connorrothschild/covid-posts){target="_blank"}. If anyone has corrections to the dataset, please write Rees (at) ReesMorrison (dot) com.
+We encourage users to submit their own posts--or others' posts--for inclusion, which can be done on this [Google Form](https://docs.google.com/forms/d/e/1FAIpQLScfob3uBoumXIRcSW83T0GhXCfi-KI_psGxIqtl_rQ5VHu9ZQ/viewform?usp=sf_link){target="_blank"}. Our dataset, as well as the code for the Shiny app, is available on [GitHub](https://github.com/connorrothschild/covid-posts){target="_blank"}. If anyone has corrections to the dataset, please write Rees (at) ReesMorrison (dot) com.
 
 The remainder of this post highlights some of the findings from the dataset of COVID-19 posts. As will be made evident by the plots that follow, this is by no means a comprehensive review of *every* COVID-19 R blog post, but rather an overview of the data *that we have found*.
 
@@ -71,10 +94,9 @@ ggplot(posts, aes(x = Week)) +
     x = element_blank(),
     y = "Number of Blog Posts",
     title = "COVID-19 Blog Posts by the R Community, Over Time",
-    subtitle = paste("As of", today),
-    caption = "Source: Rees Morrison compilation of COVID-19 blog posts that use R"
+    caption = paste("\nSource: Rees Morrison compilation of COVID-19 blog posts that use R. Updated", today)
   ) +
-  scale_y_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) + 
   scale_x_continuous(breaks = month_numeric,
                      labels = month_label)
 ```
@@ -110,41 +132,36 @@ graphProlific %>%
     colour = element_blank(),
     title = "The Most Prolific COVID-19 Bloggers",
     subtitle = "Timing of posts for authors with more than four posts",
-    caption = "Source: Rees Morrison compilation of COVID-19 blog posts that use R"
+    caption = paste("\nSource: Rees Morrison compilation of COVID-19 blog posts that use R. Updated", today)
   ) +
-  scale_x_date() +
+  scale_x_date(date_breaks = '1 month', date_labels = "%b") +
   theme(legend.position = "bottom",
         legend.direction = 'horizontal')
 ```
 
 ### Roles of Authors
 
-The bloggers in our dataset describe their work-day roles in a variety of ways. One of the authors (Rees) recorded job roles by standardizing the multitude of terms and descriptions, but it is quite possible that this effort misrepresented what some of these bloggers do for a living. We welcome corrections. 
+The bloggers in our dataset describe their work-day roles in a variety of ways. One of the authors (Rees) standardized these job roles by categorizing the multitude of terms and descriptions, but it is quite possible that this effort misrepresented what some of these bloggers do for a living. We welcome corrections. 
 
 We've further categorized roles into a broad typology where professions fall into one of five categories: *university*, *corporate*, *professional*, *government*, and *nonprofit*. Those broader categories are represented as columns in the following chart.
 
 ```{r authorVer2}
-# roles <-
-#   read_excel(here::here("data/NamesRolesEmailsTwo.Ver1.xls"), trim_ws = TRUE)
-# 
-# posts <- left_join(posts, roles[, 1:6])
 roleSum <-
   posts %>% group_by(CoreRole, Role) %>% summarise(NumPosts = length(Author)) %>%
-  arrange(desc(NumPosts)) %>% ungroup() #30
+  arrange(desc(NumPosts)) %>% ungroup()
 
-posts %>% 
-  group_by(CoreRole) %>% 
-  tally() %>% 
-  filter(!is.na(CoreRole)) %>% 
-  mutate(CoreRole = fct_reorder(CoreRole, -n)) %>% 
-ggplot(aes(x = CoreRole, y = n)) +
+posts %>%
+  group_by(CoreRole) %>%
+  tally() %>%
+  filter(!is.na(CoreRole)) %>%
+  mutate(CoreRole = fct_reorder(CoreRole,-n)) %>%
+  ggplot(aes(x = CoreRole, y = n)) +
   geom_col() +
   labs(
     x = element_blank(),
     y = "Number of Blog Posts",
     title = "Role of Authors that Use R to Analyze COVID-19 Data",
-    subtitle = paste("As of", today),
-    caption = "Source: Rees Morrison compilation of COVID-19 blog posts that use R"
+    caption = paste("\nSource: Rees Morrison compilation of COVID-19 blog posts that use R. Updated", today)
   ) +
   scale_y_continuous(expand = c(0, 0)) +
   theme(legend.position = "bottom",
@@ -155,16 +172,13 @@ ggplot(aes(x = CoreRole, y = n)) +
 
 A greater number of data sources related to COVID-19 will yield richer insights. Combining different datasets can shed new light on an issue, yield improvements, and allow authors to contruct better indices and measures. For that reason, one of the authors (Rees) extracted *dataset information* from our collection of blog posts.
 
-For the most part, bloggers identified the data source they drew on for their analysis. On occasion, we had to manually record the data source, or apply some effort to standardize the 140 data sources.
+For the most part, bloggers identified the data source they drew on for their analysis. On occasion, we had to apply some effort to standardize the 140 data sources.
 
 By far the most prevalent data source is Johns Hopkins University, who early, comprehensively and consistently has set the standard for COVID-19 data collection and dissemination to the public.
 
 ```{r datasourcesVer2}
-postsConnor <-
- read.csv("./data/postsOct20423allText.csv")
-
-textDF_data <- postsConnor %>%
- mutate(data = str_extract_all(postsConnor$text, pattern = "(?<=\\&Data).*?(?=&&)")) %>%
+text_df <- read.csv("./data/oct29PostsText.csv") %>% 
+ mutate(data = str_extract_all(text, pattern = "(?<=\\&Data).*?(?=&&)")) %>%
  unnest(cols = c(data))
 
 source("./scripts/clean_text.R")
@@ -180,15 +194,15 @@ source("./scripts/clean_text.R")
 ```
 
 ```{r dataTable}
-textDF_data_gat <-
-  textDF_data %>% filter(data %nin% c("Simulation", "No data")) %>%
+text_grouped <-
+  text_df %>% filter(data %nin% c("Simulation", "No data")) %>%
   group_by(data) %>% summarise(Count = n()) %>%
   arrange(desc(Count)) %>% ungroup() %>% 
   filter(!is.na(data),
          data != "",
          data != " ")
 
-textDF_data_gat %>%
+text_grouped %>%
   filter(Count > 3) %>%
   ggplot(aes(x = reorder(data, Count), y = Count)) +
   geom_col() +
@@ -196,8 +210,7 @@ textDF_data_gat %>%
     x = element_blank(),
     y = "Number of Posts Using Data",
     title = "Most Common Data Sources for COVID-19 Blog Posts",
-    subtitle = paste("Excluding sources used less than four times, as of", today),
-    caption = "Source: Rees Morrison compilation of COVID-19 blog posts that use R"
+    caption = paste("\nSource: Rees Morrison compilation of COVID-19 blog posts that use R. Updated", today)
   ) +
   scale_y_continuous(expand = c(0, 0)) +
   scale_x_discrete(expand = c(0, 0)) +
@@ -208,7 +221,7 @@ Below, you can look at *all* data sources and how often they were referenced in 
 
 ```{r}
 reactable(
-  textDF_data_gat,
+  text_grouped,
   compact = TRUE,
   striped = TRUE,
   defaultColDef = colDef(headerClass = "header",
@@ -222,7 +235,7 @@ reactable(
 
 It may also be the case that readers want a summary of blogs, or to only look at posts that pertain to a certain topic. Assigning each blog post a primary topic introduces a fair amount of subjectivity, to be sure, but the hope is that these broad topics will help researchers find content and colleagues who share similar interests. 
 
-Here, a balloon plot shows nine categories that the `r num_posts` posts address as their primary topic. Epidemiology leads the way, as might be expected, but quite a few posts seem to use COVID data to showcase something else, or apply R in novel ways.
+Here, a balloon plot shows various categories that the `r num_posts` posts address as their primary topic. Topics fall on the y axis and the blogger's category of employment is on the x axis. The size (and opacity) of each bubble represents the count of posts that match that combination. Epidemiology leads the way, as might be expected, but quite a few posts seem to use COVID data to showcase something else, or apply R in novel ways.
 
 ```{r topicsVer2}
 topics <-
@@ -287,10 +300,15 @@ ggplot(topics,
       str_wrap(vars_x_axis, width = 10)
   ) +
   scale_y_discrete(breaks = 1:length(names_y_axis), labels = names_y_axis) +
-  labs(title = 'Number of Posts by Topic and Employment Category',
-       subtitle = paste('As of', today),
-       x = element_blank(),
-       y = element_blank()) +
+  labs(
+    title = 'Number of Posts by Topic and Employment Category',
+    x = element_blank(),
+    y = element_blank(),
+    caption = paste(
+      "\nSource: Rees Morrison compilation of COVID-19 blog posts that use R. Updated",
+      today
+    )
+  ) +
   theme(
     axis.line = element_blank(),
     panel.border = element_blank(),
