@@ -7,6 +7,7 @@ categories: ["R"]
 image:
   preview_only: true
 tags: ["r", "visualization", "replication", "Tidy Tuesday"]
+disable_codefolding: true
 summary: "Replicating a Bloomberg Graphics scatterplot using R Shiny."
 ---
 

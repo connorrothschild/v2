@@ -6,6 +6,7 @@ authors:
 categories: ["R"]
 image:
   preview_only: true
+disable_codefolding: true
 tags: ["r", "visualization", "animation", "gganimate", "Tidy Tuesday"]
 summary: "Analyzing sex differences in top lifts at international powerlifting competitions."
 ---
@@ -21,8 +22,9 @@ library(ggtext)
 library(gifski)
 library(gganimate)
 library(cr)
-
-set_cr_theme(font = "lato")
+# 
+# set_cr_theme(font = "lato")
+theme_set(theme_minimal())
 ```
 
 ## Load and Clean Data

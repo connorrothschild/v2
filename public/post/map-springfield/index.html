@@ -668,19 +668,6 @@
 
     
 
-<div id="code-folding-buttons" class="dropdown btn-group pull-right">
-  <a class="btn btn-light btn-sm dropdown-toggle" href="#" role="button" id="allCodeToggleButton"
-     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Code
-  </a>
-  <div class="dropdown-menu" aria-labelledby="allCodeToggleButton">
-    <a id="rmd-show-all-code" class="dropdown-item small" href="#">Show all</a>
-    <a id="rmd-hide-all-code" class="dropdown-item small" href="#">Hide all</a>
-  </div>
-</div>
-
-
-
   
 </div>
 
@@ -688,6 +675,8 @@
           <div class="article-container">
             <div class="article-style">
               
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
 <p>In this post, I expand upon the wonderful <a href="https://christianburkhart.de/">Christian Burkhart’s</a> wonderful <a href="https://ggplot2tutor.com/streetmaps/streetmaps/">ggplot2tor tutorial</a> on streetmap creation using ggplot2. My process differs slightly from his in that I include text using <code>geom_label</code>, rather than PowerPoint, to create the text annotations. (This was much more difficult!)</p>
@@ -1316,13 +1305,6 @@ map_gold</code></pre>
       </p>
 
       
- 
-  <script>
-  $(document).ready(function () {
-    window.initializeCodeFolding("show" === "hide");
-  });
-  </script>
-  <script src="/js/codefolding.js"></script>
 
 
     

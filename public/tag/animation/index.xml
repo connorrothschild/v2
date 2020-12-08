@@ -397,6 +397,8 @@ column(1)
       <pubDate>Tue, 08 Oct 2019 00:00:00 +0000</pubDate>
       <guid>/post/tidy-tuesday-powerlifting/</guid>
       <description>
+&lt;link href=&#34;/rmarkdown-libs/anchor-sections/anchor-sections.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;/rmarkdown-libs/anchor-sections/anchor-sections.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
@@ -405,8 +407,9 @@ library(ggtext)
 library(gifski)
 library(gganimate)
 library(cr)
-
-set_cr_theme(font = &amp;quot;lato&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+# 
+# set_cr_theme(font = &amp;quot;lato&amp;quot;)
+theme_set(theme_minimal())&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;load-and-clean-data&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Load and Clean Data&lt;/h2&gt;
 &lt;p&gt;First, read in the data from &lt;a href=&#34;https://openpowerlifting.org/data&#34; class=&#34;uri&#34;&gt;https://openpowerlifting.org/data&lt;/a&gt;:&lt;/p&gt;

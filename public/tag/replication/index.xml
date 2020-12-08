@@ -719,6 +719,8 @@ reactable(data_for_table, pagination = FALSE)&lt;/code&gt;&lt;/pre&gt;
       <pubDate>Tue, 10 Dec 2019 00:00:00 +0000</pubDate>
       <guid>/post/tidy-tuesday-replication/</guid>
       <description>
+&lt;link href=&#34;/rmarkdown-libs/anchor-sections/anchor-sections.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;/rmarkdown-libs/anchor-sections/anchor-sections.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;This weeks’s installment of &lt;a href=&#34;https://t.co/sElb4fcv3u?amp=1&#34;&gt;Tidy Tuesday&lt;/a&gt; is all about replicating professional plots in R.

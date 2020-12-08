@@ -6,10 +6,13 @@ authors:
 categories: ["R"]
 image:
   preview_only: true
+disable_codefolding: true
 tags: ["r", "visualization", "animation", "gganimate", "Tidy Tuesday"]
 summary: "Analyzing sex differences in top lifts at international powerlifting competitions."
 ---
 
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
 <pre class="r"><code>library(ggplot2)
@@ -18,8 +21,9 @@ library(ggtext)
 library(gifski)
 library(gganimate)
 library(cr)
-
-set_cr_theme(font = &quot;lato&quot;)</code></pre>
+# 
+# set_cr_theme(font = &quot;lato&quot;)
+theme_set(theme_minimal())</code></pre>
 <div id="load-and-clean-data" class="section level2">
 <h2>Load and Clean Data</h2>
 <p>First, read in the data from <a href="https://openpowerlifting.org/data" class="uri">https://openpowerlifting.org/data</a>:</p>

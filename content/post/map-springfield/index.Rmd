@@ -7,6 +7,7 @@ authors:
 categories: ["R"]
 image:
   preview_only: true
+disable_codefolding: true
 tags: ["r", "visualization"]
 summary: "Creating a beautiful streetmap of my hometown, exclusively in R!"
 ---

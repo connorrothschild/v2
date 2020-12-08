@@ -45,14 +45,6 @@
     </item>
     
     <item>
-      <title>COVID-19 Has Become a Partisan Issue</title>
-      <link>/project/covid-has-become-a-partisan-issue/</link>
-      <pubDate>Sun, 15 Mar 2020 00:00:00 +0000</pubDate>
-      <guid>/project/covid-has-become-a-partisan-issue/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Are You Smarter Than a Criminal Justice Algorithm?</title>
       <link>/project/are-you-smarter-than-compas/</link>
       <pubDate>Thu, 05 Mar 2020 00:00:00 +0000</pubDate>
@@ -77,18 +69,10 @@
     </item>
     
     <item>
-      <title>Automation and Its Impact on Jobs</title>
-      <link>/project/automation-d3/</link>
+      <title>How Many People Have Had COVID-19?</title>
+      <link>/project/how-many-people/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/project/automation-d3/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Build Your Own Streetmap in R</title>
-      <link>/project/map-springfield/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/project/map-springfield/</guid>
+      <guid>/project/how-many-people/</guid>
       <description></description>
     </item>
     
@@ -193,22 +177,6 @@
       <link>/project/race-for-media-attention/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>/project/race-for-media-attention/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Tidy Tuesday: Powerlifting</title>
-      <link>/project/tt-powerlifting/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/project/tt-powerlifting/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>TPL Themes</title>
-      <link>/project/tpl-theme/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/project/tpl-theme/</guid>
       <description></description>
     </item>
     
