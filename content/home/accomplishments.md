@@ -19,6 +19,51 @@ date_format = "Jan 2006"
 #   Begin/end multi-line descriptions with 3 quotes `"""`.
 
 [[item]]
+  organization = "The Pudding"
+  organization_url = "https://pudding.cool/"
+  title = "The Pudding Cup 2020 Winner"
+  url = "https://pudding.cool/process/pudding-cup-2020/"
+  certificate_url = ""
+  date_start = "2021-01-08"
+  date_end = ""
+  description = """
+Awarded winner (top 3) out of 130+ entries to the 2020 Pudding Cup, which is a contest for visual storytelling pieces. My piece explored the prevalence of hums in Kid Cudi's discography.
+
+See media [here](https://pudding.cool/process/pudding-cup-2020/).
+Find the project [here](https://connorrothschild.github.io/cudi-hums/).
+  """
+  
+[[item]]
+  organization = "RStudio, Inc."
+  organization_url = "https://rstudio.com/"
+  title = "Honorable Mention, RStudio Table Contest"
+  url = "https://blog.rstudio.com/2020/12/23/winners-of-the-2020-rstudio-table-contest/"
+  certificate_url = ""
+  date_start = "2020-12-23"
+  date_end = ""
+  description = """
+Received an honorable mention in the 2020 RStudio Table Contest out of 80+ entries. My entry was a tutorial regarding the replication of a table by the Economist, using an R package called reactable.
+
+See media [here](https://blog.rstudio.com/2020/12/23/winners-of-the-2020-rstudio-table-contest/).
+Find the project [here](https://www.connorrothschild.com/post/economist-table-replication-using-reactable/).
+  """
+  
+[[item]]
+  organization = "Data to Knowledge Lab"
+  organization_url = "https://d2k.rice.edu/"
+  title = "Second Place, D2K Showcase"
+  url = "https://blog.rstudio.com/2020/12/23/winners-of-the-2020-rstudio-table-contest/"
+  certificate_url = ""
+  date_start = "2020-12-09"
+  date_end = ""
+  description = """
+Awarded second place out of 10+ teams in the 2020 Data to Knowledge Lab's showcase. My team provided a data science approach to predicting student engagement and success, allowing teachers to preemptively intervene in students academic careers and prevent failure.
+
+See media [here](https://d2k.rice.edu/news/closing-gap-data-science-approach-reducing-academic-achievement-gaps).
+Find the project overview [here](https://www.youtube.com/watch?v=6T5C4omYexs).
+  """
+
+[[item]]
   organization = "28th Annual Malofiej Awards"
   organization_url = "https://www.malofiejgraphics.com/"
   title = "Bronze, Student Category"
