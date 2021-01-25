@@ -10,6 +10,9 @@ tags: ["r", "visualization", "animation", "gganimate"]
 summary: "How has the media's coverage of 2020 presidential candidates changed over time? Who is winning the race for media attention?"
 ---
 
+<script src="/v2/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/v2/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/v2/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
 <p>In this post, I explore which presidential candidates are discussed most frequently in the American news media.</p>
@@ -34,7 +37,7 @@ library(devtools)
 library(knitr)
 library(cr)
 
-set_cr_theme(font = &quot;lato&quot;)
+set_cr_theme(font = &quot;IBM Plex Sans&quot;)
 
 data &lt;- read.csv(&quot;data/mentions.csv&quot;, header = T)
   #read.csv((&quot;https://raw.githubusercontent.com/fivethirtyeight/data/master/media-mentions-2020/cable_weekly.csv&quot;), header=T)
@@ -113,7 +116,7 @@ data &lt;- data %&gt;%
   labs(x=element_blank(),
        y=&quot;Percent of Media Mentions&quot;,
        title=&quot;Average Proportion of Media Coverage on a Weekly Basis&quot;)</code></pre>
-<p><img src="/post/media-mentions/index_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="/v2/post/media-mentions/index_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>Somewhat unsurprisingly. Joe Biden and Bernie Sanders lead the pack in media attention. Joe Biden tends to receive significantly more media attention than the average candidate (a weekly average of 0.9% of overall media content compared to 0.14% for the average candidate).</p>
 <p>How has that coverage changed over time?</p>
 <pre class="r"><code>data %&gt;% 
@@ -146,7 +149,7 @@ data &lt;- data %&gt;%
   scale_color_discrete(name=&quot;Candidate&quot;, 
                        limits = c(&quot;Joe Biden&quot;, &quot;Bernie Sanders&quot;, &quot;Elizabeth Warren&quot;, 
                                   &quot;Kamala Harris&quot;, &quot;Beto O&#39;Rourke&quot;, &quot;Cory Booker&quot;))</code></pre>
-<p><img src="/post/media-mentions/index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="/v2/post/media-mentions/index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>Evidently, much of Joe Biden’s popularity in the media can be explained by a few large spikes in weekly media mentions. We can explore the distribution of weekly media mentions using a visualization known as a <a href="https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html">density ridge plot</a>.</p>
 <pre class="r"><code>data %&gt;% 
   group_by(name) %&gt;% 
@@ -162,7 +165,7 @@ ggplot(aes(x = pct_of_all_candidate_clips*100, y = reorder(name,pct_of_all_candi
        y=element_blank(),
        title=&quot;Media Mentions of Each Candidate&quot;,
        subtitle=&quot;With density ridges depicting average mentions on a weekly basis&quot;) </code></pre>
-<p><img src="/post/media-mentions/index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="/v2/post/media-mentions/index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>This plot illustrates that most candidates enjoy the same levels of media coverage from one week to another. Joe Biden, however, often has weeks in which he receives much more attention than usual, as evidenced by his small peaks throughout the plot. Bernie Sanders, Kamala Harris, and Beto O’Rourke also experienced a few jumps in attention, likely when they announced their candidacy for the presidency.</p>
 <p>This raises an interesting question: when did candidates experience the most drastic changes in media attention? For example, were there any weeks in which a candidate who normally enjoys nearly no media attention began to get a lot of it?</p>
 <p>We can answer this question by calculating the difference between one week’s coverage and the prior week’s coverage (using the <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.0/topics/lag">lag</a> function).</p>
@@ -178,7 +181,7 @@ ggplot(aes(x = pct_of_all_candidate_clips*100, y = reorder(name,pct_of_all_candi
        y=&quot;Percent Change&quot;,
        title=&quot;Largest Differences in Weekly Media Mentions&quot;,
        subtitle=&quot;Subtracting a given week&#39;s % mentions from the week prior&quot;)</code></pre>
-<p><img src="/post/media-mentions/index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="/v2/post/media-mentions/index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>Unsurprisingly, the bars tend to mirror one another. If a candidate enjoys a steep increase in media attention one week, they are likely to see a correlated drop in the following week (if that week were really a spike in attention). The plot suggests that Joe Biden’s announcement (on April 25th) led to the most dramatic change in media attention in the 2020 cycle so far. Bernie Sanders also witnessed a spike in attention in the week following his announcement on February 19th. The same is true for the other candidates included in this plot.</p>
 <p>Finally, I am interested in who is “winning” the race for media attention. Although a previous plot has shown media attention over time, this data can be somewhat hard to digest and interpret as so many candidates crowd the lower bound of the data (as they receive little media attention compared to Joe Biden).</p>
 <p>By constructing a <a href="https://learnr.wordpress.com/2009/05/06/ggplot2-bump-chart/">bump chart</a>, I am able to depict the rank of each candidate in terms of their media attention in a given week. This type of visualization assigns each candidate a categorical rank and makes their progress throughout the campaign easier to visualize.</p>
@@ -234,7 +237,7 @@ recentdata %&gt;%
        y = &quot;Rank&quot;,
        title = &quot;The Race for Media Attention&quot;,
        subtitle = &quot;Candidates ranked by weekly media mentions&quot;)</code></pre>
-<p><img src="/post/media-mentions/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="/v2/post/media-mentions/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>Let’s focus on the meteoric rise of Pete Buttigieg:</p>
 <pre class="r"><code>petedata &lt;- recentdata %&gt;% 
   mutate(pete = ifelse(name == &quot;Pete Buttigieg&quot;, 1, 0))
@@ -273,7 +276,7 @@ petedata %&gt;%
        y = &quot;Rank&quot;,
        title = &quot;Out of Nowhere&quot;,
        subtitle = &quot;Pete Buttigieg&#39;s Rapid Rise in Media Mentions&quot;)</code></pre>
-<p><img src="/post/media-mentions/index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="/v2/post/media-mentions/index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>Some takeaways:</p>
 <ol style="list-style-type: decimal">
 <li>Bernie Sanders and Joe Biden consistently receive the most attention from the media.</li>

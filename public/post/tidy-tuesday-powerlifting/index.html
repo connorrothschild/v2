@@ -673,8 +673,9 @@
           <div class="article-container">
             <div class="article-style">
               
-<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+<script src="/v2/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/v2/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/v2/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
 <pre class="r"><code>library(ggplot2)
@@ -684,8 +685,8 @@ library(gifski)
 library(gganimate)
 library(cr)
 # 
-# set_cr_theme(font = &quot;lato&quot;)
-theme_set(theme_minimal())</code></pre>
+set_cr_theme(font = &quot;IBM Plex Sans&quot;)
+# theme_set(theme_minimal())</code></pre>
 <div id="load-and-clean-data" class="section level2">
 <h2>Load and Clean Data</h2>
 <p>First, read in the data from <a href="https://openpowerlifting.org/data" class="uri">https://openpowerlifting.org/data</a>:</p>
@@ -762,7 +763,7 @@ max_lifts_final &lt;- max_lifts %&gt;%
   geom_text(aes(label=diff, y=lift, x=450), fontface=&quot;bold&quot;, size=4) +
   geom_text(aes(x=450, y=3, label=&quot;Difference&quot;),
             color=&quot;grey20&quot;, size=4, vjust=-3, fontface=&quot;bold&quot;)</code></pre>
-<p><img src="/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>Finally, we animate, using Thomas Pedersen’s wonderful <a href="https://github.com/thomasp85/gganimate">gganimate package</a>:</p>
 <pre class="r"><code>animation &lt;- max_lifts_final %&gt;% 
   ggplot() + 
@@ -792,7 +793,7 @@ a_gif &lt;- animate(animation,
                  renderer = gifski_renderer(&quot;outputs/animation.gif&quot;))
 
 a_gif</code></pre>
-<p><img src="/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-9-1.gif" /><!-- --></p>
+<p><img src="/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-9-1.gif" /><!-- --></p>
 <p>I’d like to include another GIF: a line chart of differences over time</p>
 <pre class="r"><code>animation2 &lt;- max_lifts_final %&gt;% 
   ungroup %&gt;% 
@@ -820,7 +821,7 @@ b_gif &lt;- animate(animation2,
         renderer = gifski_renderer(&quot;outputs/animation2.gif&quot;))
 
 b_gif</code></pre>
-<p><img src="/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-10-1.gif" /><!-- --></p>
+<p><img src="/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-10-1.gif" /><!-- --></p>
 <p>Next, combine them using <code>magick</code> (thanks to <a href="https://github.com/thomasp85/gganimate/wiki/Animation-Composition">this post</a>):</p>
 <pre class="r"><code>library(magick)
 a_mgif &lt;- image_read(a_gif)
@@ -833,7 +834,7 @@ for(i in 2:250){
 }
 
 new_gif</code></pre>
-<p><img src="/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-11-1.gif" /><!-- --></p>
+<p><img src="/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-11-1.gif" /><!-- --></p>
 </div>
 
             </div>

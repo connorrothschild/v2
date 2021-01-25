@@ -11,6 +11,9 @@ summary: "A brief exploration of Texas vaccination rates among kindergartners, a
 autosize: true
 ---
 
+<script src="/v2/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/v2/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/v2/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
 <p>A brief exploration of Texas vaccination rates among kindergartners. Also an attempt to use <code>rayshader</code> for the first time.</p>
@@ -36,7 +39,20 @@ set_tpl_theme(font = &quot;lato&quot;)</code></pre>
 <pre class="r"><code>tx_vac &lt;- read_excel(&quot;data/2018-2019 School Vaccination Coverage Levels - Kindergarten (XLS) .xlsx&quot;, skip = 2)
 
 kable(head(tx_vac))</code></pre>
-<table>
+<table style="width:100%;">
+<colgroup>
+<col width="8%" />
+<col width="8%" />
+<col width="16%" />
+<col width="23%" />
+<col width="3%" />
+<col width="8%" />
+<col width="6%" />
+<col width="6%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="right">Facility Number</th>
@@ -207,7 +223,7 @@ merged &lt;- left_join(tx_county, grouped, by = &quot;subregion&quot;)</code></p
         subtitle = &quot;Among Kindergartners&quot;) + 
   tpltheme::scale_fill_continuous()</code></pre>
 <p>Here’s what the plot looks like before animation:</p>
-<p><img src="/post/tx-vaccination-rates-rayshader/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="/v2/post/tx-vaccination-rates-rayshader/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div id="rayshader" class="section level3">
 <h3>Rayshader</h3>

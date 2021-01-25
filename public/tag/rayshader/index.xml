@@ -18,6 +18,9 @@
       <pubDate>Wed, 24 Jul 2019 00:00:00 +0000</pubDate>
       <guid>https://connorrothschild.github.io/v2/post/tx-vaccination-rates-rayshader/</guid>
       <description>
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/anchor-sections/anchor-sections.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/anchor-sections/anchor-sections.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;A brief exploration of Texas vaccination rates among kindergartners. Also an attempt to use &lt;code&gt;rayshader&lt;/code&gt; for the first time.&lt;/p&gt;
@@ -43,7 +46,20 @@ set_tpl_theme(font = &amp;quot;lato&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tx_vac &amp;lt;- read_excel(&amp;quot;data/2018-2019 School Vaccination Coverage Levels - Kindergarten (XLS) .xlsx&amp;quot;, skip = 2)
 
 kable(head(tx_vac))&lt;/code&gt;&lt;/pre&gt;
-&lt;table&gt;
+&lt;table style=&#34;width:100%;&#34;&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;8%&#34; /&gt;
+&lt;col width=&#34;8%&#34; /&gt;
+&lt;col width=&#34;16%&#34; /&gt;
+&lt;col width=&#34;23%&#34; /&gt;
+&lt;col width=&#34;3%&#34; /&gt;
+&lt;col width=&#34;8%&#34; /&gt;
+&lt;col width=&#34;6%&#34; /&gt;
+&lt;col width=&#34;6%&#34; /&gt;
+&lt;col width=&#34;5%&#34; /&gt;
+&lt;col width=&#34;5%&#34; /&gt;
+&lt;col width=&#34;5%&#34; /&gt;
+&lt;/colgroup&gt;
 &lt;thead&gt;
 &lt;tr class=&#34;header&#34;&gt;
 &lt;th align=&#34;right&#34;&gt;Facility Number&lt;/th&gt;
@@ -214,7 +230,7 @@ merged &amp;lt;- left_join(tx_county, grouped, by = &amp;quot;subregion&amp;quot
         subtitle = &amp;quot;Among Kindergartners&amp;quot;) + 
   tpltheme::scale_fill_continuous()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Here’s what the plot looks like before animation:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/post/tx-vaccination-rates-rayshader/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/v2/post/tx-vaccination-rates-rayshader/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;rayshader&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Rayshader&lt;/h3&gt;

@@ -686,6 +686,9 @@
           <div class="article-container">
             <div class="article-style">
               
+<script src="/v2/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/v2/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/v2/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
 <p>The goal of this project is to explore trends in STEM enrollment for different populations. Specifically, it asks: <strong>Are traditionally underrepresented groups more likely to migrate into or out of STEM majors? What discrepancies are present between different demographic groups?</strong></p>
@@ -696,14 +699,39 @@ library(knitr)
 library(cr)
 conflicted::conflict_prefer(&quot;filter&quot;, &quot;dplyr&quot;)
 
-set_cr_theme(font = &quot;lato&quot;)</code></pre>
+set_cr_theme(font = &quot;IBM Plex Sans&quot;)</code></pre>
 <div id="the-data" class="section level3">
 <h3>The Data</h3>
 <p>The dataset for this project comes from <a href="https://data.world/womens-history-month/womens-history-month-week-2/workspace/file?agentid=nsf&amp;datasetid=undergraduate-enrollment-in-engineering-programs&amp;filename=tab2-9.xlsx">data.world</a> and contains the enrollment numbers for undergraduates nationwide.</p>
 <pre class="r"><code>undergradenrollment &lt;- read_excel(&quot;data/undergradenrollment.xlsx&quot;)</code></pre>
 <p>I modified that data in Excel to make it more suitable for this project. The head of that data:</p>
 <pre class="r"><code>head(undergradenrollment) %&gt;% kable()</code></pre>
-<table>
+<table style="width:100%;">
+<colgroup>
+<col width="4%" />
+<col width="3%" />
+<col width="2%" />
+<col width="2%" />
+<col width="2%" />
+<col width="1%" />
+<col width="1%" />
+<col width="2%" />
+<col width="4%" />
+<col width="4%" />
+<col width="3%" />
+<col width="4%" />
+<col width="5%" />
+<col width="4%" />
+<col width="4%" />
+<col width="4%" />
+<col width="4%" />
+<col width="4%" />
+<col width="5%" />
+<col width="7%" />
+<col width="7%" />
+<col width="6%" />
+<col width="7%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">year</th>
@@ -959,64 +987,72 @@ set_cr_theme(font = &quot;lato&quot;)</code></pre>
 </table>
 <pre class="r"><code>summary(data) %&gt;% kable()</code></pre>
 <table>
+<colgroup>
+<col width="3%" />
+<col width="20%" />
+<col width="20%" />
+<col width="18%" />
+<col width="20%" />
+<col width="17%" />
+</colgroup>
 <thead>
 <tr class="header">
-<th></th>
-<th align="center">year</th>
-<th align="center">type</th>
-<th align="center">growth</th>
+<th align="left"></th>
+<th align="left">year</th>
+<th align="left">type</th>
+<th align="left">growth</th>
 <th align="left">proportiontype</th>
-<th align="center">proportion</th>
+<th align="left">proportion</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td></td>
-<td align="center">Length:72</td>
-<td align="center">Length:72</td>
-<td align="center">Min. :-1.8274</td>
+<td align="left"></td>
 <td align="left">Length:72</td>
-<td align="center">Min. : 5.014</td>
+<td align="left">Length:72</td>
+<td align="left">Min. :-1.8274</td>
+<td align="left">Length:72</td>
+<td align="left">Min. : 5.014</td>
 </tr>
 <tr class="even">
-<td></td>
-<td align="center">Class :character</td>
-<td align="center">Class :character</td>
-<td align="center">1st Qu.:-0.7427</td>
+<td align="left"></td>
 <td align="left">Class :character</td>
-<td align="center">1st Qu.: 5.588</td>
+<td align="left">Class :character</td>
+<td align="left">1st Qu.:-0.7427</td>
+<td align="left">Class :character</td>
+<td align="left">1st Qu.: 5.588</td>
 </tr>
 <tr class="odd">
-<td></td>
-<td align="center">Mode :character</td>
-<td align="center">Mode :character</td>
-<td align="center">Median : 1.7827</td>
+<td align="left"></td>
 <td align="left">Mode :character</td>
-<td align="center">Median :10.167</td>
+<td align="left">Mode :character</td>
+<td align="left">Median : 1.7827</td>
+<td align="left">Mode :character</td>
+<td align="left">Median :10.167</td>
 </tr>
 <tr class="even">
-<td></td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">Mean : 1.0458</td>
+<td align="left"></td>
 <td align="left">NA</td>
-<td align="center">Mean :11.150</td>
+<td align="left">NA</td>
+<td align="left">Mean : 1.0458</td>
+<td align="left">NA</td>
+<td align="left">Mean :11.150</td>
 </tr>
 <tr class="odd">
-<td></td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">3rd Qu.: 2.3560</td>
+<td align="left"></td>
 <td align="left">NA</td>
-<td align="center">3rd Qu.:17.307</td>
+<td align="left">NA</td>
+<td align="left">3rd Qu.: 2.3560</td>
+<td align="left">NA</td>
+<td align="left">3rd Qu.:17.307</td>
 </tr>
 <tr class="even">
-<td></td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">Max. : 3.3371</td>
+<td align="left"></td>
 <td align="left">NA</td>
-<td align="center">Max. :19.205</td>
+<td align="left">NA</td>
+<td align="left">Max. : 3.3371</td>
+<td align="left">NA</td>
+<td align="left">Max. :19.205</td>
 </tr>
 </tbody>
 </table>
@@ -1035,7 +1071,7 @@ set_cr_theme(font = &quot;lato&quot;)</code></pre>
                       breaks=c(&quot;propblack&quot;,&quot;propfemale&quot;,&quot;prophispanic&quot;),
                       label=c(&quot;Black&quot;,&quot;Female&quot;,&quot;Hispanic&quot;)) +
   theme(axis.text.x = element_text(angle = 90))</code></pre>
-<p><img src="/post/stem-igration/index_files/figure-html/plot2-1.png" width="672" /></p>
+<p><img src="/v2/post/stem-igration/index_files/figure-html/plot2-1.png" width="672" /></p>
 <p>Of the traditionally underrepresented groups, women fare the best in STEM. But even at their peak, they only held 19% of seats in STEM classrooms.</p>
 <p>Next, I am curious how these shifts vary from one graduation class to another. In other words, <strong>which classes experience the greatest shifts in representation throughout their time in university?</strong></p>
 <p>I explore this by mutating the data to include a new variable: <em>growth</em>.
@@ -1052,7 +1088,7 @@ ggplot(aes(fill=type, y=growth, x=year)) +
   scale_fill_discrete(name=&quot;Demographic&quot;,
                       label=c(&quot;Black&quot;,&quot;Female&quot;,&quot;Hispanic&quot;)) +
   theme(axis.text.x = element_text(angle = 90))</code></pre>
-<p><img src="/post/stem-igration/index_files/figure-html/plot3-1.png" width="672" /></p>
+<p><img src="/v2/post/stem-igration/index_files/figure-html/plot3-1.png" width="672" /></p>
 <p>It seems as if women experience the greatest growth in STEM enrollment during their time as undergraduates, while Black students tend to migrate <em>out</em> of STEM majors.</p>
 <p>We can break that down group-by-group.</p>
 <pre class="r"><code>data %&gt;% distinct(year,type,.keep_all=TRUE) %&gt;% 
@@ -1066,7 +1102,7 @@ ggplot(aes(fill=type, y=growth, x=year)) +
   labs(fill=&quot;Attrition&quot;) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90))</code></pre>
-<p><img src="/post/stem-igration/index_files/figure-html/plot4-1.png" width="672" /></p>
+<p><img src="/v2/post/stem-igration/index_files/figure-html/plot4-1.png" width="672" /></p>
 <pre class="r"><code>data %&gt;% distinct(year,type,.keep_all=TRUE) %&gt;% 
   filter(type==&quot;femalegrowth&quot;) %&gt;% 
   ggplot(mapping=aes(x=year,y=growth)) +
@@ -1077,7 +1113,7 @@ ggplot(aes(fill=type, y=growth, x=year)) +
   ggtitle(&quot;Percent Change in Female STEM Undergrads&quot;, subtitle = &quot;Between time of matriculation and time of graduation&quot;) +
   labs(fill=&quot;Growth&quot;) +
   theme(axis.text.x = element_text(angle = 90))</code></pre>
-<p><img src="/post/stem-igration/index_files/figure-html/plot5-1.png" width="672" /></p>
+<p><img src="/v2/post/stem-igration/index_files/figure-html/plot5-1.png" width="672" /></p>
 <pre class="r"><code>data %&gt;% distinct(year,type,.keep_all=TRUE) %&gt;% 
   filter(type==&quot;hispanicgrowth&quot;) %&gt;% 
   ggplot(mapping=aes(x=year,y=growth)) +
@@ -1088,7 +1124,7 @@ ggplot(aes(fill=type, y=growth, x=year)) +
   ggtitle(&quot;Percent Change in Hispanic STEM Undergrads&quot;, subtitle = &quot;Between time of matriculation and time of graduation&quot;) +
   labs(fill=&quot;Growth&quot;) +
   theme(axis.text.x = element_text(angle = 90))</code></pre>
-<p><img src="/post/stem-igration/index_files/figure-html/plot-1.png" width="672" /></p>
+<p><img src="/v2/post/stem-igration/index_files/figure-html/plot-1.png" width="672" /></p>
 <p>Here are the previous graphs, faceted:</p>
 <pre class="r"><code>labels &lt;- c(blackgrowth = &quot;Black&quot;, femalegrowth = &quot;Female&quot;, hispanicgrowth=&quot;Hispanic&quot;) 
 data %&gt;% distinct(year,type,.keep_all=TRUE) %&gt;% 
@@ -1101,7 +1137,7 @@ data %&gt;% distinct(year,type,.keep_all=TRUE) %&gt;%
   facet_grid(. ~ type, labeller=labeller(type = labels)) +
   scale_x_discrete(labels = c(&quot;Class of 2006&quot; = &quot;2006&quot;, &quot;Class of 2007&quot; = &quot;2007&quot;, &quot;Class of 2008&quot; = &quot;2008&quot;, &quot;Class of 2009&quot; = &quot;2009&quot;, &quot;Class of 2010&quot; = &quot;2010&quot;, &quot;Class of 2011&quot; = &quot;2011&quot;, &quot;Class of 2012&quot; = &quot;2012&quot;, &quot;Class of 2013&quot; = &quot;2013&quot;)) +
   theme(axis.text.x = element_text(angle = 90))</code></pre>
-<p><img src="/post/stem-igration/index_files/figure-html/plot6-1.png" width="672" /></p>
+<p><img src="/v2/post/stem-igration/index_files/figure-html/plot6-1.png" width="672" /></p>
 </div>
 <div id="summaries-and-takeaways" class="section level3">
 <h3>Summaries and Takeaways</h3>
