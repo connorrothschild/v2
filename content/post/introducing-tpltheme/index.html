@@ -10,6 +10,9 @@ tags: ["r", "package", "Texas Policy Lab"]
 summary: "Introducing tpltheme, a toolkit to create publication-ready plots in the style of the Texas Policy Lab."
 ---
 
+<script src="/v2/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/v2/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/v2/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
 <p>I’ve spent the majority of the summer as an <a href="https://www.texaspolicylab.org/profile/connor-rothschild/">intern</a> with the Texas Policy Lab, working on primarily data science-related matters such as data cleaning and visualization. Most recently, I sought to create a custom theme in <code>ggplot2</code> for TPL.</p>
@@ -34,14 +37,14 @@ library(tidyverse)
 #devtools::install_github(&quot;connorrothschild/tpltheme&quot;)
 library(tpltheme)</code></pre>
 <p>Always load <code>library(tpltheme)</code> <strong>after</strong> <code>library(ggplot2)</code> and/or <code>library(tidyverse)</code>.</p>
-<p>The package creates a standardized formats for plots to be used in reports created by the Texas Policy Lab. It primarily relies on <code>set_tpl_theme()</code>, which allows the user to specify whether the plot theme should align with a standard plot (<code>style = &quot;print&quot;</code>), or one specially created for plotting geographical data (<code>style = &quot;Texas&quot;</code>). Calling <code>set_tpl_theme()</code> after <code>library(tpltheme)</code> does most of the work for this package!</p>
+<p>The package creates a standardized formats for plots to be used in reports created by the Texas Policy Lab. It primarily relies on <code>set_tpl_theme()</code>, which allows the user to specify whether the plot theme should align with a standard plot (<code>style = "print"</code>), or one specially created for plotting geographical data (<code>style = "Texas"</code>). Calling <code>set_tpl_theme()</code> after <code>library(tpltheme)</code> does most of the work for this package!</p>
 <pre class="r"><code>set_tpl_theme()
 
 ggplot(iris, aes(x=Species, y=Sepal.Width, fill=Species)) +
     geom_bar(stat=&quot;summary&quot;, fun.y=&quot;mean&quot;, show.legend = FALSE) +
     scale_y_continuous(expand = expand_scale(mult = c(0, 0.001))) +
     labs(x=&quot;Species&quot;, y=&quot;Mean Sepal Width (cm)&quot;, fill=&quot;Species&quot;, title=&quot;Iris Dataset&quot;)</code></pre>
-<p><img src="/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-4-1.png" width="768" /></p>
+<p><img src="/v2/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-4-1.png" width="768" /></p>
 <div id="fonts" class="section level3">
 <h3>Fonts</h3>
 <p>The user is able to specify whether they want to use <em>Lato</em> or <em>Adobe Caslon Pro</em> in their figures.</p>
@@ -54,8 +57,8 @@ tpl_font_install()</code></pre>
 ggplot(iris, aes(x=jitter(Sepal.Width), y=jitter(Sepal.Length), col=Species, size = Petal.Length)) +
     geom_point() +
     labs(x=&quot;Sepal Width (cm)&quot;, y=&quot;Sepal Length (cm)&quot;, col=&quot;Species&quot;, size = &quot;Petal Length&quot;, title=&quot;Iris Dataset&quot;)</code></pre>
-<p><img src="/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-6-1.png" width="768" /></p>
-<p>By specifying <code>style = &quot;Texas&quot;</code> within <code>set_tpl_theme</code>, the user may also create Texas-specific plots.</p>
+<p><img src="/v2/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-6-1.png" width="768" /></p>
+<p>By specifying <code>style = "Texas"</code> within <code>set_tpl_theme</code>, the user may also create Texas-specific plots.</p>
 <pre class="r"><code>tx_vac &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/connorrothschild/tpltheme/master/data/tx_vac_example.csv&quot;)
 set_tpl_theme(style = &quot;Texas&quot;, font = &quot;adobe&quot;)
 
@@ -67,7 +70,7 @@ ggplot(data = tx_vac, mapping = aes(x = long, y = lat, group = group, fill = avg
        subtitle = &quot;Among Kindergarteners&quot;,
        fill = &quot;Percent\nVaccinated&quot;,
        caption = &quot;Source: Texas DSHS&quot;)</code></pre>
-<p><img src="/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-7-1.png" width="768" /></p>
+<p><img src="/v2/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-7-1.png" width="768" /></p>
 <p>And it also works for categorical variables:</p>
 <pre class="r"><code>set_tpl_theme(style = &quot;Texas&quot;, font = &quot;lato&quot;)
 
@@ -82,14 +85,14 @@ tx_vac %&gt;%
        subtitle = &quot;Among Kindergarteners&quot;,
        fill = &quot;Vaccination Rating&quot;,
        caption = &quot;Source: Texas DSHS&quot;)</code></pre>
-<p><img src="/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-8-1.png" width="768" /></p>
+<p><img src="/v2/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-8-1.png" width="768" /></p>
 <p>If the number of colors exceeds the number of colors in the TPL palette (9), the function <code>tpl_color_pal()</code> will drop the TPL color palette and return the greatest number of unique colors possible within the RColorBrewer’s “Paired” palette (for more information on the use of RColorBrewer palettes, see <a href="https://bookdown.org/rdpeng/exdata/plotting-and-color-in-r.html#using-the-rcolorbrewer-palettes">this chapter</a>).</p>
 <pre class="r"><code>tx_vac %&gt;% 
   ggplot(mapping = aes(x = long, y = lat, group = group, fill = subregion)) +
   coord_fixed(1.3) +
   geom_polygon(color = &quot;black&quot;, show.legend = FALSE) +
   labs(title = &quot;Texas Counties&quot;)</code></pre>
-<p><img src="/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-9-1.png" width="768" /></p>
+<p><img src="/v2/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-9-1.png" width="768" /></p>
 <pre class="r"><code># default to print afterwards
 set_tpl_theme(style = &quot;print&quot;)</code></pre>
 </div>
@@ -105,7 +108,7 @@ set_tpl_theme(style = &quot;print&quot;)</code></pre>
     labs(x=&quot;Species&quot;, y=&quot;Mean Sepal Width (cm)&quot;, fill=&quot;Species&quot;, title=&quot;Iris Dataset&quot;)
 
 add_tpl_logo(plot, position = &quot;top right&quot;, scale = 1.5)</code></pre>
-<p><img src="/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-10-1.png" width="100%" /></p>
+<p><img src="/v2/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-10-1.png" width="100%" /></p>
 </div>
 <div id="logo-text" class="section level4">
 <h4>Logo Text</h4>
@@ -115,27 +118,27 @@ add_tpl_logo(plot, position = &quot;top right&quot;, scale = 1.5)</code></pre>
     labs(x=&quot;Sepal Width (cm)&quot;, y=&quot;Sepal Length (cm)&quot;, col=&quot;Species&quot;, size = &quot;Petal Length&quot;, title=&quot;Iris Dataset&quot;)
     
 add_tpl_logo_text(plot)</code></pre>
-<p><img src="/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-11-1.png" width="768" /></p>
+<p><img src="/v2/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-11-1.png" width="768" /></p>
 <p>The user may also need to specify <code>align</code>, which moves the plot horizontally across the bottom of the page.</p>
 <pre class="r"><code>plot &lt;- ggplot(iris, aes(x=Species, y=Sepal.Width, fill=Species)) +
     geom_boxplot(show.legend = FALSE) +
     labs(x=&quot;Species&quot;, y=&quot;Sepal Width (cm)&quot;, fill=&quot;Species&quot;, title=&quot;Iris Dataset&quot;, subtitle =&quot;When specifying align = 1&quot;)
     
 add_tpl_logo_text(plot, align = 1)    </code></pre>
-<p><img src="/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-12-1.png" width="768" /></p>
+<p><img src="/v2/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-12-1.png" width="768" /></p>
 </div>
 </div>
 <div id="additional-functions" class="section level3">
 <h3>Additional Functions</h3>
 <div id="drop-axes" class="section level4">
 <h4>Drop Axes</h4>
-<p>In the event that the user wishes to drop an axis, they may do so with <code>drop_axis()</code>. The function may drop any combination of axes depending on the user’s input (<code>drop = &quot;x&quot;</code>, <code>drop = &quot;y&quot;</code>, <code>drop = &quot;both&quot;</code>, <code>drop = &quot;neither&quot;</code>).</p>
+<p>In the event that the user wishes to drop an axis, they may do so with <code>drop_axis()</code>. The function may drop any combination of axes depending on the user’s input (<code>drop = "x"</code>, <code>drop = "y"</code>, <code>drop = "both"</code>, <code>drop = "neither"</code>).</p>
 <p>Unlike <code>add_tpl_logo()</code>, <code>drop_axis()</code> should be <em>added</em> to an existing plot object:</p>
 <pre class="r"><code>ggplot(iris, aes(x=jitter(Sepal.Width), y=jitter(Sepal.Length), col=Species, size = Petal.Length)) +
     geom_point() +
     labs(x=&quot;Sepal Width (cm)&quot;, y=&quot;Sepal Length (cm)&quot;, col=&quot;Species&quot;, size = &quot;Petal Length&quot;, title=&quot;Iris Dataset&quot;) +
     drop_axis(axis = &quot;y&quot;)</code></pre>
-<p><img src="/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-13-1.png" width="768" /></p>
+<p><img src="/v2/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-13-1.png" width="768" /></p>
 </div>
 </div>
 <div id="colors" class="section level3">
@@ -148,7 +151,7 @@ p2 &lt;- view_palette(palette = palette_tpl_diverging) + ggtitle(&quot;Diverging
 p3 &lt;- view_palette(palette = palette_tpl_sequential) + ggtitle(&quot;Sequential&quot;)
 
 gridExtra::grid.arrange(p1, p2, p3, nrow = 1)</code></pre>
-<p><img src="/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-14-1.png" width="768" /></p>
+<p><img src="/v2/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-14-1.png" width="768" /></p>
 <p>These palettes were created using <a href="http://colorbrewer2.org" class="uri">http://colorbrewer2.org</a> and <a href="http://coloors.co" class="uri">http://coloors.co</a> and are colorblind friendly.</p>
 <p>The diverging and sequential color palettes are from <a href="http://colorbrewer2.org" class="uri">http://colorbrewer2.org</a> and the categorical palette is composed of a variety of colors from <a href="https://coolors.co/" class="uri">https://coolors.co/</a> and the TPL website.</p>
 <p>In action, the color palette looks like this:</p>
@@ -174,7 +177,7 @@ reversed &lt;- normal +
   scale_fill_discrete(reverse = TRUE)
 
 gridExtra::grid.arrange(normal, reversed)</code></pre>
-<p><img src="/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-15-1.png" width="768" /></p>
+<p><img src="/v2/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-15-1.png" width="768" /></p>
 <p>The user may specify the color palette in the <code>scale_fill_*</code> or <code>scale_color_*</code> functions in a ggplot call. Specifically, the user can specify the <code>palette</code> (categorical, diverging, sequential) and whether the palette should be reversed.</p>
 <pre class="r"><code>set_tpl_theme(style = &quot;print&quot;, font = &quot;lato&quot;)
 normal &lt;- ggplot(diamonds) +
@@ -192,7 +195,7 @@ reversed &lt;- normal +
   scale_fill_discrete(reverse = TRUE)
 
 gridExtra::grid.arrange(normal, reversed, nrow = 1)</code></pre>
-<p><img src="/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-16-1.png" width="768" /></p>
+<p><img src="/v2/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-16-1.png" width="768" /></p>
 <pre class="r"><code>data &lt;- gapminder::gapminder %&gt;% 
   dplyr::filter(gapminder::gapminder$country %in% c(&quot;France&quot;, &quot;Germany&quot;, &quot;Ireland&quot;, &quot;Italy&quot;, &quot;Japan&quot;, &quot;Norway&quot;, &quot;Mexico&quot;, &quot;United States&quot;)) %&gt;%
   dplyr::mutate(year = as.Date(paste(year, &quot;-01-01&quot;, sep = &quot;&quot;, format=&#39;%Y-%b-%d&#39;)))
@@ -207,7 +210,7 @@ ggplot(data = data, aes(x = year, y = gdpPercap, fill = country)) +
        y = &quot;GDP Per Capita&quot;,
        fill = &quot;Country&quot;) + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
-<p><img src="/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-17-1.png" width="768" /></p>
+<p><img src="/v2/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-17-1.png" width="768" /></p>
 </div>
 <div id="restore-defaults" class="section level3">
 <h3>Restore Defaults</h3>
@@ -217,11 +220,11 @@ ggplot(data = data, aes(x = year, y = gdpPercap, fill = country)) +
 <pre class="r"><code>ggplot(iris, aes(x=jitter(Sepal.Width), y=jitter(Sepal.Length), col=Species, size = Petal.Length)) +
     geom_point() +
     labs(x=&quot;Sepal Width (cm)&quot;, y=&quot;Sepal Length (cm)&quot;, col=&quot;Species&quot;, size = &quot;Petal Length&quot;, title=&quot;Iris Dataset&quot;)</code></pre>
-<p><img src="/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-18-1.png" width="768" /></p>
+<p><img src="/v2/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-18-1.png" width="768" /></p>
 <p>To restore the TPL theme, simply call <code>set_tpl_theme()</code>:</p>
 <pre class="r"><code>set_tpl_theme()
 last_plot()</code></pre>
-<p><img src="/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-19-1.png" width="768" /></p>
+<p><img src="/v2/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-19-1.png" width="768" /></p>
 </div>
 </div>
 </div>

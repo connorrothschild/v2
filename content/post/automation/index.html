@@ -9,6 +9,9 @@ tags: ["r", "visualization"]
 summary: "Automation and its impact on jobs."
 ---
 
+<script src="/v2/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/v2/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/v2/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
 <p>The goal of this project is to understand the relationship between income, education, and automation. It asks the following: <strong>Is a given job’s income correlated to its likelihood of automation? Are jobs which are predominantly less educated more or less likely to be automated? How many workers are in the industries that will be automated?</strong></p>
@@ -55,7 +58,13 @@ options(scipen=999)
 salary2 %&gt;%
   arrange(desc(natlwage)) %&gt;% 
   head() %&gt;% kable()</code></pre>
-<table>
+<table style="width:100%;">
+<colgroup>
+<col width="60%" />
+<col width="11%" />
+<col width="10%" />
+<col width="16%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">OCC_TITLE</th>
@@ -112,7 +121,7 @@ salary2 %&gt;%
   ggtitle(&quot;Median Wage vs Total Employment&quot;) +
   xlab(&quot;Number of Americans in a Given Job&quot;) +
   ylab(&quot;Median Wage of a Given Job&quot;) </code></pre>
-<p><img src="/post/automation/index_files/figure-html/wagevsemployment-1.png" width="672" /></p>
+<p><img src="/v2/post/automation/index_files/figure-html/wagevsemployment-1.png" width="672" /></p>
 <p>We now have three data points:</p>
 <ol style="list-style-type: decimal">
 <li><p>The name of an occupation</p></li>
@@ -146,9 +155,24 @@ edsal &lt;- merge(as.data.frame(education2), as.data.frame(salary2), by=&quot;oc
 
 head(edsal) %&gt;% kable()</code></pre>
 <table>
+<colgroup>
+<col width="33%" />
+<col width="5%" />
+<col width="4%" />
+<col width="5%" />
+<col width="5%" />
+<col width="4%" />
+<col width="3%" />
+<col width="5%" />
+<col width="4%" />
+<col width="10%" />
+<col width="4%" />
+<col width="3%" />
+<col width="4%" />
+<col width="5%" />
+</colgroup>
 <thead>
 <tr class="header">
-<th></th>
 <th align="left">occupation</th>
 <th align="right">lessthanhs</th>
 <th align="right">hsdiploma</th>
@@ -167,7 +191,6 @@ head(edsal) %&gt;% kable()</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td>1</td>
 <td align="left">accountants and auditors</td>
 <td align="right">0.0</td>
 <td align="right">4.0</td>
@@ -184,7 +207,6 @@ head(edsal) %&gt;% kable()</code></pre>
 <td align="right">96698720000</td>
 </tr>
 <tr class="even">
-<td>3</td>
 <td align="left">actuaries</td>
 <td align="right">0.0</td>
 <td align="right">0.0</td>
@@ -201,7 +223,6 @@ head(edsal) %&gt;% kable()</code></pre>
 <td align="right">2206268500</td>
 </tr>
 <tr class="odd">
-<td>4</td>
 <td align="left">adhesive bonding machine operators and tenders</td>
 <td align="right">21.6</td>
 <td align="right">49.2</td>
@@ -218,7 +239,6 @@ head(edsal) %&gt;% kable()</code></pre>
 <td align="right">549231800</td>
 </tr>
 <tr class="even">
-<td>5</td>
 <td align="left">administrative law judges, adjudicators, and hearing officers</td>
 <td align="right">0.2</td>
 <td align="right">0.4</td>
@@ -235,7 +255,6 @@ head(edsal) %&gt;% kable()</code></pre>
 <td align="right">1423094400</td>
 </tr>
 <tr class="odd">
-<td>6</td>
 <td align="left">administrative services managers</td>
 <td align="right">2.1</td>
 <td align="right">17.9</td>
@@ -252,7 +271,6 @@ head(edsal) %&gt;% kable()</code></pre>
 <td align="right">27922938000</td>
 </tr>
 <tr class="even">
-<td>7</td>
 <td align="left">adult basic and secondary education and literacy teachers and instructors</td>
 <td align="right">1.8</td>
 <td align="right">10.2</td>
@@ -280,6 +298,24 @@ edsal2 &lt;- merge(as.data.frame(edsal), as.data.frame(typicaleducation2), by=&q
 
 head(edsal2) %&gt;% kable()</code></pre>
 <table>
+<colgroup>
+<col width="27%" />
+<col width="4%" />
+<col width="3%" />
+<col width="4%" />
+<col width="4%" />
+<col width="3%" />
+<col width="2%" />
+<col width="4%" />
+<col width="3%" />
+<col width="8%" />
+<col width="3%" />
+<col width="2%" />
+<col width="3%" />
+<col width="4%" />
+<col width="12%" />
+<col width="6%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">occupation</th>
@@ -427,13 +463,70 @@ ggplot(data=edsal3, aes(x = reorder(typicaled, medianwage), y = medianwage)) +
   scale_fill_discrete(breaks=legend_ord) +
   theme_minimal() +
   theme(axis.text.x=element_blank())</code></pre>
-<p><img src="/post/automation/index_files/figure-html/wagebyedu-1.png" width="672" /></p>
+<p><img src="/v2/post/automation/index_files/figure-html/wagebyedu-1.png" width="672" /></p>
 <p>The results are unsurpising: more educated people on average earn more.</p>
 <p>Lastly, I bring in the automation data.</p>
 <pre class="r"><code>automationwstates &lt;- automation %&gt;% select(-soc)
 automation1 &lt;- automationwstates %&gt;% select(occupation,probability,total)
 head(automation) %&gt;% kable()</code></pre>
 <table>
+<colgroup>
+<col width="1%" />
+<col width="7%" />
+<col width="2%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="2%" />
+<col width="1%" />
+<col width="3%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="2%" />
+<col width="1%" />
+<col width="1%" />
+<col width="2%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="2%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="2%" />
+<col width="2%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="2%" />
+<col width="2%" />
+<col width="2%" />
+<col width="2%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="2%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">soc</th>
@@ -848,7 +941,7 @@ head(automation) %&gt;% kable()</code></pre>
   ylab(&quot;Probability of Automation&quot;) +
   geom_label_repel(data=subset(automation1, total &gt; 4000000),
                    aes(total, probability,label=occupation), label.size=.5, label.r=.05, size=2.5, nudge_y = .05, nudge_x= -10000)</code></pre>
-<p><img src="/post/automation/index_files/figure-html/autoviz-1.png" width="672" /></p>
+<p><img src="/v2/post/automation/index_files/figure-html/autoviz-1.png" width="672" /></p>
 <p>There doesn’t seem to be a huge relationship between automation and number of employees, however there is some concentration at each of the poles.</p>
 <p>Some final data cleaning, and the merge of the final dataset:</p>
 <pre class="r"><code>automation1$occupation &lt;- str_replace_all(automation1$occupation, &quot;;&quot;, &quot;,&quot;)
@@ -871,7 +964,7 @@ ggplot(data=autovsedu, aes(x = reorder(typicaled, -averageprobability), y = aver
   scale_fill_discrete(breaks=legend_ord2) +
   theme_minimal() +
   theme(axis.text.x=element_blank())</code></pre>
-<p><img src="/post/automation/index_files/figure-html/firstlook-1.png" width="672" /></p>
+<p><img src="/v2/post/automation/index_files/figure-html/firstlook-1.png" width="672" /></p>
 <p>There is a rather clear correlation between level of education and automation risk: those who are more educated are better protected from automation.</p>
 <p>We can then visualize this relationship by individual occupation:</p>
 <pre class="r"><code>ggplot(data=data) +
@@ -887,7 +980,7 @@ ggplot(data=autovsedu, aes(x = reorder(typicaled, -averageprobability), y = aver
   theme(legend.text = element_text(colour=&quot;black&quot;, size = 10)) +
   guides(col = guide_legend(override.aes = list(size=5))) +
   theme_minimal()</code></pre>
-<p><img src="/post/automation/index_files/figure-html/viz2-1.png" width="672" /></p>
+<p><img src="/v2/post/automation/index_files/figure-html/viz2-1.png" width="672" /></p>
 <p>With labels, a final look:</p>
 <pre class="r"><code>data$occupation &lt;- toTitleCase(data$occupation)
 
@@ -914,7 +1007,7 @@ ggplot(data=data) +
   annotate(&quot;text&quot;, x = 165000, y = -0.035, label = &quot;Highest salary,\n lowest automation risk&quot;, size=3, fontface=2) +
   annotate(&quot;text&quot;, x = 45000, y = -0.035, label = &quot;Lowest salary,\n lowest automation risk&quot;, size=3, fontface=2) +
   annotate(&quot;text&quot;, x = 45000, y = 1.03, label = &quot;Lowest salary,\n highest automation risk&quot;, size=3, fontface=2)</code></pre>
-<p><img src="/post/automation/index_files/figure-html/finalviz-1.png" width="672" /></p>
+<p><img src="/v2/post/automation/index_files/figure-html/finalviz-1.png" width="672" /></p>
 <div id="conclusions" class="section level3">
 <h3>Conclusions</h3>
 <p>Using the dataset I’ve used in this project, researchers Carl Frey and Michael Osborne <a href="https://www.oxfordmartin.ox.ac.uk/downloads/academic/The_Future_of_Employment.pdf">predicted</a> that 47% of jobs are at risk of automation over the next couple decades.</p>

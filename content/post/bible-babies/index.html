@@ -10,6 +10,9 @@ tags: ["r", "visualization", "animation", "gganimate"]
 summary: "How has the distribution of Biblically-inspired baby names changed over time?"
 ---
 
+<script src="/v2/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/v2/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/v2/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
 <p>The goal of this post is to explore how baby names have changed over time.</p>
@@ -22,7 +25,7 @@ library(ggplot2)
 library(cr)
 conflicted::conflict_prefer(&quot;filter&quot;, &quot;dplyr&quot;)
 
-set_cr_theme(font = &quot;lato&quot;)
+set_cr_theme(font = &quot;IBM Plex Sans&quot;)
 kable(head(babynames))</code></pre>
 <table>
 <thead>
@@ -111,7 +114,7 @@ babynames &lt;- babynames %&gt;%
        y=&quot;Percent&quot;,
        caption = &quot;Source: U.S. Social Security Administration
        \n Design: www.connorrothschild.com&quot;)</code></pre>
-<p><img src="/post/bible-babies/index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="/v2/post/bible-babies/index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>Biblical names have become significantly less popular over time. We can split up the trend by sex to see if it is primarily driven by one group of babies.</p>
 <pre class="r"><code>babynames %&gt;% 
   group_by(year, sex) %&gt;% 
@@ -128,7 +131,7 @@ babynames &lt;- babynames %&gt;%
        color=&quot;Sex&quot;,
        caption = &quot;Source: U.S. Social Security Administration
        \n Design: www.connorrothschild.com&quot;)</code></pre>
-<p><img src="/post/bible-babies/index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="/v2/post/bible-babies/index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>Indeed, much of the departure from Biblically-inspired baby names has been driven by girls. While 13% of boys born in 2017 shared a name with some biblical figure, the same was true of only 4% of girls.</p>
 </div>
 <div id="exploring-popular-names-over-time-using-gganimate" class="section level2">
@@ -170,7 +173,7 @@ maleanimation &lt;- malebabynames %&gt;%
   ease_aes(&#39;cubic-in-out&#39;)
 
 animate(maleanimation, fps = 25, nframes = 500, width = 800, height = 600)</code></pre>
-<p><img src="/post/bible-babies/index_files/figure-html/unnamed-chunk-5-1.gif" /><!-- --></p>
+<p><img src="/v2/post/bible-babies/index_files/figure-html/unnamed-chunk-5-1.gif" /><!-- --></p>
 <pre class="r"><code>        #, renderer = gifski_renderer(&quot;boybiblebabies.gif&quot;))</code></pre>
 <p>Replicating that code with minor tweaks creates the same animation for girls’ names:</p>
 <pre class="r"><code># make rank variable
@@ -206,7 +209,7 @@ femaleanimation &lt;- femalebabynames %&gt;%
   ease_aes(&#39;cubic-in-out&#39;)
 
 animate(femaleanimation, fps = 25, nframes = 500, width = 800, height = 600)</code></pre>
-<p><img src="/post/bible-babies/index_files/figure-html/unnamed-chunk-6-1.gif" /><!-- --></p>
+<p><img src="/v2/post/bible-babies/index_files/figure-html/unnamed-chunk-6-1.gif" /><!-- --></p>
 <pre class="r"><code>        #, renderer = gifski_renderer(&quot;girlbiblebabies.gif&quot;))</code></pre>
 <p>Finally, we can combine some of the insights from our earlier plot (depicting the popularity of Biblical names by sex) to show which boys’ names are responsible for their sex’s relative dominance over girls’ Biblically-inspired names.</p>
 <pre class="r"><code># make rank variable
@@ -241,6 +244,6 @@ babyanimation &lt;- babynamesrank %&gt;%
   ease_aes(&#39;cubic-in-out&#39;)
 
 animate(babyanimation, fps = 25, nframes = 500, width = 800, height = 600)</code></pre>
-<p><img src="/post/bible-babies/index_files/figure-html/unnamed-chunk-7-1.gif" /><!-- --></p>
+<p><img src="/v2/post/bible-babies/index_files/figure-html/unnamed-chunk-7-1.gif" /><!-- --></p>
 <pre class="r"><code>        #, renderer = gifski_renderer(&quot;combinedbiblebabies.gif&quot;))</code></pre>
 </div>

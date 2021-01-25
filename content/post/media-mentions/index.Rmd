@@ -40,7 +40,7 @@ library(devtools)
 library(knitr)
 library(cr)
 
-set_cr_theme(font = "lato")
+set_cr_theme(font = "Lato")
 
 data <- read.csv("data/mentions.csv", header = T)
   #read.csv(("https://raw.githubusercontent.com/fivethirtyeight/data/master/media-mentions-2020/cable_weekly.csv"), header=T)
