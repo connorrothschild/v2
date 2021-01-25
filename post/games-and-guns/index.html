@@ -244,7 +244,7 @@
       
         <meta property="article:published_time" content="2019-08-12T00:00:00&#43;00:00">
       
-      <meta property="article:modified_time" content="2020-06-01T11:13:28-05:00">
+      <meta property="article:modified_time" content="2021-01-25T00:32:49-06:00">
     
   
     
@@ -277,7 +277,7 @@
   ],
   
   "datePublished": "2019-08-12T00:00:00Z",
-  "dateModified": "2020-06-01T11:13:28-05:00",
+  "dateModified": "2021-01-25T00:32:49-06:00",
   
   "author": {
     "@type": "Person",
@@ -623,7 +623,7 @@
           Last updated on
       
     
-    Jun 1, 2020
+    Jan 25, 2021
   </span>
   
 
@@ -686,6 +686,9 @@
           <div class="article-container">
             <div class="article-style">
               
+<script src="/v2/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/v2/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/v2/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
 
 
 <p>Is there a connection between video games and gun violence, as Republicans suggest?</p>
@@ -787,7 +790,7 @@ oecd_joined &lt;- oecd_joined %&gt;%
   theme(plot.caption = element_text(face = &quot;italic&quot;, hjust = 0), 
         legend.position = &quot;top&quot;, legend.direction = &quot;horizontal&quot;) +
   drop_axis(axis = &quot;y&quot;)</code></pre>
-<p><img src="/post/games-and-guns/index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="/v2/post/games-and-guns/index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>Finally, we can focus on only OECD countries:</p>
 <pre class="r"><code>oecd_joined %&gt;% 
   dplyr::filter(OECD == &quot;OECD&quot;) %&gt;% 
@@ -803,7 +806,7 @@ oecd_joined &lt;- oecd_joined %&gt;%
   scale_y_continuous(limits = c(0, 5)) +
   theme(plot.caption = element_text(face = &quot;italic&quot;, hjust = 0)) +
   drop_axis(axis = &quot;y&quot;)</code></pre>
-<p><img src="/post/games-and-guns/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="/v2/post/games-and-guns/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>To conclude, let’s add an emoji to fully capture our skepticism with the <a href="https://www.cnn.com/2019/08/05/politics/kevin-mccarthy-mass-shootings-video-games/index.html">newfound argument</a> linking video games to violence.</p>
 <pre class="r"><code>oecd_joined %&gt;% 
   dplyr::filter(OECD == &quot;OECD&quot;) %&gt;% 
@@ -820,7 +823,7 @@ oecd_joined &lt;- oecd_joined %&gt;%
   theme(plot.caption = element_text(face = &quot;italic&quot;, hjust = 0)) +
   drop_axis(axis = &quot;y&quot;) +
   geom_text(y = 4.85, x = 107.5, size = 7, label = emoji(&#39;thinking&#39;), family = &quot;EmojiOne&quot;)</code></pre>
-<p><img src="/post/games-and-guns/index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="/v2/post/games-and-guns/index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 </div>
 
             </div>
