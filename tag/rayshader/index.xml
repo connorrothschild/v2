@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>rayshader | Connor Rothschild</title>
+    <link>https://connorrothschild.com/tag/rayshader/</link>
+      <atom:link href="https://connorrothschild.com/tag/rayshader/index.xml" rel="self" type="application/rss+xml" />
+    <description>rayshader</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2021</copyright><lastBuildDate>Wed, 24 Jul 2019 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://connorrothschild.com/img/social.png</url>
+      <title>rayshader</title>
+      <link>https://connorrothschild.com/tag/rayshader/</link>
+    </image>
+    
+    <item>
+      <title>Texas Vaccination Rates (How to Use Rayshader)</title>
+      <link>https://connorrothschild.com/post/tx-vaccination-rates-rayshader/</link>
+      <pubDate>Wed, 24 Jul 2019 00:00:00 +0000</pubDate>
+      <guid>https://connorrothschild.com/post/tx-vaccination-rates-rayshader/</guid>
+      <description>
+
+
+&lt;p&gt;A brief exploration of Texas vaccination rates among kindergartners. Also an attempt to use &lt;code&gt;rayshader&lt;/code&gt; for the first time.&lt;/p&gt;
+&lt;div id=&#34;load-packages&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Load Packages&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(readxl)
+library(tidyverse)
+library(stringr)
+library(dplyr)
+library(ggplot2)
+library(ggmap)
+library(maps)
+library(mapdata)
+library(scales)
+library(tpltheme)
+library(knitr)
+conflicted::conflict_prefer(&amp;quot;filter&amp;quot;, &amp;quot;dplyr&amp;quot;)
+
+set_tpl_theme(font = &amp;quot;lato&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;read-in-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Read in Data&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tx_vac &amp;lt;- read_excel(&amp;quot;data/2018-2019 School Vaccination Coverage Levels - Kindergarten (XLS) .xlsx&amp;quot;, skip = 2)
+
+kable(head(tx_vac))&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;right&#34;&gt;Facility Number&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;School Type&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Facility Name&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Facility Address&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;County&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;DTP/DTaP/DT/Td&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;Hepatitis A&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;Hepatitis B&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;MMR&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;Polio&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;Varicella&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9057816000&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Public ISD&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A W Brown Leadership Academy&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;5701 RED BIRD CTR DR, DALLAS, TX, 75237&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Dallas&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.8317308&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.9086538&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.9471154&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.8509615&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.8413462&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.8509615&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9057829000&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Public ISD&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A+ Academy&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;8225 BRUTON RD, DALLAS, TX, 75217&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Dallas&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.9909091&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9109901000&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Public ISD&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Abbott ISD&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;P O BOX 226, ABBOTT, TX, 76621&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Hill&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;7101130101&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Private School&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Abercrombie Academy&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;17102 Theiss Mail Road, Spring, TX, 77379&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Harris&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.7500000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.7500000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9095901000&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Public ISD&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Abernathy ISD&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;505 7TH ST, ABERNATHY, TX, 79311&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Hale&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1.0000000&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;7101220001&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Private School&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Abiding Word Lutheran School&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;17123 Red Oak Drive, Houston, TX, 77090&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Harris&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.7692308&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.7692308&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.7692308&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.7692308&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.6923077&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.7692308&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The data contains information on six different vaccines split up by school. The set also contains information on the county of each school, allowing us to aggregate on the county level. By finding the average of the six vaccines listed in this dataset, we can see average vaccination rate by county:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;grouped &amp;lt;- tx_vac %&amp;gt;% 
+  mutate(avgvac = (`DTP/DTaP/DT/Td`+`Hepatitis A`+`Hepatitis B`+MMR+Polio+Varicella)/6) %&amp;gt;%
+  group_by(County) %&amp;gt;%
+  summarize(avgvac = mean(avgvac, na.rm = TRUE)) %&amp;gt;%
+  mutate(County = tolower(County)) %&amp;gt;%
+  # rename to subregion so that we can later join with ggplot map data
+  rename(&amp;quot;subregion&amp;quot; = County) %&amp;gt;%
+  filter(subregion != &amp;quot;king&amp;quot;)
+
+kable(head(grouped))&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;subregion&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;avgvac&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;anderson&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.9676797&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;andrews&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.9715335&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;angelina&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.9693150&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;aransas&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.9735294&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;archer&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.9915167&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;armstrong&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.9677419&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Next, we read in the county-level data from &lt;code&gt;ggplot2&lt;/code&gt; and merge it with our vaccination data:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;counties &amp;lt;- map_data(&amp;quot;county&amp;quot;)
+tx_county &amp;lt;- subset(counties, region == &amp;quot;texas&amp;quot;)
+merged &amp;lt;- left_join(tx_county, grouped, by = &amp;quot;subregion&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;plot&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Plot&lt;/h3&gt;
+&lt;p&gt;Construct the plot using &lt;code&gt;geom_polygon()&lt;/code&gt;, and pay special attention to theme attributes (axes, panels, etc.).&lt;/p&gt;
+&lt;p&gt;Unfortunately, &lt;code&gt;theme_nothing()&lt;/code&gt; led to some conflicts with &lt;code&gt;rayshader&lt;/code&gt;, so I essentially recreated it using &lt;code&gt;theme()&lt;/code&gt; attributes.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tx &amp;lt;- ggplot(data = merged, mapping = aes(x = long, y = lat, group = group, fill = avgvac*100)) +
+  coord_fixed(1.3) +
+  geom_polygon(color = &amp;quot;black&amp;quot;) +
+  labs(fill = &amp;quot;Vaccination Rate&amp;quot;) +
+  #theme_nothing(legend = TRUE) +
+  theme(legend.title = element_text(),
+        #legend.key.width = unit(.1, &amp;quot;in&amp;quot;),
+        panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_blank(), 
+        axis.text.x = element_blank(), axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        panel.background = element_rect(fill = &amp;quot;white&amp;quot;),
+        text = element_text(family = &amp;quot;Lato&amp;quot;),
+        legend.position = &amp;quot;bottom&amp;quot;) +
+   labs(x = element_blank(),
+        y = element_blank(),
+        title = &amp;quot;Texas Vaccination Rate by County&amp;quot;,
+        subtitle = &amp;quot;Among Kindergartners&amp;quot;) + 
+  tpltheme::scale_fill_continuous()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here’s what the plot looks like before animation:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tx-vaccination-rates-rayshader/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;rayshader&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Rayshader&lt;/h3&gt;
+&lt;p&gt;Load in &lt;code&gt;rayshader&lt;/code&gt; and &lt;code&gt;rgl&lt;/code&gt;. I’m not sure if &lt;code&gt;rgl&lt;/code&gt; is necessary for all R users, but I ran into a few errors on my system (Mac) prior to its installation.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#devtools::install_github(&amp;quot;tylermorganwall/rayshader&amp;quot;)
+library(rgl)
+options(rgl.useNULL = FALSE)
+library(rayshader)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Lastly, create the &lt;code&gt;plot_gg()&lt;/code&gt; object by following the comprehensive documentation on Wall’s &lt;a href=&#34;https://github.com/tylermorganwall/rayshader&#34;&gt;README&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;par(mfrow = c(1,1))
+rayshader::plot_gg(tx, width = 5, raytrace = TRUE, multicore = TRUE, height = 5, scale = 50)
+
+# create custom rotation parameters here
+phivechalf = 30 + 60 * 1/(1 + exp(seq(-7, 20, length.out = 180)/2))
+phivecfull = c(phivechalf, rev(phivechalf))
+thetavec = -90 + 60 * sin(seq(0,359,length.out = 360) * pi/180)
+zoomvec = 0.45 + 0.2 * 1/(1 + exp(seq(-5, 20, length.out = 180)))
+zoomvecfull = c(zoomvec, rev(zoomvec))
+
+render_movie(filename = &amp;quot;outputs/tx_vac_vid&amp;quot;, type = &amp;quot;custom&amp;quot;, 
+             frames = 360,  phi = phivecfull, zoom = zoomvecfull, theta = thetavec)&lt;/code&gt;&lt;/pre&gt;
+&lt;div style=&#34;text-align:center&#34;&gt;
+&lt;p&gt;&lt;video controls&gt;
+&lt;source src=&#34;outputs/tx_vac_vid.mp4&#34; type=&#34;video/mp4&#34;&gt;
+&lt;/video&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

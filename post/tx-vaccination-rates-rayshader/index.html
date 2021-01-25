@@ -1,0 +1,1330 @@
+<!DOCTYPE html><html lang="en-us" >
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="generator" content="Source Themes Academic 4.8.0">
+  
+    
+  
+    
+    
+    
+    
+    
+      
+      
+      
+    
+    
+  
+    <meta name="author" content="Connor Rothschild">
+  
+    
+    
+    
+      
+    
+    <meta name="description" content="A brief exploration of Texas vaccination rates among kindergartners, and an attempt to use rayshader for the first time.">
+  
+    
+    <link rel="alternate" hreflang="en-us" href="https://connorrothschild.com/post/tx-vaccination-rates-rayshader/">
+  
+    
+
+
+    
+    
+    
+    <meta name="theme-color" content="black">
+    
+  
+    
+    
+  
+    
+    
+    
+    
+      
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  
+      
+      
+      
+        
+      
+      
+        
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github-gist.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github-gist.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+  
+      
+  
+      
+  
+      
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+          
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+  
+    
+  
+    
+    
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:400,500,600,700,800,900%7CLato:400,500,600,700,800,900%7CRoboto+Mono:400,500,600,700,800,900%7CKhula:400,500,600,700%7CInter:400,500,600,700,800,900&display=swap">
+    
+  
+    
+    
+    
+    
+    <link rel="stylesheet" href="/css/academic.css">
+  
+    
+
+
+
+
+    
+
+  
+    
+    
+
+    
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <link rel="stylesheet" href="/css/codefolding.css" />
+
+  
+    
+  
+    <link rel="manifest" href="/index.webmanifest">
+    <link rel="icon" type="image/png" href="/images/icon_hu82528eb29b5d31779afb6f1becdf1c8e_5759_32x32_fill_lanczos_center_2.png">
+    <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu82528eb29b5d31779afb6f1becdf1c8e_5759_192x192_fill_lanczos_center_2.png">
+  
+    <link rel="canonical" href="https://connorrothschild.com/post/tx-vaccination-rates-rayshader/">
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    <meta property="twitter:card" content="summary_large_image">
+    
+    <meta property="twitter:site" content="@CL_Rothschild">
+    <meta property="twitter:creator" content="@CL_Rothschild">
+    
+    <meta property="og:site_name" content="Connor Rothschild">
+    <meta property="og:url" content="https://connorrothschild.com/post/tx-vaccination-rates-rayshader/">
+    <meta property="og:title" content="Texas Vaccination Rates (How to Use Rayshader) | Connor Rothschild">
+    <meta property="og:description" content="A brief exploration of Texas vaccination rates among kindergartners, and an attempt to use rayshader for the first time."><meta property="og:image" content="https://connorrothschild.com/post/tx-vaccination-rates-rayshader/featured.png">
+    <meta property="twitter:image" content="https://connorrothschild.com/post/tx-vaccination-rates-rayshader/featured.png"><meta property="og:locale" content="en-us">
+    
+      
+        <meta property="article:published_time" content="2019-07-24T00:00:00&#43;00:00">
+      
+      <meta property="article:modified_time" content="2020-06-01T11:13:28-05:00">
+    
+  
+    
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://connorrothschild.com/post/tx-vaccination-rates-rayshader/"
+  },
+  "headline": "Texas Vaccination Rates (How to Use Rayshader)",
+  
+  "image": [
+    "https://connorrothschild.com/post/tx-vaccination-rates-rayshader/featured.png"
+  ],
+  
+  "datePublished": "2019-07-24T00:00:00Z",
+  "dateModified": "2020-06-01T11:13:28-05:00",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Connor Rothschild"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Connor Rothschild",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://connorrothschild.com/images/icon_hu82528eb29b5d31779afb6f1becdf1c8e_5759_192x192_fill_lanczos_center_2.png"
+    }
+  },
+  "description": "A brief exploration of Texas vaccination rates among kindergartners, and an attempt to use rayshader for the first time."
+}
+</script>
+
+  
+
+  
+
+  
+    
+
+  
+    
+
+
+
+
+  
+    
+  
+    <title>Texas Vaccination Rates (How to Use Rayshader) | Connor Rothschild</title>
+  
+  </head>
+  
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Connor Rothschild</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Connor Rothschild</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/post"><span>Blog</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#experience"><span>Experience</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#accomplishments"><span>Awards</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#projects"><span>Projects</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#contact"><span>Contact</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://docs.google.com/document/d/1qBH-wNMe2nv9Xa4uzHZ5wBevohwKuB3h2i9M2yk4POk/edit?usp=sharing" target="_blank" rel="noopener"><span>Resume</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+          <article class="article">
+            
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>Texas Vaccination Rates (How to Use Rayshader)</h1>
+
+  
+
+  
+    
+
+
+<div class="article-metadata">
+
+  
+  
+  
+  
+  <div>
+    
+
+  
+  <span>Connor Rothschild</span>
+  </div>
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+          Last updated on
+      
+    
+    Jun 1, 2020
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    3 min read
+  </span>
+  
+
+  
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/category/r/">R</a></span>
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+<div id="code-folding-buttons" class="dropdown btn-group pull-right">
+  <a class="btn btn-light btn-sm dropdown-toggle" href="#" role="button" id="allCodeToggleButton"
+     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Code
+  </a>
+  <div class="dropdown-menu" aria-labelledby="allCodeToggleButton">
+    <a id="rmd-show-all-code" class="dropdown-item small" href="#">Show all</a>
+    <a id="rmd-hide-all-code" class="dropdown-item small" href="#">Hide all</a>
+  </div>
+</div>
+
+
+
+  
+</div>
+
+
+          <div class="article-container">
+            <div class="article-style">
+              
+
+
+<p>A brief exploration of Texas vaccination rates among kindergartners. Also an attempt to use <code>rayshader</code> for the first time.</p>
+<div id="load-packages" class="section level3">
+<h3>Load Packages</h3>
+<pre class="r"><code>library(readxl)
+library(tidyverse)
+library(stringr)
+library(dplyr)
+library(ggplot2)
+library(ggmap)
+library(maps)
+library(mapdata)
+library(scales)
+library(tpltheme)
+library(knitr)
+conflicted::conflict_prefer(&quot;filter&quot;, &quot;dplyr&quot;)
+
+set_tpl_theme(font = &quot;lato&quot;)</code></pre>
+</div>
+<div id="read-in-data" class="section level3">
+<h3>Read in Data</h3>
+<pre class="r"><code>tx_vac &lt;- read_excel(&quot;data/2018-2019 School Vaccination Coverage Levels - Kindergarten (XLS) .xlsx&quot;, skip = 2)
+
+kable(head(tx_vac))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">Facility Number</th>
+<th align="left">School Type</th>
+<th align="left">Facility Name</th>
+<th align="left">Facility Address</th>
+<th align="left">County</th>
+<th align="right">DTP/DTaP/DT/Td</th>
+<th align="right">Hepatitis A</th>
+<th align="right">Hepatitis B</th>
+<th align="right">MMR</th>
+<th align="right">Polio</th>
+<th align="right">Varicella</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">9057816000</td>
+<td align="left">Public ISD</td>
+<td align="left">A W Brown Leadership Academy</td>
+<td align="left">5701 RED BIRD CTR DR, DALLAS, TX, 75237</td>
+<td align="left">Dallas</td>
+<td align="right">0.8317308</td>
+<td align="right">0.9086538</td>
+<td align="right">0.9471154</td>
+<td align="right">0.8509615</td>
+<td align="right">0.8413462</td>
+<td align="right">0.8509615</td>
+</tr>
+<tr class="even">
+<td align="right">9057829000</td>
+<td align="left">Public ISD</td>
+<td align="left">A+ Academy</td>
+<td align="left">8225 BRUTON RD, DALLAS, TX, 75217</td>
+<td align="left">Dallas</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">0.9909091</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+</tr>
+<tr class="odd">
+<td align="right">9109901000</td>
+<td align="left">Public ISD</td>
+<td align="left">Abbott ISD</td>
+<td align="left">P O BOX 226, ABBOTT, TX, 76621</td>
+<td align="left">Hill</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+</tr>
+<tr class="even">
+<td align="right">7101130101</td>
+<td align="left">Private School</td>
+<td align="left">Abercrombie Academy</td>
+<td align="left">17102 Theiss Mail Road, Spring, TX, 77379</td>
+<td align="left">Harris</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">0.7500000</td>
+<td align="right">1.0000000</td>
+<td align="right">0.7500000</td>
+</tr>
+<tr class="odd">
+<td align="right">9095901000</td>
+<td align="left">Public ISD</td>
+<td align="left">Abernathy ISD</td>
+<td align="left">505 7TH ST, ABERNATHY, TX, 79311</td>
+<td align="left">Hale</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+</tr>
+<tr class="even">
+<td align="right">7101220001</td>
+<td align="left">Private School</td>
+<td align="left">Abiding Word Lutheran School</td>
+<td align="left">17123 Red Oak Drive, Houston, TX, 77090</td>
+<td align="left">Harris</td>
+<td align="right">0.7692308</td>
+<td align="right">0.7692308</td>
+<td align="right">0.7692308</td>
+<td align="right">0.7692308</td>
+<td align="right">0.6923077</td>
+<td align="right">0.7692308</td>
+</tr>
+</tbody>
+</table>
+<p>The data contains information on six different vaccines split up by school. The set also contains information on the county of each school, allowing us to aggregate on the county level. By finding the average of the six vaccines listed in this dataset, we can see average vaccination rate by county:</p>
+<pre class="r"><code>grouped &lt;- tx_vac %&gt;% 
+  mutate(avgvac = (`DTP/DTaP/DT/Td`+`Hepatitis A`+`Hepatitis B`+MMR+Polio+Varicella)/6) %&gt;%
+  group_by(County) %&gt;%
+  summarize(avgvac = mean(avgvac, na.rm = TRUE)) %&gt;%
+  mutate(County = tolower(County)) %&gt;%
+  # rename to subregion so that we can later join with ggplot map data
+  rename(&quot;subregion&quot; = County) %&gt;%
+  filter(subregion != &quot;king&quot;)
+
+kable(head(grouped))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">subregion</th>
+<th align="right">avgvac</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">anderson</td>
+<td align="right">0.9676797</td>
+</tr>
+<tr class="even">
+<td align="left">andrews</td>
+<td align="right">0.9715335</td>
+</tr>
+<tr class="odd">
+<td align="left">angelina</td>
+<td align="right">0.9693150</td>
+</tr>
+<tr class="even">
+<td align="left">aransas</td>
+<td align="right">0.9735294</td>
+</tr>
+<tr class="odd">
+<td align="left">archer</td>
+<td align="right">0.9915167</td>
+</tr>
+<tr class="even">
+<td align="left">armstrong</td>
+<td align="right">0.9677419</td>
+</tr>
+</tbody>
+</table>
+<p>Next, we read in the county-level data from <code>ggplot2</code> and merge it with our vaccination data:</p>
+<pre class="r"><code>counties &lt;- map_data(&quot;county&quot;)
+tx_county &lt;- subset(counties, region == &quot;texas&quot;)
+merged &lt;- left_join(tx_county, grouped, by = &quot;subregion&quot;)</code></pre>
+</div>
+<div id="plot" class="section level3">
+<h3>Plot</h3>
+<p>Construct the plot using <code>geom_polygon()</code>, and pay special attention to theme attributes (axes, panels, etc.).</p>
+<p>Unfortunately, <code>theme_nothing()</code> led to some conflicts with <code>rayshader</code>, so I essentially recreated it using <code>theme()</code> attributes.</p>
+<pre class="r"><code>tx &lt;- ggplot(data = merged, mapping = aes(x = long, y = lat, group = group, fill = avgvac*100)) +
+  coord_fixed(1.3) +
+  geom_polygon(color = &quot;black&quot;) +
+  labs(fill = &quot;Vaccination Rate&quot;) +
+  #theme_nothing(legend = TRUE) +
+  theme(legend.title = element_text(),
+        #legend.key.width = unit(.1, &quot;in&quot;),
+        panel.border = element_blank(), panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), axis.line = element_blank(), 
+        axis.text.x = element_blank(), axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        panel.background = element_rect(fill = &quot;white&quot;),
+        text = element_text(family = &quot;Lato&quot;),
+        legend.position = &quot;bottom&quot;) +
+   labs(x = element_blank(),
+        y = element_blank(),
+        title = &quot;Texas Vaccination Rate by County&quot;,
+        subtitle = &quot;Among Kindergartners&quot;) + 
+  tpltheme::scale_fill_continuous()</code></pre>
+<p>Here’s what the plot looks like before animation:</p>
+<p><img src="/post/tx-vaccination-rates-rayshader/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="rayshader" class="section level3">
+<h3>Rayshader</h3>
+<p>Load in <code>rayshader</code> and <code>rgl</code>. I’m not sure if <code>rgl</code> is necessary for all R users, but I ran into a few errors on my system (Mac) prior to its installation.</p>
+<pre class="r"><code>#devtools::install_github(&quot;tylermorganwall/rayshader&quot;)
+library(rgl)
+options(rgl.useNULL = FALSE)
+library(rayshader)</code></pre>
+<p>Lastly, create the <code>plot_gg()</code> object by following the comprehensive documentation on Wall’s <a href="https://github.com/tylermorganwall/rayshader">README</a>.</p>
+<pre class="r"><code>par(mfrow = c(1,1))
+rayshader::plot_gg(tx, width = 5, raytrace = TRUE, multicore = TRUE, height = 5, scale = 50)
+
+# create custom rotation parameters here
+phivechalf = 30 + 60 * 1/(1 + exp(seq(-7, 20, length.out = 180)/2))
+phivecfull = c(phivechalf, rev(phivechalf))
+thetavec = -90 + 60 * sin(seq(0,359,length.out = 360) * pi/180)
+zoomvec = 0.45 + 0.2 * 1/(1 + exp(seq(-5, 20, length.out = 180)))
+zoomvecfull = c(zoomvec, rev(zoomvec))
+
+render_movie(filename = &quot;outputs/tx_vac_vid&quot;, type = &quot;custom&quot;, 
+             frames = 360,  phi = phivecfull, zoom = zoomvecfull, theta = thetavec)</code></pre>
+<div style="text-align:center">
+<p><video controls>
+<source src="outputs/tx_vac_vid.mp4" type="video/mp4">
+</video></p>
+</div>
+</div>
+
+            </div>
+              
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tag/r/">R</a>
+  
+  <a class="badge badge-light" href="/tag/visualization/">visualization</a>
+  
+  <a class="badge badge-light" href="/tag/animation/">animation</a>
+  
+  <a class="badge badge-light" href="/tag/rayshader/">rayshader</a>
+  
+</div>
+
+
+
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=https://connorrothschild.com/post/tx-vaccination-rates-rayshader/&amp;text=Texas%20Vaccination%20Rates%20%28How%20to%20Use%20Rayshader%29" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=https://connorrothschild.com/post/tx-vaccination-rates-rayshader/&amp;t=Texas%20Vaccination%20Rates%20%28How%20to%20Use%20Rayshader%29" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Texas%20Vaccination%20Rates%20%28How%20to%20Use%20Rayshader%29&amp;body=https://connorrothschild.com/post/tx-vaccination-rates-rayshader/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=https://connorrothschild.com/post/tx-vaccination-rates-rayshader/&amp;title=Texas%20Vaccination%20Rates%20%28How%20to%20Use%20Rayshader%29" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://web.whatsapp.com/send?text=Texas%20Vaccination%20Rates%20%28How%20to%20Use%20Rayshader%29%20https://connorrothschild.com/post/tx-vaccination-rates-rayshader/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=https://connorrothschild.com/post/tx-vaccination-rates-rayshader/&amp;title=Texas%20Vaccination%20Rates%20%28How%20to%20Use%20Rayshader%29" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+
+
+
+
+
+  
+    
+    
+    
+      
+    
+    
+    
+    <div class="media author-card content-widget-hr">
+      
+        
+        <img class="avatar mr-3 avatar-circle" src="/author/connor-rothschild/avatar_hu7fba9da1679ce4a56c592454604cb9c1_715589_270x270_fill_q100_lanczos_center.jpg" alt="Connor Rothschild">
+      
+
+      <div class="media-body">
+        <h5 class="card-title"><a href="https://connorrothschild.com/">Connor Rothschild</a></h5>
+        <h6 class="card-subtitle">Undergraduate at Rice University</h6>
+        <p class="card-text">I&rsquo;m a senior at Rice University interested in public policy, data science and their intersection. I&rsquo;m most passionate about translating complex data into informative and entertaining visualizations.</p>
+        <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/#contact" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://twitter.com/CL_Rothschild" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/connorrothschild" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+</ul>
+
+      </div>
+    </div>
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <div class="article-widget content-widget-hr">
+    <h3>Related</h3>
+    <ul>
+      
+      <li><a href="/post/bible-babies/">Bible Babies: Exploring Biblically-Inspired Baby Names over Time</a></li>
+      
+      <li><a href="/post/media-mentions/">The Race for Media Attention</a></li>
+      
+      <li><a href="/post/stem-igration/">STEMigration: Leaving and Entering STEM Fields During College</a></li>
+      
+      <li><a href="/post/automation/">Automation and Its Impact on Jobs</a></li>
+      
+      <li><a href="/post/introducing-tpltheme/">My First Package! Introducing &#39;tpltheme&#39;</a></li>
+      
+    </ul>
+  </div>
+  
+
+
+            </div>
+              </article>
+              
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/css.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/bash.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/javascript.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/markdown.min.js"></script>
+        
+      
+
+    
+
+    
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.37431be2d92d7fb0160054761ab79602.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+  <div class="container">
+    <footer class="site-footer">
+
+    <p class="powered-by">
+  
+      © Connor Rothschild, 2021  | Browse the source code <a href="https://github.com/connorrothschild/connorrothschild.com" target ="_blank" rel="noopener">here</a>.
+      <br>
+      Built with <i class="far fa-heart"></i> and <i class="fa fa-coffee"></i> (and also 
+      <a href="https://www.netlify.com/" target ="_blank" rel="noopener">Netlify</a>, 
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>,
+      and the R <a href="https://github.com/rstudio/blogdown" target="_blank" rel="noopener">blogdown</a> package).
+      
+      </p>
+
+      
+ 
+  <script>
+  $(document).ready(function () {
+    window.initializeCodeFolding("show" === "hide");
+  });
+  </script>
+  <script src="/js/codefolding.js"></script>
+
+
+    
+ 
+  </footer>
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1505 @@
+<!DOCTYPE html><html lang="en-us" >
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="generator" content="Source Themes Academic 4.8.0">
+  
+    
+  
+    
+    
+    
+    
+    
+      
+      
+      
+    
+    
+  
+    <meta name="author" content="Connor Rothschild">
+  
+    
+    
+    
+      
+    
+    <meta name="description" content="Scrollytelling in R, because its easier than D3.">
+  
+    
+    <link rel="alternate" hreflang="en-us" href="https://connorrothschild.com/post/automation-scrollytell/">
+  
+    
+
+
+    
+    
+    
+    <meta name="theme-color" content="black">
+    
+  
+    
+    
+  
+    
+    
+    
+    
+      
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  
+      
+      
+      
+        
+      
+      
+        
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github-gist.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github-gist.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+  
+      
+  
+      
+  
+      
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+          
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+  
+    
+  
+    
+    
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:400,500,600,700,800,900%7CLato:400,500,600,700,800,900%7CRoboto+Mono:400,500,600,700,800,900%7CKhula:400,500,600,700%7CInter:400,500,600,700,800,900&display=swap">
+    
+  
+    
+    
+    
+    
+    <link rel="stylesheet" href="/css/academic.css">
+  
+    
+
+
+
+
+    
+
+  
+    
+    
+
+    
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <link rel="stylesheet" href="/css/codefolding.css" />
+
+  
+    
+  
+    <link rel="manifest" href="/index.webmanifest">
+    <link rel="icon" type="image/png" href="/images/icon_hu82528eb29b5d31779afb6f1becdf1c8e_5759_32x32_fill_lanczos_center_2.png">
+    <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu82528eb29b5d31779afb6f1becdf1c8e_5759_192x192_fill_lanczos_center_2.png">
+  
+    <link rel="canonical" href="https://connorrothschild.com/post/automation-scrollytell/">
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    <meta property="twitter:card" content="summary_large_image">
+    
+    <meta property="twitter:site" content="@CL_Rothschild">
+    <meta property="twitter:creator" content="@CL_Rothschild">
+    
+    <meta property="og:site_name" content="Connor Rothschild">
+    <meta property="og:url" content="https://connorrothschild.com/post/automation-scrollytell/">
+    <meta property="og:title" content="How to Scrollytell in R: Automation and Its Impact on Jobs | Connor Rothschild">
+    <meta property="og:description" content="Scrollytelling in R, because its easier than D3."><meta property="og:image" content="https://connorrothschild.com/post/automation-scrollytell/featured.png">
+    <meta property="twitter:image" content="https://connorrothschild.com/post/automation-scrollytell/featured.png"><meta property="og:locale" content="en-us">
+    
+      
+        <meta property="article:published_time" content="2019-10-26T00:00:00&#43;00:00">
+      
+      <meta property="article:modified_time" content="2020-10-26T08:36:10-05:00">
+    
+  
+    
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://connorrothschild.com/post/automation-scrollytell/"
+  },
+  "headline": "How to Scrollytell in R: Automation and Its Impact on Jobs",
+  
+  "image": [
+    "https://connorrothschild.com/post/automation-scrollytell/featured.png"
+  ],
+  
+  "datePublished": "2019-10-26T00:00:00Z",
+  "dateModified": "2020-10-26T08:36:10-05:00",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Connor Rothschild"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Connor Rothschild",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://connorrothschild.com/images/icon_hu82528eb29b5d31779afb6f1becdf1c8e_5759_192x192_fill_lanczos_center_2.png"
+    }
+  },
+  "description": "Scrollytelling in R, because its easier than D3."
+}
+</script>
+
+  
+
+  
+
+  
+    
+
+  
+    
+
+
+
+
+  
+    
+  
+    <title>How to Scrollytell in R: Automation and Its Impact on Jobs | Connor Rothschild</title>
+  
+  </head>
+  
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Connor Rothschild</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Connor Rothschild</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/post"><span>Blog</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#experience"><span>Experience</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#accomplishments"><span>Awards</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#projects"><span>Projects</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#contact"><span>Contact</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://docs.google.com/document/d/1qBH-wNMe2nv9Xa4uzHZ5wBevohwKuB3h2i9M2yk4POk/edit?usp=sharing" target="_blank" rel="noopener"><span>Resume</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+          <article class="article">
+            
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>How to Scrollytell in R: Automation and Its Impact on Jobs</h1>
+
+  
+
+  
+    
+
+
+<div class="article-metadata">
+
+  
+  
+  
+  
+  <div>
+    
+
+  
+  <span>Connor Rothschild</span>
+  </div>
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+          Last updated on
+      
+    
+    Oct 26, 2020
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    9 min read
+  </span>
+  
+
+  
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/category/r/">R</a></span>
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="btn-links mb-3">
+  
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  
+  
+    
+  
+  <a class="btn btn-outline-primary my-1 mr-1" href="https://github.com/connorrothschild/shiny-scrollytell/" target="_blank" rel="noopener">
+    <i class="fab fa-github "></i>
+    
+  </a>
+
+
+</div>
+
+
+    
+
+  
+</div>
+
+
+          <div class="article-container">
+            <div class="article-style">
+              
+
+
+<p>I’ve always been interested in data visualization, and my most recent sub-passion has been <em>scrollytelling</em>. I’ve seen numerous examples of amazing scrolling articles, from sites such as <a href="https://pudding.cool/">The Pudding</a>, the <a href="https://www.nytimes.com/">New York Times</a>, and <a href="https://fivethirtyeight.com/">FiveThirtyEight</a>.</p>
+<p>Although most of these sites rely on the same high-powered visualization tools (such as <a href="https://d3js.org/">D3.js</a>) to create their stories, the learning curve for those are a bit too steep for a full-time college student to pursue (although <a href="https://github.com/connorrothschild/D3.js">I am trying</a>!).</p>
+<p>Thankfully, I came across some examples of scrollytelling in my language of choice, R.</p>
+<p>What follows is a scrollytelling recreation of the <a href="https://connorrothschild.github.io/r/automation/">very first visualization I ever made</a>.</p>
+<pre class="r"><code>library(shiny)
+library(scrollytell)
+library(shinyjs)
+library(ggvis)
+library(plotly)
+
+theme_set(theme_minimal())</code></pre>
+<div id="construct-an-updating-plot-object" class="section level2">
+<h2>Construct an Updating Plot Object</h2>
+<p>Once the data (<a href="https://github.com/connorrothschild/shiny-scrollytell/tree/master/data">which can be found here</a>) is already <a href="https://connorrothschild.github.io/r/automation/#load-datasets">loaded and cleaned</a>, we construct a plot object that will update as the user scrolls. (<a href="https://github.com/scottyd22/dream_team">Other R users</a> make multiple plots; either way is fine.)</p>
+<pre class="r"><code>plot &lt;- data %&gt;% 
+  filter(if (add != 8) add &gt;= reveal else reveal %in% c(1:8)) %&gt;%
+  ggplot() +
+  geom_point(mapping=aes(x=A_MEDIAN, y=probability, size=TOT_EMP,
+                         alpha=ifelse(add == reveal, 1/5, 1/10), col=typicaled,
+                         text = glue::glue(&#39;&lt;b&gt;Occupation&lt;/b&gt;: {occupation}
+                                            &lt;b&gt;Probability of Automation&lt;/b&gt;: {probability}%
+                                            &lt;b&gt;Median Income&lt;/b&gt;: ${A_MEDIAN}
+                                            &lt;b&gt;Number of Workers&lt;/b&gt;: {TOT_EMP}&#39;))) +
+  scale_size(range = c(1, 20)) +
+  xlab(&quot;\nMedian Income&quot;) +
+  ylab(&quot;Probability of Automation&quot;) +
+  labs(size= &quot;&quot;, col= &quot;&quot;, alpha = &quot;&quot;) +
+  scale_color_manual(values = cols, breaks = legend_ord) +
+  scale_x_continuous(labels=scales::dollar_format(prefix=&quot;$&quot;), limits = c(25000,200000)) +
+  scale_y_continuous(labels=scales::number_format(suffix=&quot;%&quot;), limits = c(0,100)) +
+  # cr::drop_axis(axis = &quot;y&quot;) +
+  theme(axis.line.x = ggplot2::element_line(colour = NULL, 
+                                            size = NULL, linetype = NULL, lineend = NULL), 
+        axis.line.y = ggplot2::element_blank(),
+        panel.grid.major.x = element_blank())</code></pre>
+<p>But wait, what’s that second line of code?</p>
+<pre class="r"><code>filter(if (add != 8) add &gt;= reveal else reveal %in% c(1:8))</code></pre>
+<p>This may make <em>0 sense</em> right now, but here’s why we have it.</p>
+<p>The important part (and somewhat difficult thing to understand) about this step is that your plot object has some <strong>data which corresponds to an updating variable</strong>. For me, I added a variable called <em>reveal</em> for each step of the visualization. For me, this meant having reveal correspond to a typical level of education for a given job.</p>
+<pre class="r"><code>data &lt;- data %&gt;% 
+  mutate(reveal = case_when(
+    typicaled == &quot;No formal educational credential&quot; ~ 1,
+    typicaled == &quot;High school diploma or equivalent&quot; ~ 2,
+    typicaled == &quot;Postsecondary nondegree award&quot; ~ 3,
+    typicaled == &quot;Some college, no degree&quot; ~ 0,
+    typicaled == &quot;Associate&#39;s degree&quot; ~ 4,
+    typicaled == &quot;Bachelor&#39;s degree&quot; ~ 5,
+    typicaled == &quot;Master&#39;s degree&quot; ~ 6,
+    typicaled == &quot;Doctoral or professional degree&quot; ~ 7,
+  ))</code></pre>
+<p>What this means is that every time the post observes an event (a scroll), it will update according to the number in the <em>reveal</em> column.</p>
+<p>So, when my plot object has a line of code which says:</p>
+<pre class="r"><code>filter(if (add != 8) add &gt;= reveal else reveal %in% c(1:8))</code></pre>
+<p>That can be read as “Update the plot object to include all data points <strong>up until the current point</strong> encoded in reveal.”</p>
+<p>But, it also depends on what level of <em>add</em> we are at; if <em>add</em> == 8 (the last data point, e.g. the concluding plot), then we want to show <em>all data points</em>.</p>
+<p>“Okay, okay. But what is <em>add</em>???”</p>
+<p>Good question. <em>add</em> is the variable I constructed to correspond to the user’s input (in this case, the scroll!). When we put it all together, we’re going to wrap our plot object into a rendering function <em>inside</em> the server function. Confusing? It looks like this:</p>
+<pre class="r"><code>server &lt;- function(input, output, session) {
+  
+  output$plot &lt;- renderPlotly({
+    
+    add &lt;- input$scr
+    
+    plot &lt;- 
+      # static ggplot goes here
+      
+      ggplotly(plot) %&gt;%
+      # other ggplotly parameters go here
+      
+  })
+  
+  # render the plot here
+  output$scr &lt;- renderScrollytell({scrollytell()})
+  renderText(paste0(&quot;Section: &quot;, input$scr))
+  observe({cat(&quot;section:&quot;, input$scr, &quot;\n&quot;)})
+  
+}</code></pre>
+<p>What’s happening here? Within the server function, we’re doing two things:</p>
+<p>First, we’re creating the plot object. Because we have the command <em>add &lt;- input<span class="math inline">\(scr* **inside** the function `renderPlotly`, our plot object will be dynamically updated along with *input\)</span>scr</em>.</p>
+<p>This makes more sense when you connect it to the ui. In our ui function, we include a <code>scrolly_container</code> from the scrollytell package. Within that, we make our <code>outputId</code> correspond to the name of our updating input (in this case, <em>scr</em>).</p>
+<pre class="r"><code>ui &lt;- fluidPage(
+  
+  # a bunch of introductory stuff, css stuff
+  
+  # scrollytelling plot
+  scrolly_container(outputId = &quot;scr&quot;, 
+                       scrolly_graph(
+                                     ## this is the plot object that we made earlier:
+                                     plotlyOutput(&quot;plot&quot;, height = &#39;600px&#39;)
+                                     
+                    ), 
+                    scrolly_sections(
+                      ## each of these sections corresponds to an update
+                      ## the number after id = corresponds to the `scr` update
+                      ## the render_text() function will be discussed later
+                      scrolly_section(id = 0, render_text(0)),
+                      scrolly_section(id = 1, render_text(1)),
+                      scrolly_section(id = 2, render_text(2)),
+                      scrolly_section(id = 3, render_text(3)),
+                      scrolly_section(id = 4, render_text(4)),
+                      scrolly_section(id = 5, render_text(5)),
+                      scrolly_section(id = 6, render_text(6)),
+                      scrolly_section(id = 7, render_text(7)),
+                      scrolly_section(id = 8, render_text(8)),
+                      # add a scrolly_section with nothing in it; 
+                      # this buffer prevents the plot from disappearing while reading last section
+                      scrolly_section(id = &quot;buffer&quot;, br())
+                    )
+                    
+  ),
+ 
+  # a bunch of concluding stuff, other html 
+
+)</code></pre>
+<p>So, the simplest way to think about this so far is:</p>
+<p>Construct a plot object with some updating variable (in my case, <em>reveal</em>).</p>
+<pre class="r"><code>filter(if (add != 8) add &gt;= reveal else reveal %in% c(1:8))</code></pre>
+<p>Make that variable correspond with some input variable (in my case <em>add</em>, which is created from the <em>input$scr</em>).</p>
+<pre class="r"><code>server &lt;- function(input, output, session) {
+  
+  output$plot &lt;- renderPlotly({
+    
+    add &lt;- input$scr
+    #... </code></pre>
+<p>Render your plot object in <code>scrolly_graph</code>, and provide input updates via each <code>scrolly_section</code>.</p>
+<pre class="r"><code>ui &lt;- fluidPage(
+  
+  # a bunch of introductory stuff, css stuff
+  
+  # scrollytelling plot
+  scrolly_container(outputId = &quot;scr&quot;, 
+                       scrolly_graph(plotlyOutput(&quot;plot&quot;, height = &#39;600px&#39;)
+                                     
+                    ), 
+                    scrolly_sections(
+                      scrolly_section(id = 0, render_text(0)),
+                      scrolly_section(id = 1, render_text(1)),
+                      
+                      # ...</code></pre>
+<p>Render your plots in your server function.</p>
+<pre class="r"><code>server &lt;- function(input, output, session) {
+  
+  output$plot &lt;- 
+    #...
+  })
+  
+  output$scr &lt;- renderScrollytell({scrollytell()})
+  renderText(paste0(&quot;Section: &quot;, input$scr))
+  observe({cat(&quot;section:&quot;, input$scr, &quot;\n&quot;)})
+  
+}</code></pre>
+<p>That’s (most of) it for the plot section. You can play around with other customizations too (for example, the alphas for my circles correspond to an <code>ifelse</code> around <em>reveal</em>, so old circles are faded out compared to new ones).</p>
+<div id="create-a-series-of-text-reveals" class="section level3">
+<h3>Create a Series of Text Reveals</h3>
+<p>Next, we create text sections using <code>HTML</code> and some helper functions which beautify them.</p>
+<p>First, we create the text boxes for each section following a similar naming convention:</p>
+<pre class="r"><code>text1 &lt;- HTML(&quot;&lt;H2&gt; No education credentials &lt;/H2&gt;
+              &lt;br&gt; &lt;p&gt; Workers with &lt;font color=&#39;#A00042&#39;&gt;no formal education credential&lt;/font&gt; have a median income of $25,636.
+              &lt;br&gt; On average, those occupations have a &lt;b&gt;90% chance&lt;/b&gt; of job automation.
+              &lt;br&gt;&lt;br&gt; There are 23,765,700 workers with &lt;font color=&#39;#A00042&#39;&gt;no formal education credential&lt;/font&gt;.&lt;p&gt;&quot;)
+
+text2 &lt;- HTML(&quot;&lt;H2&gt; High school diplomas &lt;/H2&gt;
+              &lt;br&gt; &lt;p&gt;Workers with &lt;font color=&#39;#F56C42&#39;&gt;high school diplomas&lt;/font&gt; have a median income of $25,636.
+              &lt;br&gt; On average, those occupations have a &lt;b&gt;60% chance&lt;/b&gt; of job automation.
+              &lt;br&gt;&lt;br&gt; There are 33,129,910 workers with a &lt;font color=&#39;#F56C42&#39;&gt;high school diploma&lt;/font&gt;.&lt;p&gt;&quot;)
+
+# ... </code></pre>
+<p>Then, we create a function <code>render_text</code> which beautifies that HTML with CSS:</p>
+<pre class="r"><code>text &lt;- function(num){
+  p(
+    switch(num,
+           text1,
+           text2,
+           text3,
+           text4,
+           text5,
+           text6,
+           text7,
+           text8
+    )
+  )
+}
+
+render_text &lt;- function(num){
+  
+  div(
+    text(num), class = &quot;text&quot;
+  )
+  
+}</code></pre>
+<p>For all 8 of the above <em>text_</em>s, we’ve created a switch function which calls them depnding on the number passed to <code>render_text</code>. Then, we apply paragraph format, put them in their own div, and apply the <em>text</em> class in our CSS sheet.</p>
+<p>How does this work?</p>
+<p>Recall that above, in our ui section, we had the following:</p>
+<pre class="r"><code>scrolly_sections(
+                      HTML(&#39;&lt;center&gt;&#39;),
+                      scrolly_section(id = 0, render_text(0)),
+                      scrolly_section(id = 1, render_text(1)),
+                      # ...
+                      
+)</code></pre>
+<p>Here, our <code>scrolly_section</code>s take two inputs: our ID and our corresponding text. Rather than write out lengthy text boxes in each <code>scrolly_section</code>, we can construct them in a single file and then knit them all into the same format using <code>render_text</code>. This makes life a lot easier.</p>
+<p>So, on each scroll (or observation), the app will update 1) the plot object, by adding <em>add</em> and updating according to <em>reveal</em>, and 2) the text, by running <code>render_text</code> which calls <code>text</code> which beautifies our HTML text.</p>
+</div>
+<div id="final-touches" class="section level3">
+<h3>Final Touches</h3>
+<p>Surprisingly, that’s about it. The rest of the app is built on <code>fluidPage</code>, and organizing via rows and columns in your shiny app. Your app should have a CSS style sheet (in the <a href="https://shiny.rstudio.com/articles/css.html">www folder</a>). You may also include other plots (for my post, I have an introductory plot with a bit more context), which you will have to separately create and render in your server function.</p>
+<p>All in all, my code looks like this:</p>
+<pre class="r"><code>ui &lt;- fluidPage(
+  
+  # suppress warning messages while data is loading on-screen 
+  tags$style(type=&quot;text/css&quot;,
+             &quot;.shiny-output-error { visibility: hidden; }&quot;,
+             &quot;.shiny-output-error:before { visibility: hidden; }&quot;),
+  tags$head(
+    includeCSS(&quot;www/style.css&quot;)
+  ),
+  
+  # article title &amp; name
+  fluidRow(HTML(&quot;&lt;center&gt;
+                &lt;h1&gt;Automation and Its Impact on Jobs&lt;/h1&gt;
+                &lt;p style=&#39;font-size:26px&#39;&gt; by &lt;a href=&#39;https://connorrothschild.github.io/&#39; target=&#39;_blank&#39;&gt;Connor Rothschild&lt;/a&gt;&lt;/p&gt;
+                &lt;/center&gt;&quot;)
+  ),
+  
+  br(),
+  
+  fluidRow(
+    column(1),
+    
+    column(10,
+           # intro text
+           fluidRow(id=&#39;text&#39;,
+                    column(1),
+                    column(10, 
+                           br(),
+                           text0,
+                           hr(),
+                           h1(
+                             class = &quot;instructions&quot;,
+                             &quot;How to read this chart:&quot;, 
+                             br(),
+                             br(),
+                             &quot;The size of each&quot;, icon(&quot;circle&quot;), &quot;corresponds to the number of workers in that job.&quot;,
+                             br(),
+                             &quot;Hover over each&quot;, icon(&quot;circle&quot;), &quot;to see details on the occupation&#39;s income and probability of automation.&quot;,
+                             br(),
+                             &quot;Double click on a&quot;, icon(&quot;circle&quot;), &quot;in the legend to focus on a specific level of education.&quot; 
+                           )),
+                    column(1)),
+           # plot object for intro
+           plotlyOutput(&quot;introPlot&quot;, height = &#39;400px&#39;)
+           ),
+    
+    column(1),
+    
+           ),
+  
+  # scrollytelling plot
+  scrolly_container(&quot;scr&quot;
+                    , scrolly_graph( br(), 
+                                     br(),
+                                     textOutput(&quot;section&quot;),
+                                     br(),
+                                     HTML(&#39;&lt;center&gt;&#39;),
+                                     plotlyOutput(&quot;plot&quot;, height = &#39;600px&#39;),
+                                     HTML(&#39;&lt;/center&gt;&#39;)
+                                     
+                    )
+                    , scrolly_sections(
+                      HTML(&#39;&lt;center&gt;&#39;),
+                      scrolly_section(id = 0, render_text(0)),
+                      scrolly_section(id = 1, render_text(1)),
+                      scrolly_section(id = 2, render_text(2)),
+                      scrolly_section(id = 3, render_text(3)),
+                      scrolly_section(id = 4, render_text(4)),
+                      scrolly_section(id = 5, render_text(5)),
+                      scrolly_section(id = 6, render_text(6)),
+                      scrolly_section(id = 7, render_text(7)),
+                      scrolly_section(id = 8, render_text(8)),
+                      # add a scrolly_section with nothing in it; 
+                      # this buffer prevents the plot from disappearing while reading last section
+                      scrolly_section(id = &quot;buffer&quot;, br()),
+                      HTML(&#39;&lt;/center&gt;&#39;)
+                    )
+                    
+  ),
+  
+  # concluding text
+  div(fluidRow(id = &#39;text&#39;,
+               column(2),
+               column(8, 
+                      concludingtext,
+                      br()
+               ),
+               column(2)
+  ), style = &#39;margin-top: -300px;&#39;),
+  
+  br(),
+  br(),
+  br(),
+  hr(),
+  
+  fluidRow(
+    column(1),
+    column(10,
+           technicalnotes
+    ),
+    column(1)
+  ),
+  br(),
+  br(),
+column(1)
+
+)</code></pre>
+<p>And the server looks like this:</p>
+<pre class="r"><code>server &lt;- function(input, output, session) {
+  
+  output$plot &lt;- renderPlotly({
+    
+    add &lt;- input$scr
+    
+    plot &lt;- data %&gt;% 
+      filter(typicaled != &quot;Some college, no degree&quot;) %&gt;%
+      filter(if (add != 8) add &gt;= reveal else reveal %in% c(1:8)) %&gt;%
+      ggplot() +
+      geom_point(mapping=aes(x=A_MEDIAN, y=probability, size=TOT_EMP,
+                             alpha=ifelse(add == reveal, 1/5, 1/10), col=typicaled,
+                             text = glue::glue(&#39;&lt;b&gt;Occupation&lt;/b&gt;: {occupation}
+                                                &lt;b&gt;Probability of Automation&lt;/b&gt;: {probability}%
+                                                &lt;b&gt;Median Income&lt;/b&gt;: ${A_MEDIAN}
+                                                &lt;b&gt;Number of Workers&lt;/b&gt;: {TOT_EMP}&#39;))) +
+      scale_size(range = c(1, 20)) +
+      xlab(&quot;\nMedian Income&quot;) +
+      ylab(&quot;Probability of Automation&quot;) +
+      labs(size= &quot;&quot;, col= &quot;&quot;, alpha = &quot;&quot;) +
+      scale_color_manual(values = cols, breaks = legend_ord) +
+      scale_x_continuous(labels=scales::dollar_format(prefix=&quot;$&quot;), limits = c(25000,200000)) +
+      scale_y_continuous(labels=scales::number_format(suffix=&quot;%&quot;), limits = c(0,100)) +
+      # cr::drop_axis(axis = &quot;y&quot;) +
+      theme(axis.line.x = ggplot2::element_line(colour = NULL, 
+                                                size = NULL, linetype = NULL, lineend = NULL), 
+            axis.line.y = ggplot2::element_blank(),
+            panel.grid.major.x = element_blank())
+    
+    ggplotly(plot, tooltip = &#39;text&#39;) %&gt;%
+    layout(
+      title = list(element_blank()),
+      legend = list(x = 0.65, y = 0.925),
+      font = list(family = &#39;Lato&#39;),
+      margin=list(t=50),
+      hoverlabel = list(bgcolor = &#39;whitesmoke&#39;, color = &#39;DarkGray&#39;)) %&gt;%
+    config(displaylogo = F, showSendToCloud = F, displayModeBar = F)
+    
+  })
+    
+  output$introPlot &lt;- renderPlotly({introPlot})
+  output$scr &lt;- renderScrollytell({scrollytell()})
+  renderText(paste0(&quot;Section: &quot;, input$scr))
+  observe({cat(&quot;section:&quot;, input$scr, &quot;\n&quot;)})
+  
+}</code></pre>
+</div>
+</div>
+<div id="the-output" class="section level2">
+<h2>The Output</h2>
+<p>You can see the final output of my post <a href="https://connorrothschild.shinyapps.io/automation/">here</a>.</p>
+<p>You can look at the code and all of its context on GitHub <a href="https://github.com/connorrothschild/shiny-scrollytell">here</a>.</p>
+</div>
+
+            </div>
+              
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tag/r/">R</a>
+  
+  <a class="badge badge-light" href="/tag/visualization/">visualization</a>
+  
+  <a class="badge badge-light" href="/tag/animation/">animation</a>
+  
+  <a class="badge badge-light" href="/tag/scrollytelling/">scrollytelling</a>
+  
+</div>
+
+
+
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=https://connorrothschild.com/post/automation-scrollytell/&amp;text=How%20to%20Scrollytell%20in%20R:%20Automation%20and%20Its%20Impact%20on%20Jobs" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=https://connorrothschild.com/post/automation-scrollytell/&amp;t=How%20to%20Scrollytell%20in%20R:%20Automation%20and%20Its%20Impact%20on%20Jobs" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=How%20to%20Scrollytell%20in%20R:%20Automation%20and%20Its%20Impact%20on%20Jobs&amp;body=https://connorrothschild.com/post/automation-scrollytell/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=https://connorrothschild.com/post/automation-scrollytell/&amp;title=How%20to%20Scrollytell%20in%20R:%20Automation%20and%20Its%20Impact%20on%20Jobs" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://web.whatsapp.com/send?text=How%20to%20Scrollytell%20in%20R:%20Automation%20and%20Its%20Impact%20on%20Jobs%20https://connorrothschild.com/post/automation-scrollytell/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=https://connorrothschild.com/post/automation-scrollytell/&amp;title=How%20to%20Scrollytell%20in%20R:%20Automation%20and%20Its%20Impact%20on%20Jobs" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+
+
+
+
+
+  
+    
+    
+    
+      
+    
+    
+    
+    <div class="media author-card content-widget-hr">
+      
+        
+        <img class="avatar mr-3 avatar-circle" src="/author/connor-rothschild/avatar_hu7fba9da1679ce4a56c592454604cb9c1_715589_270x270_fill_q100_lanczos_center.jpg" alt="Connor Rothschild">
+      
+
+      <div class="media-body">
+        <h5 class="card-title"><a href="https://connorrothschild.com/">Connor Rothschild</a></h5>
+        <h6 class="card-subtitle">Undergraduate at Rice University</h6>
+        <p class="card-text">I&rsquo;m a senior at Rice University interested in public policy, data science and their intersection. I&rsquo;m most passionate about translating complex data into informative and entertaining visualizations.</p>
+        <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/#contact" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://twitter.com/CL_Rothschild" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/connorrothschild" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+</ul>
+
+      </div>
+    </div>
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <div class="article-widget content-widget-hr">
+    <h3>Related</h3>
+    <ul>
+      
+      <li><a href="/post/tidy-tuesday-powerlifting/">TidyTuesday: Powerlifting</a></li>
+      
+      <li><a href="/post/tx-vaccination-rates-rayshader/">Texas Vaccination Rates (How to Use Rayshader)</a></li>
+      
+      <li><a href="/post/bible-babies/">Bible Babies: Exploring Biblically-Inspired Baby Names over Time</a></li>
+      
+      <li><a href="/post/media-mentions/">The Race for Media Attention</a></li>
+      
+      <li><a href="/post/games-and-guns/">Games and Guns</a></li>
+      
+    </ul>
+  </div>
+  
+
+
+            </div>
+              </article>
+              
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/css.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/bash.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/javascript.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/markdown.min.js"></script>
+        
+      
+
+    
+
+    
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.37431be2d92d7fb0160054761ab79602.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+  <div class="container">
+    <footer class="site-footer">
+
+    <p class="powered-by">
+  
+      © Connor Rothschild, 2021  | Browse the source code <a href="https://github.com/connorrothschild/connorrothschild.com" target ="_blank" rel="noopener">here</a>.
+      <br>
+      Built with <i class="far fa-heart"></i> and <i class="fa fa-coffee"></i> (and also 
+      <a href="https://www.netlify.com/" target ="_blank" rel="noopener">Netlify</a>, 
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>,
+      and the R <a href="https://github.com/rstudio/blogdown" target="_blank" rel="noopener">blogdown</a> package).
+      
+      </p>
+
+      
+
+
+    
+ 
+  </footer>
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

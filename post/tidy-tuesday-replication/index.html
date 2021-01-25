@@ -1,0 +1,1362 @@
+<!DOCTYPE html><html lang="en-us" >
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="generator" content="Source Themes Academic 4.8.0">
+  
+    
+  
+    
+    
+    
+    
+    
+      
+      
+      
+    
+    
+  
+    <meta name="author" content="Connor Rothschild">
+  
+    
+    
+    
+      
+    
+    <meta name="description" content="Replicating a Bloomberg Graphics scatterplot using R Shiny.">
+  
+    
+    <link rel="alternate" hreflang="en-us" href="https://connorrothschild.com/post/tidy-tuesday-replication/">
+  
+    
+
+
+    
+    
+    
+    <meta name="theme-color" content="black">
+    
+  
+    
+    
+  
+    
+    
+    
+    
+      
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+  
+      
+      
+      
+        
+      
+      
+        
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github-gist.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github-gist.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+  
+      
+  
+      
+  
+      
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+        
+  
+        
+        
+          
+        
+  
+        
+      
+        
+  
+        
+        
+  
+        
+      
+  
+    
+  
+    
+    
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:400,500,600,700,800,900%7CLato:400,500,600,700,800,900%7CRoboto+Mono:400,500,600,700,800,900%7CKhula:400,500,600,700%7CInter:400,500,600,700,800,900&display=swap">
+    
+  
+    
+    
+    
+    
+    <link rel="stylesheet" href="/css/academic.css">
+  
+    
+
+
+
+
+    
+
+  
+    
+    
+
+    
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <link rel="stylesheet" href="/css/codefolding.css" />
+
+  
+    
+  
+    <link rel="manifest" href="/index.webmanifest">
+    <link rel="icon" type="image/png" href="/images/icon_hu82528eb29b5d31779afb6f1becdf1c8e_5759_32x32_fill_lanczos_center_2.png">
+    <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu82528eb29b5d31779afb6f1becdf1c8e_5759_192x192_fill_lanczos_center_2.png">
+  
+    <link rel="canonical" href="https://connorrothschild.com/post/tidy-tuesday-replication/">
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    <meta property="twitter:card" content="summary_large_image">
+    
+    <meta property="twitter:site" content="@CL_Rothschild">
+    <meta property="twitter:creator" content="@CL_Rothschild">
+    
+    <meta property="og:site_name" content="Connor Rothschild">
+    <meta property="og:url" content="https://connorrothschild.com/post/tidy-tuesday-replication/">
+    <meta property="og:title" content="Tidy Tuesday: Replication | Connor Rothschild">
+    <meta property="og:description" content="Replicating a Bloomberg Graphics scatterplot using R Shiny."><meta property="og:image" content="https://connorrothschild.com/post/tidy-tuesday-replication/featured.png">
+    <meta property="twitter:image" content="https://connorrothschild.com/post/tidy-tuesday-replication/featured.png"><meta property="og:locale" content="en-us">
+    
+      
+        <meta property="article:published_time" content="2019-12-10T00:00:00&#43;00:00">
+      
+      <meta property="article:modified_time" content="2020-12-07T20:21:34-06:00">
+    
+  
+    
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://connorrothschild.com/post/tidy-tuesday-replication/"
+  },
+  "headline": "Tidy Tuesday: Replication",
+  
+  "image": [
+    "https://connorrothschild.com/post/tidy-tuesday-replication/featured.png"
+  ],
+  
+  "datePublished": "2019-12-10T00:00:00Z",
+  "dateModified": "2020-12-07T20:21:34-06:00",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Connor Rothschild"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Connor Rothschild",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://connorrothschild.com/images/icon_hu82528eb29b5d31779afb6f1becdf1c8e_5759_192x192_fill_lanczos_center_2.png"
+    }
+  },
+  "description": "Replicating a Bloomberg Graphics scatterplot using R Shiny."
+}
+</script>
+
+  
+
+  
+
+  
+    
+
+  
+    
+
+
+
+
+  
+    
+  
+    <title>Tidy Tuesday: Replication | Connor Rothschild</title>
+  
+  </head>
+  
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Connor Rothschild</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Connor Rothschild</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/post"><span>Blog</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#experience"><span>Experience</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#accomplishments"><span>Awards</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#projects"><span>Projects</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#contact"><span>Contact</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+            
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="https://docs.google.com/document/d/1qBH-wNMe2nv9Xa4uzHZ5wBevohwKuB3h2i9M2yk4POk/edit?usp=sharing" target="_blank" rel="noopener"><span>Resume</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+          <article class="article">
+            
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>Tidy Tuesday: Replication</h1>
+
+  
+
+  
+    
+
+
+<div class="article-metadata">
+
+  
+  
+  
+  
+  <div>
+    
+
+  
+  <span>Connor Rothschild</span>
+  </div>
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+          Last updated on
+      
+    
+    Dec 7, 2020
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    8 min read
+  </span>
+  
+
+  
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/category/r/">R</a></span>
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+  
+</div>
+
+
+          <div class="article-container">
+            <div class="article-style">
+              
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+
+<p>This weeks’s installment of <a href="https://t.co/sElb4fcv3u?amp=1">Tidy Tuesday</a> is all about replicating professional plots in R.
+Inspired by Rafael Irizarry’s post <a href="https://simplystatistics.org/2019/08/28/you-can-replicate-almost-any-plot-with-ggplot2/">“You can replicate almost any plot with R”</a>, the goal is to take otherwise professional publication-ready plots and make them in R (usually ggplot2).</p>
+<p>I was interested in this Tidy Tuesday because some of my <a href="https://connorrothschild.github.io/r/introducing-tpltheme/">past work</a> has been dedicated to creating publication-ready plots. Because <a href="https://connorrothschild.github.io/r/automation/">the first visualization I ever created</a> was inspired by (a replication of?) <a href="https://www.bloomberg.com/graphics/2017-job-risk/">this visualization</a> from Bloomberg graphics, I decided to set out on a journey to make that plot as close as possible to the real thing.</p>
+<p><img src="figs/bloomberg.png" /></p>
+<p>The real goal of this week’s Tidy Tuesday is using <strong>the data that Rafael posted</strong> to create other cool visualizations; I took a slightly different approach to try to recreate another visualization entirely. What follows is an interactive recreation of the visualization above, using <a href="https://shiny.rstudio.com/">Shiny</a> and <a href="https://plot.ly/r/">plotly</a>.</p>
+<pre class="r"><code>library(ggplot2)
+library(ggthemes)
+library(dplyr)
+library(ggrepel)
+library(tools)
+library(readxl)
+library(tidyverse)
+library(knitr)
+library(shiny)
+library(plotly)
+
+theme_set(theme_minimal())</code></pre>
+<div id="load-and-clean-data" class="section level1">
+<h1>Load and Clean Data</h1>
+<p>First, we read in the data. This process was a bit complicated as I kind of had to guess where Bloomberg pulled their data from.</p>
+<p>I relied on three datasets:</p>
+<ol style="list-style-type: decimal">
+<li><p>Educational attainment broke down by occupation, provided by BLS <a href="https://www.bls.gov/emp/ep_education_training_system.htm">here</a></p></li>
+<li><p>Salaries, median hourly/annual wages broke down by occupation, provided by BLS <a href="https://www.bls.gov/oes/current/oes_nat.htm#11-0000">here</a></p></li>
+<li><p>Risk of automation broken down by occupation, provided by Carl Benedikt Frey and Michael A. Osborne (but compiled <a href="https://data.world/wnedds/occupations-by-state-and-likelihood-of-automation">here</a>)</p></li>
+</ol>
+<pre class="r"><code>education &lt;- read_excel(&quot;data/education.xlsx&quot;, skip=1)
+salary &lt;- read_excel(&quot;data/national_M2017_dl.xlsx&quot;)
+automation &lt;- read_excel(&quot;data/raw_state_automation_data.xlsx&quot;)</code></pre>
+<p>In <a href="https://connorrothschild.github.io/r/automation/">another post</a>, I detail the data cleaning process. I’ll spare you the details here.</p>
+</div>
+<div id="create-the-ui" class="section level1">
+<h1>Create the UI</h1>
+<p>Now we create the UI, as is the case for any Shiny app. This is pretty simple: first, we add the title panel and beautify it with some CSS.</p>
+<pre class="r"><code>ui &lt;- fluidPage(
+  
+    titlePanel(
+      h1(&quot;A College Degree Lowers Job Automation Risk&quot;,
+        style = &quot;font-family: &#39;Helvetica Neue&#39;;
+        font-size: 20px; font-weight: 400; line-height: 1.1;&quot;),
+      windowTitle = &quot;Find Out If Your Job Will Be Automated&quot;
+      ),</code></pre>
+<p>Next, we add the main panel, which includes a) the plot object, b) the footnote, and c) some CSS.</p>
+<pre class="r"><code>mainPanel(
+      fluidRow(
+        div(
+           plotlyOutput(&quot;plot&quot;, height = &#39;600px&#39;, width = &#39;850px&#39;)
+           ),align=&quot;left&quot;),
+           p(&quot;DATA: FREY &amp; OSBORNE, BUREAU OF LABOR STATISTICS&quot;,
+           style = &quot;font-family: &#39;Helvetica Neue&#39;;
+        font-size: 8px; font-weight: 500; line-height: 1.1;&quot;)
+           )  
+
+)</code></pre>
+<p>That’s it!</p>
+</div>
+<div id="server" class="section level1">
+<h1>Server</h1>
+<p>Now we can define the <code>server()</code> function, where the real magic of this visualization happens.</p>
+<p>All of the following takes place in the <code>server &lt;- function(input, output, session) {}</code> function.</p>
+<div id="create-a-ggplot-object" class="section level2">
+<h2>Create a ggplot Object</h2>
+<p>We know we’re going to need a ggplot object. In my case, we’ll need a plot object which relies on <em>probability, median income,</em> and <em>risk of automation</em>.</p>
+<pre class="r"><code>ggplot(aes(x=probability, y=A_MEDIAN, size=TOT_EMP, fill=typicaled, text = text)) +
+    geom_point(color = &quot;black&quot;, alpha = .97, stroke = .1) +
+    scale_size(range = c(1, 10), guide = &#39;legend&#39;)</code></pre>
+<p>This creates the base of the object.</p>
+<div id="add-a-tooltip" class="section level3">
+<h3>Add a Tooltip</h3>
+<p>We also know that, like the Bloomberg visualization we’re replicating, we’re going to want a tooltip.</p>
+<p>That’s why we included <code>text</code> in the above code, which we define here:</p>
+<pre class="r"><code>data %&gt;% 
+    mutate(text = glue::glue(&#39;&lt;span style=&quot;font-size:16px;font-weight:bold&quot;&gt;{data$occupation}&lt;/span&gt;&#39;,
+                             &#39;\n&lt;b&gt;Number employed:&lt;/b&gt; {scales::comma(data$TOT_EMP)}&#39;,
+                             &#39;\n&lt;b&gt;Computerization prob:&lt;/b&gt; {data$probability}%&#39;,
+                             &#39;\n&lt;b&gt;Education:&lt;/b&gt; {data$typicaled}&#39;,
+                             sep = &quot;\n&quot;))</code></pre>
+<p>This tooltip takes in some CSS, some HTML, and creates a pretty tooltip! The <code>glue</code> function is lovely.</p>
+</div>
+<div id="axes-and-labels" class="section level3">
+<h3>Axes and Labels</h3>
+<p>The Bloomberg visualization is unique in that it has no axis lines. We can replicate that in <code>ggplot2</code> via the following code:</p>
+<pre class="r"><code>theme(axis.line.x = ggplot2::element_blank(), 
+      axis.line.y = ggplot2::element_blank(),
+      axis.text = element_text(colour = &quot;black&quot;, size = 8))</code></pre>
+<p>But that’s not all!</p>
+<p>The Bloomberg visualization is also unique in that it doesn’t have axis titles. Moreover, the axis labels are a bit unique; the x axis increases sequentially by 10 until 90 where it transitions into ‘90%’ (the % is not present in the earlier numbers).</p>
+<p>We can mimic that kind of styling with this code:</p>
+<pre class="r"><code>xlab(&quot;&quot;) +
+ylab(&quot;&quot;) +
+labs(size= &quot;&quot;, alpha = &quot;&quot;, fill = &quot;&quot;) + 
+scale_y_continuous(limits = c(-1000,240000), 
+                   breaks = c(20000, 40000, 60000, 80000, 100000, 120000, 140000, 160000, 180000, 200000, 220000),
+                   labels = c(&quot;20K&quot;, &quot;40K&quot;, &quot;60K&quot;, &quot;80K&quot;, &quot;100K&quot;, &quot;120K&quot;, &quot;140K&quot;, &quot;160K&quot;, &quot;180K&quot;, &quot;200K&quot;, &quot;220K&quot;)) +
+scale_x_continuous(limits = c(0,100), 
+                   breaks = c(10,20,30,40,50,60,70,80,90),
+                   labels = c(10,20,30,40,50,60,70,80,&quot;90%&quot;))</code></pre>
+<p>We create a bit of a buffer on the <code>limits</code> argument so that we can add annotations. We’ll get to that later!</p>
+</div>
+<div id="colors" class="section level3">
+<h3>Colors</h3>
+<p>To get as close as possible to Bloomberg’s plot, I’d also like to mimic their color scheme. I pulled the colors from their dotplot with this awesome <a href="https://chrome.google.com/webstore/detail/color-picker/ohcpnigalekghcmgcdcenkpelffpdolg">Chrome plugin</a>; then, I added them to R with the following:</p>
+<pre class="r"><code>cols &lt;- c(&#39;No formal educational credential&#39; = &#39;#FA1A48&#39;,&#39;High school diploma or equivalent&#39; = &#39;#F79734&#39;,
+          &quot;Postsecondary nondegree award&quot; = &#39;#FDFF1C&#39;, &quot;Associate&#39;s degree&quot; = &#39;#1DDF50&#39;, 
+          &quot;Bachelor&#39;s degree&quot; = &#39;#34D19D&#39;, &quot;Master&#39;s degree&quot; = &#39;#1BC0E9&#39;,
+          &quot;Doctoral or professional degree&quot; = &#39;#1B91FF&#39;) </code></pre>
+<p>In the plot object, we reference this with the following:</p>
+<pre class="r"><code>scale_fill_manual(values = cols, labels = c(&#39;No formal educational credential&#39;, &#39;High school diploma or equivalent&#39;, &quot;Some college, no degree&quot;,
+                                             &quot;Associate&#39;s degree&quot;, &quot;Postsecondary nondegree award&quot;,
+                                             &quot;Bachelor&#39;s degree&quot;, &quot;Master&#39;s degree&quot;,
+                                             &quot;Doctoral or professional degree&quot;))</code></pre>
+<p>This essentially creates a fill scale (manually) with specified hex codes for colors. I also tried to manipulate the order of the legend but that didn’t translate to plotly (a documented problem, I believe).</p>
+</div>
+<div id="final-touches-for-the-ggplot" class="section level3">
+<h3>Final Touches for the ggplot</h3>
+<p>Finally, we do something really hacky: add a regression line with <code>geom_segment</code>. (I’m so sorry, R gods.)</p>
+<pre class="r"><code>geom_segment(aes(x = 0, y = 54000, xend = 100, yend = 58000), size = .1) </code></pre>
+<p>We now have the ggplot object created; let’s convert it to a plotly object.</p>
+</div>
+</div>
+<div id="create-a-plotly-object" class="section level2">
+<h2>Create a plotly Object</h2>
+<p>This process relies on the <code>ggplotly</code> function, which reads in a previously defined <code>ggplot</code> object and converts into an interactive plotly one.</p>
+<pre class="r"><code>introPlot &lt;- ggplotly(introggPlot, tooltip = &#39;text&#39;, sort = FALSE)</code></pre>
+<p>After creating the base plotly object, we move to some more complicated steps:</p>
+<div id="legend-orientation" class="section level3">
+<h3>Legend Orientation</h3>
+<p>We’d like the legend to orient horizontally, right above the plot. We do that with the following (inside the <code>layout</code> function):</p>
+<pre class="r"><code>legend = list(orientation = &quot;h&quot;,   
+                     xanchor = &quot;left&quot;,
+                     x = 0, y = 100,
+                     traceorder = &quot;normal&quot;,
+                     itemsizing = &quot;constant&quot;,
+                     tracegroupgap = 0,
+                     font = list(size = 13))</code></pre>
+<p>This does a few things. First, it orients the legend horizontally. Second, it anchors the legend to the left. Third, it defines the location (using x-y pairs) of the legend. <code>traceorder</code> is meant to maintain the previous order from <code>ggplot</code>, but that didn’t work in my version. <code>itemsizing</code> is meant to keep the legend items with a constant size, as opposed to dynamic relative to the plot objects themselves. This also didn’t work. The last two arguments define the spacing between points and the font size of the legend text!</p>
+</div>
+<div id="axes-revisited" class="section level3">
+<h3>Axes Revisited</h3>
+<p>We also see the Bloomberg viz has a right-aligned Y-axis. We can add that to plotly via the following code:</p>
+<pre class="r"><code>yaxis = list(
+        tickfont = element_blank(),
+        overlaying = &quot;y&quot;,
+        side = &quot;right&quot;,
+        title = &quot;&quot;
+      )</code></pre>
+</div>
+<div id="some-aesthetic-changes" class="section level3">
+<h3>Some Aesthetic Changes</h3>
+<p>Finally, we add three commands to the <code>layout</code> function.</p>
+<pre class="r"><code>font = list(family = &#39;Helvetica Neue&#39;,
+            color = &quot;black&quot;),
+margin = list(r=1, l=1,t=1,b=1,pad = 0),
+hoverlabel = list(bgcolor = &#39;white&#39;, color = &#39;black&#39;)</code></pre>
+<p>This a) changes the font of the plot, b) adds a small margin, and c) stylizes the tooltip on hover.</p>
+</div>
+<div id="annotations" class="section level3">
+<h3>Annotations</h3>
+<p>The last step is to mimic Bloomberg’s annotations. This is a little tough, specifically because it requires pretty specific x- and y-values.</p>
+<p>First, we’ll add their guiding annotations (that replace axis labels) that you can find in each corner:</p>
+<pre class="r"><code>add_annotations(
+      x = 1, y = 7500,
+      xref = &quot;x&quot;,
+      yref = &quot;y&quot;,
+      text = &quot;&lt;b&gt;Low paid,\nleast vulnerable&lt;/b&gt;&quot;,
+      xanchor = &#39;center&#39;,
+      align = &#39;left&#39;,
+      font = list(size = 10), 
+      showarrow = F
+    ) %&gt;%
+    add_annotations(
+      x = 100, y = 7500,
+      xref = &quot;x&quot;,
+      yref = &quot;y&quot;,
+      text = &quot;&lt;b&gt;Low paid,\nmost vulnerable&lt;/b&gt;&quot;,
+      xanchor = &#39;center&#39;,
+      align = &#39;right&#39;,
+      font = list(size = 10), 
+      showarrow = F
+    ) %&gt;%
+    add_annotations(
+      x = 1, y = 230000,
+      xref = &quot;x&quot;,
+      yref = &quot;y&quot;,
+      text = &quot;&lt;b&gt;Best paid,\nleast vulnerable&lt;/b&gt;&quot;,
+      xanchor = &#39;center&#39;,
+      align = &#39;left&#39;,
+      font = list(size = 10), 
+      showarrow = F
+    ) %&gt;%
+    add_annotations(
+      x = 100, y = 230000,
+      xref = &quot;x&quot;,
+      yref = &quot;y&quot;,
+      text = &quot;&lt;b&gt;Best paid,\nmost vulnerable&lt;/b&gt;&quot;,
+      xanchor = &#39;center&#39;,
+      align = &#39;right&#39;,
+      font = list(size = 10), 
+      showarrow = F
+    )</code></pre>
+<p>Next, we add annotations for ‘most and least likely to be automated’, as well as the y axis label.</p>
+<pre class="r"><code>add_annotations(
+      x = -5, y = -5000,
+      xref = &quot;x&quot;,
+      yref = &quot;y&quot;,
+      text = glue::glue(sprintf(&#39;\u2190&#39;), &quot;Least likely to be automated&quot;),
+      xanchor = &#39;left&#39;,
+      align = &#39;left&#39;,
+      font = list(size = 10), 
+      showarrow = F
+    ) %&gt;%
+    add_annotations(
+      x = 105, y = -5000,
+      xref = &quot;x&quot;,
+      yref = &quot;y&quot;,
+      text = glue::glue(&quot;Most likely to be automated&quot;, sprintf(&#39;\u2192&#39;)),
+      xanchor = &#39;right&#39;,
+      align = &#39;right&#39;,
+      font = list(size = 10), 
+      showarrow = F
+    ) %&gt;%
+    add_annotations(
+      x = 99, y = 243000,
+      xref = &quot;x&quot;,
+      yref = &quot;y&quot;,
+      text = &quot;Average annual wage&quot;,
+      xanchor = &#39;center&#39;,
+      align = &#39;right&#39;,
+      font = list(size = 10), 
+      showarrow = F
+    )</code></pre>
+<p>And finally, add a couple of plot annotations which label specific points. (We are not labelling a hundred occupations like Bloomberg did.)</p>
+<pre class="r"><code>add_annotations(
+      x = subset(data$probability, data$occupation == &quot;Chief Executives&quot;),
+      y = subset(data$A_MEDIAN, data$occupation == &quot;Chief Executives&quot;),
+      text = &quot;Chief Executives&quot;,
+      xref = &quot;x&quot;,
+      yref = &quot;y&quot;,
+      xanchor = &#39;center&#39;,
+      align = &#39;right&#39;,
+      font = list(size = 10), 
+      showarrow = TRUE,
+      arrowhead = 0,
+      ax = 50,
+      ay = 25
+    ) %&gt;% 
+    add_annotations(
+      x = subset(data$probability, data$occupation == &quot;Cashiers&quot;),
+      y = subset(data$A_MEDIAN, data$occupation == &quot;Cashiers&quot;),
+      text = &quot;Cashiers&quot;,
+      xref = &quot;x&quot;,
+      yref = &quot;y&quot;,
+      xanchor = &#39;center&#39;,
+      align = &#39;right&#39;,
+      font = list(size = 10), 
+      showarrow = TRUE,
+      arrowhead = 0,
+      ax = 40,
+      ay = -50
+    )</code></pre>
+<p>Finalize the plotly object with</p>
+<pre class="r"><code>config(displaylogo = F, showSendToCloud = F, displayModeBar = F)</code></pre>
+<p>We’re done! Run the application with the following code:</p>
+<pre class="r"><code>shinyApp(ui = ui, server = server)</code></pre>
+<p>And we’re done! Find my interactive visualization <a href="https://connorrothschild.shinyapps.io/2019-12-10/">here</a>. Find the code, uninterrupted and (hopefully) reproducible, <em><a href="https://github.com/connorrothschild/tidytuesday/blob/master/2019-12-10/app.R">here</a></em>.</p>
+<p>Here’s the Bloomberg visualization:</p>
+<p><img src="figs/bloomberg.png" /></p>
+<p>And here’s mine:</p>
+<p><img src="figs/replication.png" /></p>
+</div>
+</div>
+</div>
+
+            </div>
+              
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tag/r/">R</a>
+  
+  <a class="badge badge-light" href="/tag/visualization/">visualization</a>
+  
+  <a class="badge badge-light" href="/tag/replication/">replication</a>
+  
+  <a class="badge badge-light" href="/tag/tidy-tuesday/">Tidy Tuesday</a>
+  
+</div>
+
+
+
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=https://connorrothschild.com/post/tidy-tuesday-replication/&amp;text=Tidy%20Tuesday:%20Replication" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=https://connorrothschild.com/post/tidy-tuesday-replication/&amp;t=Tidy%20Tuesday:%20Replication" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Tidy%20Tuesday:%20Replication&amp;body=https://connorrothschild.com/post/tidy-tuesday-replication/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=https://connorrothschild.com/post/tidy-tuesday-replication/&amp;title=Tidy%20Tuesday:%20Replication" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://web.whatsapp.com/send?text=Tidy%20Tuesday:%20Replication%20https://connorrothschild.com/post/tidy-tuesday-replication/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=https://connorrothschild.com/post/tidy-tuesday-replication/&amp;title=Tidy%20Tuesday:%20Replication" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+
+
+
+
+
+  
+    
+    
+    
+      
+    
+    
+    
+    <div class="media author-card content-widget-hr">
+      
+        
+        <img class="avatar mr-3 avatar-circle" src="/author/connor-rothschild/avatar_hu7fba9da1679ce4a56c592454604cb9c1_715589_270x270_fill_q100_lanczos_center.jpg" alt="Connor Rothschild">
+      
+
+      <div class="media-body">
+        <h5 class="card-title"><a href="https://connorrothschild.com/">Connor Rothschild</a></h5>
+        <h6 class="card-subtitle">Undergraduate at Rice University</h6>
+        <p class="card-text">I&rsquo;m a senior at Rice University interested in public policy, data science and their intersection. I&rsquo;m most passionate about translating complex data into informative and entertaining visualizations.</p>
+        <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/#contact" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://twitter.com/CL_Rothschild" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/connorrothschild" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+</ul>
+
+      </div>
+    </div>
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <div class="article-widget content-widget-hr">
+    <h3>Related</h3>
+    <ul>
+      
+      <li><a href="/post/tidy-tuesday-powerlifting/">TidyTuesday: Powerlifting</a></li>
+      
+      <li><a href="/post/map-springfield/">Creating a Streetmap of Springfield, MO</a></li>
+      
+      <li><a href="/post/automation-scrollytell/">How to Scrollytell in R: Automation and Its Impact on Jobs</a></li>
+      
+      <li><a href="/post/games-and-guns/">Games and Guns</a></li>
+      
+      <li><a href="/post/building-my-first-shiny-app/">Building my First Shiny App</a></li>
+      
+    </ul>
+  </div>
+  
+
+
+            </div>
+              </article>
+              
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/css.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/bash.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/javascript.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/markdown.min.js"></script>
+        
+      
+
+    
+
+    
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.37431be2d92d7fb0160054761ab79602.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+  <div class="container">
+    <footer class="site-footer">
+
+    <p class="powered-by">
+  
+      © Connor Rothschild, 2021  | Browse the source code <a href="https://github.com/connorrothschild/connorrothschild.com" target ="_blank" rel="noopener">here</a>.
+      <br>
+      Built with <i class="far fa-heart"></i> and <i class="fa fa-coffee"></i> (and also 
+      <a href="https://www.netlify.com/" target ="_blank" rel="noopener">Netlify</a>, 
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>,
+      and the R <a href="https://github.com/rstudio/blogdown" target="_blank" rel="noopener">blogdown</a> package).
+      
+      </p>
+
+      
+
+
+    
+ 
+  </footer>
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

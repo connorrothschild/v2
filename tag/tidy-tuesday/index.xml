@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tidy Tuesday | Connor Rothschild</title>
+    <link>https://connorrothschild.com/tag/tidy-tuesday/</link>
+      <atom:link href="https://connorrothschild.com/tag/tidy-tuesday/index.xml" rel="self" type="application/rss+xml" />
+    <description>Tidy Tuesday</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2021</copyright><lastBuildDate>Tue, 10 Dec 2019 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://connorrothschild.com/img/social.png</url>
+      <title>Tidy Tuesday</title>
+      <link>https://connorrothschild.com/tag/tidy-tuesday/</link>
+    </image>
+    
+    <item>
+      <title>Tidy Tuesday: Replication</title>
+      <link>https://connorrothschild.com/post/tidy-tuesday-replication/</link>
+      <pubDate>Tue, 10 Dec 2019 00:00:00 +0000</pubDate>
+      <guid>https://connorrothschild.com/post/tidy-tuesday-replication/</guid>
+      <description>
+&lt;link href=&#34;https://connorrothschild.com/rmarkdown-libs/anchor-sections/anchor-sections.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/anchor-sections/anchor-sections.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;This weeks’s installment of &lt;a href=&#34;https://t.co/sElb4fcv3u?amp=1&#34;&gt;Tidy Tuesday&lt;/a&gt; is all about replicating professional plots in R.
+Inspired by Rafael Irizarry’s post &lt;a href=&#34;https://simplystatistics.org/2019/08/28/you-can-replicate-almost-any-plot-with-ggplot2/&#34;&gt;“You can replicate almost any plot with R”&lt;/a&gt;, the goal is to take otherwise professional publication-ready plots and make them in R (usually ggplot2).&lt;/p&gt;
+&lt;p&gt;I was interested in this Tidy Tuesday because some of my &lt;a href=&#34;https://connorrothschild.github.io/r/introducing-tpltheme/&#34;&gt;past work&lt;/a&gt; has been dedicated to creating publication-ready plots. Because &lt;a href=&#34;https://connorrothschild.github.io/r/automation/&#34;&gt;the first visualization I ever created&lt;/a&gt; was inspired by (a replication of?) &lt;a href=&#34;https://www.bloomberg.com/graphics/2017-job-risk/&#34;&gt;this visualization&lt;/a&gt; from Bloomberg graphics, I decided to set out on a journey to make that plot as close as possible to the real thing.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;figs/bloomberg.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The real goal of this week’s Tidy Tuesday is using &lt;strong&gt;the data that Rafael posted&lt;/strong&gt; to create other cool visualizations; I took a slightly different approach to try to recreate another visualization entirely. What follows is an interactive recreation of the visualization above, using &lt;a href=&#34;https://shiny.rstudio.com/&#34;&gt;Shiny&lt;/a&gt; and &lt;a href=&#34;https://plot.ly/r/&#34;&gt;plotly&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+library(ggthemes)
+library(dplyr)
+library(ggrepel)
+library(tools)
+library(readxl)
+library(tidyverse)
+library(knitr)
+library(shiny)
+library(plotly)
+
+theme_set(theme_minimal())&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;load-and-clean-data&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Load and Clean Data&lt;/h1&gt;
+&lt;p&gt;First, we read in the data. This process was a bit complicated as I kind of had to guess where Bloomberg pulled their data from.&lt;/p&gt;
+&lt;p&gt;I relied on three datasets:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Educational attainment broke down by occupation, provided by BLS &lt;a href=&#34;https://www.bls.gov/emp/ep_education_training_system.htm&#34;&gt;here&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Salaries, median hourly/annual wages broke down by occupation, provided by BLS &lt;a href=&#34;https://www.bls.gov/oes/current/oes_nat.htm#11-0000&#34;&gt;here&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Risk of automation broken down by occupation, provided by Carl Benedikt Frey and Michael A. Osborne (but compiled &lt;a href=&#34;https://data.world/wnedds/occupations-by-state-and-likelihood-of-automation&#34;&gt;here&lt;/a&gt;)&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;education &amp;lt;- read_excel(&amp;quot;data/education.xlsx&amp;quot;, skip=1)
+salary &amp;lt;- read_excel(&amp;quot;data/national_M2017_dl.xlsx&amp;quot;)
+automation &amp;lt;- read_excel(&amp;quot;data/raw_state_automation_data.xlsx&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In &lt;a href=&#34;https://connorrothschild.github.io/r/automation/&#34;&gt;another post&lt;/a&gt;, I detail the data cleaning process. I’ll spare you the details here.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;create-the-ui&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Create the UI&lt;/h1&gt;
+&lt;p&gt;Now we create the UI, as is the case for any Shiny app. This is pretty simple: first, we add the title panel and beautify it with some CSS.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ui &amp;lt;- fluidPage(
+  
+    titlePanel(
+      h1(&amp;quot;A College Degree Lowers Job Automation Risk&amp;quot;,
+        style = &amp;quot;font-family: &amp;#39;Helvetica Neue&amp;#39;;
+        font-size: 20px; font-weight: 400; line-height: 1.1;&amp;quot;),
+      windowTitle = &amp;quot;Find Out If Your Job Will Be Automated&amp;quot;
+      ),&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next, we add the main panel, which includes a) the plot object, b) the footnote, and c) some CSS.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mainPanel(
+      fluidRow(
+        div(
+           plotlyOutput(&amp;quot;plot&amp;quot;, height = &amp;#39;600px&amp;#39;, width = &amp;#39;850px&amp;#39;)
+           ),align=&amp;quot;left&amp;quot;),
+           p(&amp;quot;DATA: FREY &amp;amp; OSBORNE, BUREAU OF LABOR STATISTICS&amp;quot;,
+           style = &amp;quot;font-family: &amp;#39;Helvetica Neue&amp;#39;;
+        font-size: 8px; font-weight: 500; line-height: 1.1;&amp;quot;)
+           )  
+
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;That’s it!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;server&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Server&lt;/h1&gt;
+&lt;p&gt;Now we can define the &lt;code&gt;server()&lt;/code&gt; function, where the real magic of this visualization happens.&lt;/p&gt;
+&lt;p&gt;All of the following takes place in the &lt;code&gt;server &amp;lt;- function(input, output, session) {}&lt;/code&gt; function.&lt;/p&gt;
+&lt;div id=&#34;create-a-ggplot-object&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Create a ggplot Object&lt;/h2&gt;
+&lt;p&gt;We know we’re going to need a ggplot object. In my case, we’ll need a plot object which relies on &lt;em&gt;probability, median income,&lt;/em&gt; and &lt;em&gt;risk of automation&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(aes(x=probability, y=A_MEDIAN, size=TOT_EMP, fill=typicaled, text = text)) +
+    geom_point(color = &amp;quot;black&amp;quot;, alpha = .97, stroke = .1) +
+    scale_size(range = c(1, 10), guide = &amp;#39;legend&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This creates the base of the object.&lt;/p&gt;
+&lt;div id=&#34;add-a-tooltip&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Add a Tooltip&lt;/h3&gt;
+&lt;p&gt;We also know that, like the Bloomberg visualization we’re replicating, we’re going to want a tooltip.&lt;/p&gt;
+&lt;p&gt;That’s why we included &lt;code&gt;text&lt;/code&gt; in the above code, which we define here:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
+    mutate(text = glue::glue(&amp;#39;&amp;lt;span style=&amp;quot;font-size:16px;font-weight:bold&amp;quot;&amp;gt;{data$occupation}&amp;lt;/span&amp;gt;&amp;#39;,
+                             &amp;#39;\n&amp;lt;b&amp;gt;Number employed:&amp;lt;/b&amp;gt; {scales::comma(data$TOT_EMP)}&amp;#39;,
+                             &amp;#39;\n&amp;lt;b&amp;gt;Computerization prob:&amp;lt;/b&amp;gt; {data$probability}%&amp;#39;,
+                             &amp;#39;\n&amp;lt;b&amp;gt;Education:&amp;lt;/b&amp;gt; {data$typicaled}&amp;#39;,
+                             sep = &amp;quot;\n&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This tooltip takes in some CSS, some HTML, and creates a pretty tooltip! The &lt;code&gt;glue&lt;/code&gt; function is lovely.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;axes-and-labels&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Axes and Labels&lt;/h3&gt;
+&lt;p&gt;The Bloomberg visualization is unique in that it has no axis lines. We can replicate that in &lt;code&gt;ggplot2&lt;/code&gt; via the following code:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme(axis.line.x = ggplot2::element_blank(), 
+      axis.line.y = ggplot2::element_blank(),
+      axis.text = element_text(colour = &amp;quot;black&amp;quot;, size = 8))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But that’s not all!&lt;/p&gt;
+&lt;p&gt;The Bloomberg visualization is also unique in that it doesn’t have axis titles. Moreover, the axis labels are a bit unique; the x axis increases sequentially by 10 until 90 where it transitions into ‘90%’ (the % is not present in the earlier numbers).&lt;/p&gt;
+&lt;p&gt;We can mimic that kind of styling with this code:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;xlab(&amp;quot;&amp;quot;) +
+ylab(&amp;quot;&amp;quot;) +
+labs(size= &amp;quot;&amp;quot;, alpha = &amp;quot;&amp;quot;, fill = &amp;quot;&amp;quot;) + 
+scale_y_continuous(limits = c(-1000,240000), 
+                   breaks = c(20000, 40000, 60000, 80000, 100000, 120000, 140000, 160000, 180000, 200000, 220000),
+                   labels = c(&amp;quot;20K&amp;quot;, &amp;quot;40K&amp;quot;, &amp;quot;60K&amp;quot;, &amp;quot;80K&amp;quot;, &amp;quot;100K&amp;quot;, &amp;quot;120K&amp;quot;, &amp;quot;140K&amp;quot;, &amp;quot;160K&amp;quot;, &amp;quot;180K&amp;quot;, &amp;quot;200K&amp;quot;, &amp;quot;220K&amp;quot;)) +
+scale_x_continuous(limits = c(0,100), 
+                   breaks = c(10,20,30,40,50,60,70,80,90),
+                   labels = c(10,20,30,40,50,60,70,80,&amp;quot;90%&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We create a bit of a buffer on the &lt;code&gt;limits&lt;/code&gt; argument so that we can add annotations. We’ll get to that later!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;colors&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Colors&lt;/h3&gt;
+&lt;p&gt;To get as close as possible to Bloomberg’s plot, I’d also like to mimic their color scheme. I pulled the colors from their dotplot with this awesome &lt;a href=&#34;https://chrome.google.com/webstore/detail/color-picker/ohcpnigalekghcmgcdcenkpelffpdolg&#34;&gt;Chrome plugin&lt;/a&gt;; then, I added them to R with the following:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cols &amp;lt;- c(&amp;#39;No formal educational credential&amp;#39; = &amp;#39;#FA1A48&amp;#39;,&amp;#39;High school diploma or equivalent&amp;#39; = &amp;#39;#F79734&amp;#39;,
+          &amp;quot;Postsecondary nondegree award&amp;quot; = &amp;#39;#FDFF1C&amp;#39;, &amp;quot;Associate&amp;#39;s degree&amp;quot; = &amp;#39;#1DDF50&amp;#39;, 
+          &amp;quot;Bachelor&amp;#39;s degree&amp;quot; = &amp;#39;#34D19D&amp;#39;, &amp;quot;Master&amp;#39;s degree&amp;quot; = &amp;#39;#1BC0E9&amp;#39;,
+          &amp;quot;Doctoral or professional degree&amp;quot; = &amp;#39;#1B91FF&amp;#39;) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the plot object, we reference this with the following:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;scale_fill_manual(values = cols, labels = c(&amp;#39;No formal educational credential&amp;#39;, &amp;#39;High school diploma or equivalent&amp;#39;, &amp;quot;Some college, no degree&amp;quot;,
+                                             &amp;quot;Associate&amp;#39;s degree&amp;quot;, &amp;quot;Postsecondary nondegree award&amp;quot;,
+                                             &amp;quot;Bachelor&amp;#39;s degree&amp;quot;, &amp;quot;Master&amp;#39;s degree&amp;quot;,
+                                             &amp;quot;Doctoral or professional degree&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This essentially creates a fill scale (manually) with specified hex codes for colors. I also tried to manipulate the order of the legend but that didn’t translate to plotly (a documented problem, I believe).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;final-touches-for-the-ggplot&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Final Touches for the ggplot&lt;/h3&gt;
+&lt;p&gt;Finally, we do something really hacky: add a regression line with &lt;code&gt;geom_segment&lt;/code&gt;. (I’m so sorry, R gods.)&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;geom_segment(aes(x = 0, y = 54000, xend = 100, yend = 58000), size = .1) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We now have the ggplot object created; let’s convert it to a plotly object.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;create-a-plotly-object&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Create a plotly Object&lt;/h2&gt;
+&lt;p&gt;This process relies on the &lt;code&gt;ggplotly&lt;/code&gt; function, which reads in a previously defined &lt;code&gt;ggplot&lt;/code&gt; object and converts into an interactive plotly one.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;introPlot &amp;lt;- ggplotly(introggPlot, tooltip = &amp;#39;text&amp;#39;, sort = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After creating the base plotly object, we move to some more complicated steps:&lt;/p&gt;
+&lt;div id=&#34;legend-orientation&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Legend Orientation&lt;/h3&gt;
+&lt;p&gt;We’d like the legend to orient horizontally, right above the plot. We do that with the following (inside the &lt;code&gt;layout&lt;/code&gt; function):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;legend = list(orientation = &amp;quot;h&amp;quot;,   
+                     xanchor = &amp;quot;left&amp;quot;,
+                     x = 0, y = 100,
+                     traceorder = &amp;quot;normal&amp;quot;,
+                     itemsizing = &amp;quot;constant&amp;quot;,
+                     tracegroupgap = 0,
+                     font = list(size = 13))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This does a few things. First, it orients the legend horizontally. Second, it anchors the legend to the left. Third, it defines the location (using x-y pairs) of the legend. &lt;code&gt;traceorder&lt;/code&gt; is meant to maintain the previous order from &lt;code&gt;ggplot&lt;/code&gt;, but that didn’t work in my version. &lt;code&gt;itemsizing&lt;/code&gt; is meant to keep the legend items with a constant size, as opposed to dynamic relative to the plot objects themselves. This also didn’t work. The last two arguments define the spacing between points and the font size of the legend text!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;axes-revisited&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Axes Revisited&lt;/h3&gt;
+&lt;p&gt;We also see the Bloomberg viz has a right-aligned Y-axis. We can add that to plotly via the following code:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;yaxis = list(
+        tickfont = element_blank(),
+        overlaying = &amp;quot;y&amp;quot;,
+        side = &amp;quot;right&amp;quot;,
+        title = &amp;quot;&amp;quot;
+      )&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;some-aesthetic-changes&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Some Aesthetic Changes&lt;/h3&gt;
+&lt;p&gt;Finally, we add three commands to the &lt;code&gt;layout&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;font = list(family = &amp;#39;Helvetica Neue&amp;#39;,
+            color = &amp;quot;black&amp;quot;),
+margin = list(r=1, l=1,t=1,b=1,pad = 0),
+hoverlabel = list(bgcolor = &amp;#39;white&amp;#39;, color = &amp;#39;black&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This a) changes the font of the plot, b) adds a small margin, and c) stylizes the tooltip on hover.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;annotations&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Annotations&lt;/h3&gt;
+&lt;p&gt;The last step is to mimic Bloomberg’s annotations. This is a little tough, specifically because it requires pretty specific x- and y-values.&lt;/p&gt;
+&lt;p&gt;First, we’ll add their guiding annotations (that replace axis labels) that you can find in each corner:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;add_annotations(
+      x = 1, y = 7500,
+      xref = &amp;quot;x&amp;quot;,
+      yref = &amp;quot;y&amp;quot;,
+      text = &amp;quot;&amp;lt;b&amp;gt;Low paid,\nleast vulnerable&amp;lt;/b&amp;gt;&amp;quot;,
+      xanchor = &amp;#39;center&amp;#39;,
+      align = &amp;#39;left&amp;#39;,
+      font = list(size = 10), 
+      showarrow = F
+    ) %&amp;gt;%
+    add_annotations(
+      x = 100, y = 7500,
+      xref = &amp;quot;x&amp;quot;,
+      yref = &amp;quot;y&amp;quot;,
+      text = &amp;quot;&amp;lt;b&amp;gt;Low paid,\nmost vulnerable&amp;lt;/b&amp;gt;&amp;quot;,
+      xanchor = &amp;#39;center&amp;#39;,
+      align = &amp;#39;right&amp;#39;,
+      font = list(size = 10), 
+      showarrow = F
+    ) %&amp;gt;%
+    add_annotations(
+      x = 1, y = 230000,
+      xref = &amp;quot;x&amp;quot;,
+      yref = &amp;quot;y&amp;quot;,
+      text = &amp;quot;&amp;lt;b&amp;gt;Best paid,\nleast vulnerable&amp;lt;/b&amp;gt;&amp;quot;,
+      xanchor = &amp;#39;center&amp;#39;,
+      align = &amp;#39;left&amp;#39;,
+      font = list(size = 10), 
+      showarrow = F
+    ) %&amp;gt;%
+    add_annotations(
+      x = 100, y = 230000,
+      xref = &amp;quot;x&amp;quot;,
+      yref = &amp;quot;y&amp;quot;,
+      text = &amp;quot;&amp;lt;b&amp;gt;Best paid,\nmost vulnerable&amp;lt;/b&amp;gt;&amp;quot;,
+      xanchor = &amp;#39;center&amp;#39;,
+      align = &amp;#39;right&amp;#39;,
+      font = list(size = 10), 
+      showarrow = F
+    )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next, we add annotations for ‘most and least likely to be automated’, as well as the y axis label.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;add_annotations(
+      x = -5, y = -5000,
+      xref = &amp;quot;x&amp;quot;,
+      yref = &amp;quot;y&amp;quot;,
+      text = glue::glue(sprintf(&amp;#39;\u2190&amp;#39;), &amp;quot;Least likely to be automated&amp;quot;),
+      xanchor = &amp;#39;left&amp;#39;,
+      align = &amp;#39;left&amp;#39;,
+      font = list(size = 10), 
+      showarrow = F
+    ) %&amp;gt;%
+    add_annotations(
+      x = 105, y = -5000,
+      xref = &amp;quot;x&amp;quot;,
+      yref = &amp;quot;y&amp;quot;,
+      text = glue::glue(&amp;quot;Most likely to be automated&amp;quot;, sprintf(&amp;#39;\u2192&amp;#39;)),
+      xanchor = &amp;#39;right&amp;#39;,
+      align = &amp;#39;right&amp;#39;,
+      font = list(size = 10), 
+      showarrow = F
+    ) %&amp;gt;%
+    add_annotations(
+      x = 99, y = 243000,
+      xref = &amp;quot;x&amp;quot;,
+      yref = &amp;quot;y&amp;quot;,
+      text = &amp;quot;Average annual wage&amp;quot;,
+      xanchor = &amp;#39;center&amp;#39;,
+      align = &amp;#39;right&amp;#39;,
+      font = list(size = 10), 
+      showarrow = F
+    )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And finally, add a couple of plot annotations which label specific points. (We are not labelling a hundred occupations like Bloomberg did.)&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;add_annotations(
+      x = subset(data$probability, data$occupation == &amp;quot;Chief Executives&amp;quot;),
+      y = subset(data$A_MEDIAN, data$occupation == &amp;quot;Chief Executives&amp;quot;),
+      text = &amp;quot;Chief Executives&amp;quot;,
+      xref = &amp;quot;x&amp;quot;,
+      yref = &amp;quot;y&amp;quot;,
+      xanchor = &amp;#39;center&amp;#39;,
+      align = &amp;#39;right&amp;#39;,
+      font = list(size = 10), 
+      showarrow = TRUE,
+      arrowhead = 0,
+      ax = 50,
+      ay = 25
+    ) %&amp;gt;% 
+    add_annotations(
+      x = subset(data$probability, data$occupation == &amp;quot;Cashiers&amp;quot;),
+      y = subset(data$A_MEDIAN, data$occupation == &amp;quot;Cashiers&amp;quot;),
+      text = &amp;quot;Cashiers&amp;quot;,
+      xref = &amp;quot;x&amp;quot;,
+      yref = &amp;quot;y&amp;quot;,
+      xanchor = &amp;#39;center&amp;#39;,
+      align = &amp;#39;right&amp;#39;,
+      font = list(size = 10), 
+      showarrow = TRUE,
+      arrowhead = 0,
+      ax = 40,
+      ay = -50
+    )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finalize the plotly object with&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;config(displaylogo = F, showSendToCloud = F, displayModeBar = F)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We’re done! Run the application with the following code:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;shinyApp(ui = ui, server = server)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And we’re done! Find my interactive visualization &lt;a href=&#34;https://connorrothschild.shinyapps.io/2019-12-10/&#34;&gt;here&lt;/a&gt;. Find the code, uninterrupted and (hopefully) reproducible, &lt;em&gt;&lt;a href=&#34;https://github.com/connorrothschild/tidytuesday/blob/master/2019-12-10/app.R&#34;&gt;here&lt;/a&gt;&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Here’s the Bloomberg visualization:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;figs/bloomberg.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;And here’s mine:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;figs/replication.png&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>TidyTuesday: Powerlifting</title>
+      <link>https://connorrothschild.com/post/tidy-tuesday-powerlifting/</link>
+      <pubDate>Tue, 08 Oct 2019 00:00:00 +0000</pubDate>
+      <guid>https://connorrothschild.com/post/tidy-tuesday-powerlifting/</guid>
+      <description>
+&lt;link href=&#34;https://connorrothschild.com/rmarkdown-libs/anchor-sections/anchor-sections.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/anchor-sections/anchor-sections.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+library(tidyverse)
+library(ggtext)
+library(gifski)
+library(gganimate)
+library(cr)
+# 
+# set_cr_theme(font = &amp;quot;lato&amp;quot;)
+theme_set(theme_minimal())&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;load-and-clean-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Load and Clean Data&lt;/h2&gt;
+&lt;p&gt;First, read in the data from &lt;a href=&#34;https://openpowerlifting.org/data&#34; class=&#34;uri&#34;&gt;https://openpowerlifting.org/data&lt;/a&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# df &amp;lt;- readr::read_csv(&amp;quot;openpowerlifting-2019-09-20.csv&amp;quot;)
+# 
+# df_clean &amp;lt;- df %&amp;gt;% 
+#   janitor::clean_names()
+# 
+# ipf_lifts &amp;lt;- df_clean %&amp;gt;% 
+#   select(name:weight_class_kg, starts_with(&amp;quot;best&amp;quot;), place, date, federation, meet_name)  %&amp;gt;% 
+#   filter(!is.na(date)) %&amp;gt;% 
+#   filter(federation == &amp;quot;IPF&amp;quot;)
+
+ipf_lifts &amp;lt;- readr::read_csv(&amp;quot;data/ipf_lifts.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Clean ipf_lifts, and reshape the three lifts into one column:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ipf_lifts &amp;lt;- ipf_lifts %&amp;gt;% 
+  mutate(year = lubridate::year(date))
+
+ipf_lifts_reshape &amp;lt;- ipf_lifts %&amp;gt;% 
+  tidyr::pivot_longer(cols = c(&amp;quot;best3squat_kg&amp;quot;, &amp;quot;best3bench_kg&amp;quot;, &amp;quot;best3deadlift_kg&amp;quot;), names_to = &amp;quot;lift&amp;quot;) %&amp;gt;% 
+  select(name, sex, year, lift, value)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For my visualization, I’m only concerned with the &lt;em&gt;heaviest&lt;/em&gt; lifts from each year:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ipf_lifts_maxes &amp;lt;- ipf_lifts_reshape %&amp;gt;% 
+  group_by(year, sex, lift) %&amp;gt;% 
+  top_n(1, value) %&amp;gt;% 
+  ungroup %&amp;gt;% 
+  distinct(year, lift, value, .keep_all = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In order to construct a dumbbell plot, we need both male and female observations in the same row.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;max_pivot &amp;lt;- ipf_lifts_maxes %&amp;gt;% 
+  spread(sex, value)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s try to construct a dataframe for each sex:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;male_lifts &amp;lt;- max_pivot %&amp;gt;% 
+  select(-name) %&amp;gt;% 
+  filter(!is.na(M)) %&amp;gt;% 
+  group_by(year, lift) %&amp;gt;% 
+  summarise(male = mean(M))
+
+female_lifts &amp;lt;- max_pivot %&amp;gt;% 
+  select(-name) %&amp;gt;% 
+  filter(!is.na(`F`)) %&amp;gt;% 
+  group_by(year, lift) %&amp;gt;% 
+  summarise(female = mean(`F`))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And join them:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;max_lifts &amp;lt;- merge(male_lifts, female_lifts)
+
+max_lifts_final &amp;lt;- max_lifts %&amp;gt;% 
+  group_by(year, lift) %&amp;gt;% 
+  mutate(diff = male - female)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualize&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Visualize&lt;/h2&gt;
+&lt;p&gt;Finally, we can construct the visualization.&lt;/p&gt;
+&lt;p&gt;First, a static viz (thanks to hrbrmaster’s &lt;code&gt;ggalt&lt;/code&gt; &lt;a href=&#34;https://rud.is/b/2016/04/17/ggplot2-exercising-with-ggalt-dumbbells/&#34;&gt;package&lt;/a&gt;):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;max_lifts_final %&amp;gt;% 
+  filter(year == 2019) %&amp;gt;% 
+  ggplot() + 
+  ggalt::geom_dumbbell(aes(y = lift,
+                    x = female, xend = male),
+                colour = &amp;quot;grey&amp;quot;, size = 5,
+                colour_x = &amp;quot;#D6604C&amp;quot;, colour_xend = &amp;quot;#395B74&amp;quot;) +
+  labs(y = element_blank(),
+       x = &amp;quot;Top Lift Recorded (kg)&amp;quot;,
+       title =  &amp;quot;How &amp;lt;span style=&amp;#39;color:#D6604C&amp;#39;&amp;gt;Women&amp;lt;/span&amp;gt; and &amp;lt;span style=&amp;#39;color:#395B74&amp;#39;&amp;gt;Men&amp;lt;/span&amp;gt; Differ in Top Lifts&amp;quot;,
+                       subtitle = &amp;quot;In 2019&amp;quot;) +
+  theme(plot.title = element_markdown(lineheight = 1.1, size = 20),
+        plot.subtitle = element_text(size = 15)) +
+  scale_y_discrete(labels = c(&amp;quot;Bench&amp;quot;, &amp;quot;Deadlift&amp;quot;, &amp;quot;Squat&amp;quot;)) +
+  drop_axis(axis = &amp;quot;y&amp;quot;) +
+  geom_text(aes(x = female, y = lift, label = paste(female, &amp;quot;kg&amp;quot;)),
+            color = &amp;quot;#D6604C&amp;quot;, size = 4, vjust = -2) +
+  geom_text(aes(x = male, y = lift, label = paste(male, &amp;quot;kg&amp;quot;)),
+            color = &amp;quot;#395B74&amp;quot;, size = 4, vjust = -2) +
+  geom_rect(aes(xmin=430, xmax=470, ymin=-Inf, ymax=Inf), fill=&amp;quot;grey80&amp;quot;) +
+  geom_text(aes(label=diff, y=lift, x=450), fontface=&amp;quot;bold&amp;quot;, size=4) +
+  geom_text(aes(x=450, y=3, label=&amp;quot;Difference&amp;quot;),
+            color=&amp;quot;grey20&amp;quot;, size=4, vjust=-3, fontface=&amp;quot;bold&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Finally, we animate, using Thomas Pedersen’s wonderful &lt;a href=&#34;https://github.com/thomasp85/gganimate&#34;&gt;gganimate package&lt;/a&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animation &amp;lt;- max_lifts_final %&amp;gt;% 
+  ggplot() + 
+  ggalt::geom_dumbbell(aes(y = lift,
+                    x = female, xend = male),
+                colour = &amp;quot;grey&amp;quot;, size = 5,
+                colour_x = &amp;quot;#D6604C&amp;quot;, colour_xend = &amp;quot;#395B74&amp;quot;) +
+  labs(y = element_blank(),
+       x = &amp;quot;Top Lift Recorded (kg)&amp;quot;,
+       title =  &amp;quot;How &amp;lt;span style=&amp;#39;color:#D6604C&amp;#39;&amp;gt;Women&amp;lt;/span&amp;gt; and &amp;lt;span style=&amp;#39;color:#395B74&amp;#39;&amp;gt;Men&amp;lt;/span&amp;gt; Differ in Top Lifts&amp;quot;,
+  subtitle=&amp;#39;\nThis plot depicts the difference between the heaviest lifts for each sex at International Powerlifting Federation\nevents over time. \n \n{closest_state}&amp;#39;) +
+  theme(plot.title = element_markdown(lineheight = 1.1, size = 25, margin=margin(0,0,0,0)),
+        plot.subtitle = element_text(size = 15, margin=margin(8,0,-30,0))) +
+  scale_y_discrete(labels = c(&amp;quot;Bench&amp;quot;, &amp;quot;Deadlift&amp;quot;, &amp;quot;Squat&amp;quot;)) +
+  drop_axis(axis = &amp;quot;y&amp;quot;) +
+  geom_text(aes(x = female, y = lift, label = paste(female, &amp;quot;kg&amp;quot;)),
+            color = &amp;quot;#D6604C&amp;quot;, size = 4, vjust = -2) +
+  geom_text(aes(x = male, y = lift, label = paste(male, &amp;quot;kg&amp;quot;)),
+            color = &amp;quot;#395B74&amp;quot;, size = 4, vjust = -2) +
+  transition_states(year, transition_length = 4, state_length = 1) +
+  ease_aes(&amp;#39;cubic-in-out&amp;#39;)
+
+a_gif &amp;lt;- animate(animation, 
+                 fps = 10, 
+                 duration = 25,
+                 width = 800, height = 400, 
+                 renderer = gifski_renderer(&amp;quot;outputs/animation.gif&amp;quot;))
+
+a_gif&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-9-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;I’d like to include another GIF: a line chart of differences over time&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animation2 &amp;lt;- max_lifts_final %&amp;gt;% 
+  ungroup %&amp;gt;% 
+  mutate(lift = case_when(lift == &amp;quot;best3bench_kg&amp;quot; ~ &amp;quot;Bench&amp;quot;,
+                          lift == &amp;quot;best3squat_kg&amp;quot; ~ &amp;quot;Squat&amp;quot;,
+                          lift == &amp;quot;best3deadlift_kg&amp;quot; ~ &amp;quot;Deadlift&amp;quot;)) %&amp;gt;% 
+  ggplot(aes(year, diff, group = lift, color = lift)) + 
+  geom_line(show.legend = FALSE) + 
+  geom_segment(aes(xend = 2019.1, yend = diff), linetype = 2, colour = &amp;#39;grey&amp;#39;, show.legend = FALSE) + 
+  geom_point(size = 2, show.legend = FALSE) + 
+  geom_text(aes(x = 2019.1, label = lift, color = &amp;quot;#000000&amp;quot;), hjust = 0, show.legend = FALSE) + 
+  drop_axis(axis = &amp;quot;y&amp;quot;) +
+  transition_reveal(year) +
+  coord_cartesian(clip = &amp;#39;off&amp;#39;) +
+  theme(plot.title = element_text(size = 20)) +
+  labs(title = &amp;#39;Difference over time&amp;#39;,
+       y = &amp;#39;Difference (kg)&amp;#39;,
+       x = element_blank()) + 
+  theme(plot.margin = margin(5.5, 40, 5.5, 5.5))
+
+b_gif &amp;lt;- animate(animation2, 
+                 fps = 10, 
+                 duration = 25,
+        width = 800, height = 200, 
+        renderer = gifski_renderer(&amp;quot;outputs/animation2.gif&amp;quot;))
+
+b_gif&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-10-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;Next, combine them using &lt;code&gt;magick&lt;/code&gt; (thanks to &lt;a href=&#34;https://github.com/thomasp85/gganimate/wiki/Animation-Composition&#34;&gt;this post&lt;/a&gt;):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(magick)
+a_mgif &amp;lt;- image_read(a_gif)
+b_mgif &amp;lt;- image_read(b_gif)
+
+new_gif &amp;lt;- image_append(c(a_mgif[1], b_mgif[1]), stack = TRUE)
+for(i in 2:250){
+  combined &amp;lt;- image_append(c(a_mgif[i], b_mgif[i]), stack = TRUE)
+  new_gif &amp;lt;- c(new_gif, combined)
+}
+
+new_gif&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-11-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

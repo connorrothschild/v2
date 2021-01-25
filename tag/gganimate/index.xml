@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>gganimate | Connor Rothschild</title>
+    <link>https://connorrothschild.com/tag/gganimate/</link>
+      <atom:link href="https://connorrothschild.com/tag/gganimate/index.xml" rel="self" type="application/rss+xml" />
+    <description>gganimate</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2021</copyright><lastBuildDate>Tue, 08 Oct 2019 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://connorrothschild.com/img/social.png</url>
+      <title>gganimate</title>
+      <link>https://connorrothschild.com/tag/gganimate/</link>
+    </image>
+    
+    <item>
+      <title>TidyTuesday: Powerlifting</title>
+      <link>https://connorrothschild.com/post/tidy-tuesday-powerlifting/</link>
+      <pubDate>Tue, 08 Oct 2019 00:00:00 +0000</pubDate>
+      <guid>https://connorrothschild.com/post/tidy-tuesday-powerlifting/</guid>
+      <description>
+&lt;link href=&#34;https://connorrothschild.com/rmarkdown-libs/anchor-sections/anchor-sections.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/anchor-sections/anchor-sections.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+library(tidyverse)
+library(ggtext)
+library(gifski)
+library(gganimate)
+library(cr)
+# 
+# set_cr_theme(font = &amp;quot;lato&amp;quot;)
+theme_set(theme_minimal())&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;load-and-clean-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Load and Clean Data&lt;/h2&gt;
+&lt;p&gt;First, read in the data from &lt;a href=&#34;https://openpowerlifting.org/data&#34; class=&#34;uri&#34;&gt;https://openpowerlifting.org/data&lt;/a&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# df &amp;lt;- readr::read_csv(&amp;quot;openpowerlifting-2019-09-20.csv&amp;quot;)
+# 
+# df_clean &amp;lt;- df %&amp;gt;% 
+#   janitor::clean_names()
+# 
+# ipf_lifts &amp;lt;- df_clean %&amp;gt;% 
+#   select(name:weight_class_kg, starts_with(&amp;quot;best&amp;quot;), place, date, federation, meet_name)  %&amp;gt;% 
+#   filter(!is.na(date)) %&amp;gt;% 
+#   filter(federation == &amp;quot;IPF&amp;quot;)
+
+ipf_lifts &amp;lt;- readr::read_csv(&amp;quot;data/ipf_lifts.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Clean ipf_lifts, and reshape the three lifts into one column:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ipf_lifts &amp;lt;- ipf_lifts %&amp;gt;% 
+  mutate(year = lubridate::year(date))
+
+ipf_lifts_reshape &amp;lt;- ipf_lifts %&amp;gt;% 
+  tidyr::pivot_longer(cols = c(&amp;quot;best3squat_kg&amp;quot;, &amp;quot;best3bench_kg&amp;quot;, &amp;quot;best3deadlift_kg&amp;quot;), names_to = &amp;quot;lift&amp;quot;) %&amp;gt;% 
+  select(name, sex, year, lift, value)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For my visualization, I’m only concerned with the &lt;em&gt;heaviest&lt;/em&gt; lifts from each year:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ipf_lifts_maxes &amp;lt;- ipf_lifts_reshape %&amp;gt;% 
+  group_by(year, sex, lift) %&amp;gt;% 
+  top_n(1, value) %&amp;gt;% 
+  ungroup %&amp;gt;% 
+  distinct(year, lift, value, .keep_all = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In order to construct a dumbbell plot, we need both male and female observations in the same row.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;max_pivot &amp;lt;- ipf_lifts_maxes %&amp;gt;% 
+  spread(sex, value)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let’s try to construct a dataframe for each sex:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;male_lifts &amp;lt;- max_pivot %&amp;gt;% 
+  select(-name) %&amp;gt;% 
+  filter(!is.na(M)) %&amp;gt;% 
+  group_by(year, lift) %&amp;gt;% 
+  summarise(male = mean(M))
+
+female_lifts &amp;lt;- max_pivot %&amp;gt;% 
+  select(-name) %&amp;gt;% 
+  filter(!is.na(`F`)) %&amp;gt;% 
+  group_by(year, lift) %&amp;gt;% 
+  summarise(female = mean(`F`))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And join them:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;max_lifts &amp;lt;- merge(male_lifts, female_lifts)
+
+max_lifts_final &amp;lt;- max_lifts %&amp;gt;% 
+  group_by(year, lift) %&amp;gt;% 
+  mutate(diff = male - female)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualize&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Visualize&lt;/h2&gt;
+&lt;p&gt;Finally, we can construct the visualization.&lt;/p&gt;
+&lt;p&gt;First, a static viz (thanks to hrbrmaster’s &lt;code&gt;ggalt&lt;/code&gt; &lt;a href=&#34;https://rud.is/b/2016/04/17/ggplot2-exercising-with-ggalt-dumbbells/&#34;&gt;package&lt;/a&gt;):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;max_lifts_final %&amp;gt;% 
+  filter(year == 2019) %&amp;gt;% 
+  ggplot() + 
+  ggalt::geom_dumbbell(aes(y = lift,
+                    x = female, xend = male),
+                colour = &amp;quot;grey&amp;quot;, size = 5,
+                colour_x = &amp;quot;#D6604C&amp;quot;, colour_xend = &amp;quot;#395B74&amp;quot;) +
+  labs(y = element_blank(),
+       x = &amp;quot;Top Lift Recorded (kg)&amp;quot;,
+       title =  &amp;quot;How &amp;lt;span style=&amp;#39;color:#D6604C&amp;#39;&amp;gt;Women&amp;lt;/span&amp;gt; and &amp;lt;span style=&amp;#39;color:#395B74&amp;#39;&amp;gt;Men&amp;lt;/span&amp;gt; Differ in Top Lifts&amp;quot;,
+                       subtitle = &amp;quot;In 2019&amp;quot;) +
+  theme(plot.title = element_markdown(lineheight = 1.1, size = 20),
+        plot.subtitle = element_text(size = 15)) +
+  scale_y_discrete(labels = c(&amp;quot;Bench&amp;quot;, &amp;quot;Deadlift&amp;quot;, &amp;quot;Squat&amp;quot;)) +
+  drop_axis(axis = &amp;quot;y&amp;quot;) +
+  geom_text(aes(x = female, y = lift, label = paste(female, &amp;quot;kg&amp;quot;)),
+            color = &amp;quot;#D6604C&amp;quot;, size = 4, vjust = -2) +
+  geom_text(aes(x = male, y = lift, label = paste(male, &amp;quot;kg&amp;quot;)),
+            color = &amp;quot;#395B74&amp;quot;, size = 4, vjust = -2) +
+  geom_rect(aes(xmin=430, xmax=470, ymin=-Inf, ymax=Inf), fill=&amp;quot;grey80&amp;quot;) +
+  geom_text(aes(label=diff, y=lift, x=450), fontface=&amp;quot;bold&amp;quot;, size=4) +
+  geom_text(aes(x=450, y=3, label=&amp;quot;Difference&amp;quot;),
+            color=&amp;quot;grey20&amp;quot;, size=4, vjust=-3, fontface=&amp;quot;bold&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Finally, we animate, using Thomas Pedersen’s wonderful &lt;a href=&#34;https://github.com/thomasp85/gganimate&#34;&gt;gganimate package&lt;/a&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animation &amp;lt;- max_lifts_final %&amp;gt;% 
+  ggplot() + 
+  ggalt::geom_dumbbell(aes(y = lift,
+                    x = female, xend = male),
+                colour = &amp;quot;grey&amp;quot;, size = 5,
+                colour_x = &amp;quot;#D6604C&amp;quot;, colour_xend = &amp;quot;#395B74&amp;quot;) +
+  labs(y = element_blank(),
+       x = &amp;quot;Top Lift Recorded (kg)&amp;quot;,
+       title =  &amp;quot;How &amp;lt;span style=&amp;#39;color:#D6604C&amp;#39;&amp;gt;Women&amp;lt;/span&amp;gt; and &amp;lt;span style=&amp;#39;color:#395B74&amp;#39;&amp;gt;Men&amp;lt;/span&amp;gt; Differ in Top Lifts&amp;quot;,
+  subtitle=&amp;#39;\nThis plot depicts the difference between the heaviest lifts for each sex at International Powerlifting Federation\nevents over time. \n \n{closest_state}&amp;#39;) +
+  theme(plot.title = element_markdown(lineheight = 1.1, size = 25, margin=margin(0,0,0,0)),
+        plot.subtitle = element_text(size = 15, margin=margin(8,0,-30,0))) +
+  scale_y_discrete(labels = c(&amp;quot;Bench&amp;quot;, &amp;quot;Deadlift&amp;quot;, &amp;quot;Squat&amp;quot;)) +
+  drop_axis(axis = &amp;quot;y&amp;quot;) +
+  geom_text(aes(x = female, y = lift, label = paste(female, &amp;quot;kg&amp;quot;)),
+            color = &amp;quot;#D6604C&amp;quot;, size = 4, vjust = -2) +
+  geom_text(aes(x = male, y = lift, label = paste(male, &amp;quot;kg&amp;quot;)),
+            color = &amp;quot;#395B74&amp;quot;, size = 4, vjust = -2) +
+  transition_states(year, transition_length = 4, state_length = 1) +
+  ease_aes(&amp;#39;cubic-in-out&amp;#39;)
+
+a_gif &amp;lt;- animate(animation, 
+                 fps = 10, 
+                 duration = 25,
+                 width = 800, height = 400, 
+                 renderer = gifski_renderer(&amp;quot;outputs/animation.gif&amp;quot;))
+
+a_gif&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-9-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;I’d like to include another GIF: a line chart of differences over time&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animation2 &amp;lt;- max_lifts_final %&amp;gt;% 
+  ungroup %&amp;gt;% 
+  mutate(lift = case_when(lift == &amp;quot;best3bench_kg&amp;quot; ~ &amp;quot;Bench&amp;quot;,
+                          lift == &amp;quot;best3squat_kg&amp;quot; ~ &amp;quot;Squat&amp;quot;,
+                          lift == &amp;quot;best3deadlift_kg&amp;quot; ~ &amp;quot;Deadlift&amp;quot;)) %&amp;gt;% 
+  ggplot(aes(year, diff, group = lift, color = lift)) + 
+  geom_line(show.legend = FALSE) + 
+  geom_segment(aes(xend = 2019.1, yend = diff), linetype = 2, colour = &amp;#39;grey&amp;#39;, show.legend = FALSE) + 
+  geom_point(size = 2, show.legend = FALSE) + 
+  geom_text(aes(x = 2019.1, label = lift, color = &amp;quot;#000000&amp;quot;), hjust = 0, show.legend = FALSE) + 
+  drop_axis(axis = &amp;quot;y&amp;quot;) +
+  transition_reveal(year) +
+  coord_cartesian(clip = &amp;#39;off&amp;#39;) +
+  theme(plot.title = element_text(size = 20)) +
+  labs(title = &amp;#39;Difference over time&amp;#39;,
+       y = &amp;#39;Difference (kg)&amp;#39;,
+       x = element_blank()) + 
+  theme(plot.margin = margin(5.5, 40, 5.5, 5.5))
+
+b_gif &amp;lt;- animate(animation2, 
+                 fps = 10, 
+                 duration = 25,
+        width = 800, height = 200, 
+        renderer = gifski_renderer(&amp;quot;outputs/animation2.gif&amp;quot;))
+
+b_gif&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-10-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;Next, combine them using &lt;code&gt;magick&lt;/code&gt; (thanks to &lt;a href=&#34;https://github.com/thomasp85/gganimate/wiki/Animation-Composition&#34;&gt;this post&lt;/a&gt;):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(magick)
+a_mgif &amp;lt;- image_read(a_gif)
+b_mgif &amp;lt;- image_read(b_gif)
+
+new_gif &amp;lt;- image_append(c(a_mgif[1], b_mgif[1]), stack = TRUE)
+for(i in 2:250){
+  combined &amp;lt;- image_append(c(a_mgif[i], b_mgif[i]), stack = TRUE)
+  new_gif &amp;lt;- c(new_gif, combined)
+}
+
+new_gif&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-11-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Bible Babies: Exploring Biblically-Inspired Baby Names over Time</title>
+      <link>https://connorrothschild.com/post/bible-babies/</link>
+      <pubDate>Wed, 12 Jun 2019 00:00:00 +0000</pubDate>
+      <guid>https://connorrothschild.com/post/bible-babies/</guid>
+      <description>
+
+
+&lt;p&gt;The goal of this post is to explore how baby names have changed over time.&lt;/p&gt;
+&lt;p&gt;More specifically, I’m focusing on the decision to name one’s baby after a Biblical figure. I’m curious if the popularity of Biblically-inspired baby names has changed over time. We’re able to explore this question using the &lt;a href=&#34;https://cran.r-project.org/web/packages/babynames/babynames.pdf&#34;&gt;&lt;em&gt;babynames&lt;/em&gt; package&lt;/a&gt; in R, which contains historical data from the U.S. Social Security Administration ranging back to 1880. It contains information on the number of babies born with a certain name in a given year, the sex of those babies, the year they were born, and their name (obviously).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(babynames)
+library(knitr)
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+library(cr)
+conflicted::conflict_prefer(&amp;quot;filter&amp;quot;, &amp;quot;dplyr&amp;quot;)
+
+set_cr_theme(font = &amp;quot;lato&amp;quot;)
+kable(head(babynames))&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;right&#34;&gt;year&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;sex&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;name&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;n&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;prop&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1880&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;F&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Mary&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7065&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0723836&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1880&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;F&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Anna&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2604&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0266790&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1880&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;F&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Emma&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2003&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0205215&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1880&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;F&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Elizabeth&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1939&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0198658&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1880&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;F&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Minnie&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1746&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0178884&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;1880&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;F&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Margaret&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1578&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0161672&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;In order to determine the popularity of “Bible babies,” we need a list of names found in the Bible in order to search the &lt;em&gt;babynames&lt;/em&gt; dataset. I pulled a random list of Bible baby names from &lt;a href=&#34;https://www.babycentre.co.uk/a1025984/baby-names-from-the-bible&#34;&gt;babycentre.co.uk&lt;/a&gt;. The list likely doesn’t include &lt;em&gt;all&lt;/em&gt; names found in the Bible (only popular baby names), but that’s probably no big deal considering few, if any, parents name their child Athaliah.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;biblenames &amp;lt;- read_excel(&amp;quot;data/biblebabynames.xlsx&amp;quot;)
+
+boybible &amp;lt;- biblenames %&amp;gt;% 
+  select(boynames) %&amp;gt;% 
+  rename(names = boynames)
+
+girlbible &amp;lt;- biblenames %&amp;gt;% 
+  filter(!is.na(girlnames)) %&amp;gt;% 
+  select(girlnames) %&amp;gt;% 
+  rename(names = girlnames)
+
+biblenamesbind &amp;lt;- rbind(boybible, girlbible)
+
+# use the %in% operator to match names with those in biblenamesbind
+babynames &amp;lt;- babynames %&amp;gt;%
+  mutate(biblepercent = ifelse(name %in% biblenamesbind$names, prop, 0)) &lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;popularity-of-biblical-baby-names-over-time&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Popularity of Biblical Baby Names over Time&lt;/h2&gt;
+&lt;p&gt;One initial question is whether the popularity of “Bible babies” has declined over time. Given that &lt;a href=&#34;https://www.prri.org/research/american-religious-landscape-christian-religiously-unaffiliated/&#34;&gt;Christian identity&lt;/a&gt; and &lt;a href=&#34;https://religionnews.com/2014/01/27/great-decline-religion-united-states-one-graph/&#34;&gt;religiosity more generally&lt;/a&gt; have experienced declines in recent years, one may assume that the decision to name one’s baby after a Biblical figure has also become less popular.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;babynames %&amp;gt;% 
+  group_by(year) %&amp;gt;% 
+  summarise(sum = sum(biblepercent)) %&amp;gt;% 
+  ggplot(aes(x=year, y=sum)) +
+    geom_line() +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(title = &amp;quot;Bible Babies over Time&amp;quot;,
+       subtitle=&amp;quot;Percent of babies born with names found in the Bible&amp;quot;,
+       x=&amp;quot;Year&amp;quot;,
+       y=&amp;quot;Percent&amp;quot;,
+       caption = &amp;quot;Source: U.S. Social Security Administration
+       \n Design: www.connorrothschild.com&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/bible-babies/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Biblical names have become significantly less popular over time. We can split up the trend by sex to see if it is primarily driven by one group of babies.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;babynames %&amp;gt;% 
+  group_by(year, sex) %&amp;gt;% 
+  summarise(sum = sum(biblepercent)) %&amp;gt;% 
+  ungroup %&amp;gt;% 
+  group_by(sex) %&amp;gt;% 
+  ggplot(aes(x=year, y=sum, col=sex)) +
+  geom_line() +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(title = &amp;quot;Bible Babies over Time&amp;quot;,
+       subtitle=&amp;quot;Percent of babies born with names found in the Bible&amp;quot;,
+       x=&amp;quot;Year&amp;quot;,
+       y=&amp;quot;Percent&amp;quot;,
+       color=&amp;quot;Sex&amp;quot;,
+       caption = &amp;quot;Source: U.S. Social Security Administration
+       \n Design: www.connorrothschild.com&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/bible-babies/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Indeed, much of the departure from Biblically-inspired baby names has been driven by girls. While 13% of boys born in 2017 shared a name with some biblical figure, the same was true of only 4% of girls.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;exploring-popular-names-over-time-using-gganimate&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Exploring Popular Names over Time Using gganimate&lt;/h2&gt;
+&lt;p&gt;Finally, we can incorporate Thomas Lin Pedersen’s &lt;a href=&#34;https://github.com/thomasp85/gganimate&#34;&gt;&lt;em&gt;gganimate&lt;/em&gt; package&lt;/a&gt; to explore the popularity of &lt;em&gt;specific Bible names&lt;/em&gt; over time. This was inspired by Kieran Healy’s &lt;a href=&#34;https://kieranhealy.org/blog/archives/2019/05/13/baby-name-animation/&#34;&gt;similar visualization&lt;/a&gt; depicting changes in the structure of babies’ names over time. The below code creates a GIF showing the shifting popularity of boys’ names over time.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(gganimate)
+
+# make male rank variable
+malebabynames &amp;lt;- babynames %&amp;gt;%
+  filter(sex==&amp;quot;M&amp;quot;) %&amp;gt;% 
+  group_by(year) %&amp;gt;%
+  mutate(rank = min_rank(-biblepercent) * 1) %&amp;gt;%
+  filter(rank &amp;lt;= 10) %&amp;gt;%
+  ungroup()
+
+# plot male animation
+maleanimation &amp;lt;- malebabynames %&amp;gt;% 
+  filter(sex==&amp;quot;M&amp;quot;) %&amp;gt;% 
+  ggplot(aes(rank, group = name, 
+                fill = as.factor(name), color = as.factor(name))) +
+  geom_tile(aes(y = biblepercent/2,
+                height = biblepercent,
+                width = 0.9), alpha = 0.8, color = NA) +
+  geom_text(aes(y = 0, label = paste(name, &amp;quot; &amp;quot;)), vjust = 0.2, hjust = 1) +
+  coord_flip(clip = &amp;quot;off&amp;quot;, expand = FALSE) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_x_reverse() +
+  guides(color = FALSE, fill = FALSE) +
+  labs(title=&amp;quot;Most Popular Biblical Baby Names for Males&amp;quot;, 
+       subtitle=&amp;#39;in {closest_state}&amp;#39;, x = element_blank(), y = &amp;quot;Percent of Names&amp;quot;,
+       caption = &amp;quot;Source: U.S. Social Security Administration
+       \n Design: www.connorrothschild.com&amp;quot;) +
+  theme(plot.title = element_text(hjust = 0, size = 22),
+        plot.subtitle = element_text(hjust = 0, size = 16),
+        axis.ticks.y = element_blank(), 
+        axis.text.y  = element_blank(), 
+        plot.margin = margin(1,1,1,4, &amp;quot;cm&amp;quot;)) +
+  transition_states(year, transition_length = 4, state_length = 1) +
+  ease_aes(&amp;#39;cubic-in-out&amp;#39;)
+
+animate(maleanimation, fps = 25, nframes = 500, width = 800, height = 600)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/bible-babies/index_files/figure-html/unnamed-chunk-5-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;        #, renderer = gifski_renderer(&amp;quot;boybiblebabies.gif&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Replicating that code with minor tweaks creates the same animation for girls’ names:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# make rank variable
+femalebabynames &amp;lt;- babynames %&amp;gt;%
+  filter(sex==&amp;quot;F&amp;quot;) %&amp;gt;% 
+  group_by(year) %&amp;gt;%
+  mutate(rank = min_rank(-biblepercent) * 1) %&amp;gt;%
+  filter(rank &amp;lt;= 10) %&amp;gt;%
+  ungroup()
+
+# plot animation
+femaleanimation &amp;lt;- femalebabynames %&amp;gt;% 
+  filter(sex==&amp;quot;F&amp;quot;) %&amp;gt;% 
+  ggplot(aes(rank, group = name, 
+             fill = as.factor(name), color = as.factor(name))) +
+  geom_tile(aes(y = biblepercent/2,
+                height = biblepercent,
+                width = 0.9), alpha = 0.8, color = NA) +
+  geom_text(aes(y = 0, label = paste(name, &amp;quot; &amp;quot;)), vjust = 0.2, hjust = 1) +
+  coord_flip(clip = &amp;quot;off&amp;quot;, expand = FALSE) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_x_reverse() +
+  guides(color = FALSE, fill = FALSE) +
+  labs(title=&amp;quot;Most Popular Biblical Baby Names for Females&amp;quot;, 
+       subtitle=&amp;#39;in {closest_state}&amp;#39;, x = element_blank(), y = &amp;quot;Percent of Names&amp;quot;,
+       caption = &amp;quot;Source: U.S. Social Security Administration\n Design: www.connorrothschild.com&amp;quot;) +
+  theme(plot.title = element_text(hjust = 0, size = 22),
+        plot.subtitle = element_text(hjust = 0, size = 16),
+        axis.ticks.y = element_blank(),  
+        axis.text.y  = element_blank(),  
+        plot.margin = margin(1,1,1,4, &amp;quot;cm&amp;quot;)) +
+  transition_states(year, transition_length = 4, state_length = 1) +
+  ease_aes(&amp;#39;cubic-in-out&amp;#39;)
+
+animate(femaleanimation, fps = 25, nframes = 500, width = 800, height = 600)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/bible-babies/index_files/figure-html/unnamed-chunk-6-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;        #, renderer = gifski_renderer(&amp;quot;girlbiblebabies.gif&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, we can combine some of the insights from our earlier plot (depicting the popularity of Biblical names by sex) to show which boys’ names are responsible for their sex’s relative dominance over girls’ Biblically-inspired names.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# make rank variable
+babynamesrank &amp;lt;- babynames %&amp;gt;%
+  group_by(year) %&amp;gt;%
+  mutate(rank = min_rank(-biblepercent) * 1) %&amp;gt;%
+  filter(rank &amp;lt;= 10) %&amp;gt;%
+  ungroup()
+
+# plot animation
+babyanimation &amp;lt;- babynamesrank %&amp;gt;% 
+  ggplot(aes(rank, group = name, 
+             fill = as.factor(sex), color = as.factor(sex))) +
+  geom_tile(aes(y = biblepercent/2,
+                height = biblepercent,
+                width = 0.9), alpha = 0.8, color = NA) +
+  geom_text(aes(y = 0, label = paste(name, &amp;quot; &amp;quot;)), vjust = 0.2, hjust = 1) +
+  coord_flip(clip = &amp;quot;off&amp;quot;, expand = FALSE) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_x_reverse() +
+  guides(color = FALSE, fill = FALSE) +
+  labs(title=&amp;quot;Most Popular Biblical Baby Names&amp;quot;, 
+       subtitle=&amp;#39;in {closest_state}&amp;#39;, x = element_blank(), y = &amp;quot;Percent of Names&amp;quot;,
+       caption = &amp;quot;Source: U.S. Social Security Administration
+       \n Design: www.connorrothschild.com&amp;quot;) +
+  theme(plot.title = element_text(hjust = 0, size = 22),
+        plot.subtitle = element_text(hjust = 0, size = 16),
+        axis.ticks.y = element_blank(),  
+        axis.text.y  = element_blank(),  
+        plot.margin = margin(1,1,1,4, &amp;quot;cm&amp;quot;)) +
+  transition_states(year, transition_length = 4, state_length = 1) +
+  ease_aes(&amp;#39;cubic-in-out&amp;#39;)
+
+animate(babyanimation, fps = 25, nframes = 500, width = 800, height = 600)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/bible-babies/index_files/figure-html/unnamed-chunk-7-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;        #, renderer = gifski_renderer(&amp;quot;combinedbiblebabies.gif&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>The Race for Media Attention</title>
+      <link>https://connorrothschild.com/post/media-mentions/</link>
+      <pubDate>Thu, 30 May 2019 00:00:00 +0000</pubDate>
+      <guid>https://connorrothschild.com/post/media-mentions/</guid>
+      <description>
+
+
+&lt;p&gt;In this post, I explore which presidential candidates are discussed most frequently in the American news media.&lt;/p&gt;
+&lt;p&gt;Note: This post has become somewhat outdated since it’s &lt;a href=&#34;https://connorrothschild.github.io/media-mentions/&#34;&gt;original publication&lt;/a&gt; because the dataset (linked via FiveThirtyEight’s GitHub) has changed variable names and some of the data has changed.&lt;/p&gt;
+&lt;p&gt;You can find a less technical version of this post without code &lt;a href=&#34;https://www.connorrothschild.com/single-post/2019/05/30/The-Race-for-Media-Attention&#34;&gt;on my blog&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;overview&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Overview&lt;/h2&gt;
+&lt;p&gt;In this post, I explore which presidential candidates are discussed most frequently in the American news media. I do so using the &lt;a href=&#34;https://blog.gdeltproject.org/gdelt-2-0-television-api-debuts/&#34;&gt;GDELT Television API&lt;/a&gt;, which pulls data from the &lt;a href=&#34;https://archive.org/details/tv&#34;&gt;TV News Archive&lt;/a&gt;. For sake of convenience, I use an existing dataset found on FiveThirtyEight’s &lt;a href=&#34;https://github.com/fivethirtyeight/data/tree/master/media-mentions-2020&#34;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;load-libraries-and-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Load Libraries and Data&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(httr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(ggridges)
+library(ggrepel)
+library(viridis)
+library(lubridate)
+library(RColorBrewer)
+library(devtools)
+library(knitr)
+library(cr)
+
+set_cr_theme(font = &amp;quot;lato&amp;quot;)
+
+data &amp;lt;- read.csv(&amp;quot;data/mentions.csv&amp;quot;, header = T)
+  #read.csv((&amp;quot;https://raw.githubusercontent.com/fivethirtyeight/data/master/media-mentions-2020/cable_weekly.csv&amp;quot;), header=T)
+
+data &amp;lt;- data %&amp;gt;% 
+  mutate(date = as.Date(date, &amp;quot;%m/%d/%y&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The dataset contains information on 22 presidential candidates, recording weekly the number of clips which mention a presidential candidate (&lt;em&gt;matched_clips&lt;/em&gt;) and dividing them by the total number of clips that week (&lt;em&gt;total_clips&lt;/em&gt;) to reveal the percent (&lt;em&gt;pct_of_all_candidate_clips&lt;/em&gt;) of clips which mention that candidate.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;name&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;date&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;pct_of_all_candidate_clips&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;matched_clips&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;total_clips&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;John Delaney&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2018-12-30&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0039432&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;76029&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;John Delaney&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2019-01-06&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0019589&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;82964&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;John Delaney&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2019-01-13&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0081566&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;82521&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;John Delaney&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2019-01-20&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0020182&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;83649&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;John Delaney&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2019-01-27&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0015723&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;80994&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;John Delaney&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2019-02-03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.0006901&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;79183&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Of interest to us is the &lt;em&gt;name&lt;/em&gt; of each candidate and the percent (&lt;em&gt;pct_of_all_candidate_clips&lt;/em&gt;) of media mentions they receive on a weekly basis.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;analysis&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Analysis&lt;/h2&gt;
+&lt;p&gt;We can begin with a simple analysis of which candidates are discussed most frequently by the media by averaging their weekly proportion of mentions in the media.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
+  group_by(name) %&amp;gt;% 
+  summarise(pct_of_all_candidate_clips = mean(pct_of_all_candidate_clips)*100) %&amp;gt;% 
+  top_n(12, wt = pct_of_all_candidate_clips) %&amp;gt;% 
+  ggplot(aes(x=reorder(name,pct_of_all_candidate_clips),y=pct_of_all_candidate_clips)) +
+  geom_col(show.legend=FALSE) +
+  coord_flip() +
+  fix_bars() +
+  labs(x=element_blank(),
+       y=&amp;quot;Percent of Media Mentions&amp;quot;,
+       title=&amp;quot;Average Proportion of Media Coverage on a Weekly Basis&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/media-mentions/index_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Somewhat unsurprisingly. Joe Biden and Bernie Sanders lead the pack in media attention. Joe Biden tends to receive significantly more media attention than the average candidate (a weekly average of 0.9% of overall media content compared to 0.14% for the average candidate).&lt;/p&gt;
+&lt;p&gt;How has that coverage changed over time?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
+  group_by(name) %&amp;gt;% 
+  filter(mean(pct_of_all_candidate_clips) &amp;gt; .06) %&amp;gt;% # filter out unpopular candidates for plot clarity
+  ggplot(aes(x=as.Date(date),y=pct_of_all_candidate_clips*100,group=name, color=name)) +
+  geom_point() +
+  geom_smooth(se = FALSE, show.legend = FALSE) +
+  # geom_text(data = subset(data, as.numeric(date) == 21 &amp;amp; mean(pct_of_all_candidate_clips) &amp;gt; .05), 
+  #           aes(x = 21, label = name, color = &amp;quot;#000000&amp;quot;), hjust = -.05, 
+  #           show.legend = FALSE) + 
+  geom_label_repel(data=subset(data, pct_of_all_candidate_clips&amp;gt;.6),
+          label = &amp;quot;Lucy Flores accuses Biden of \n inappropriate touching&amp;quot;,
+                   nudge_x = -25, nudge_y=-5,
+                   show.legend = FALSE,
+                   color=&amp;quot;black&amp;quot;) + 
+  geom_label_repel(data=subset(data, pct_of_all_candidate_clips &amp;gt; .58 &amp;amp; pct_of_all_candidate_clips &amp;lt;.6),
+          label = &amp;quot;Joe Biden announces candidacy&amp;quot;,
+           nudge_x = -5, nudge_y=-7,
+           show.legend = FALSE,
+           color=&amp;quot;black&amp;quot;) +
+  # theme(axis.text.x = element_text(angle = 65, hjust = 1)) +
+  # coord_cartesian(clip = &amp;#39;off&amp;#39;) +
+  # # scale_x_discrete(breaks = c(&amp;quot;1/20/19&amp;quot;, &amp;quot;2/10/19&amp;quot;,&amp;quot;3/10/19&amp;quot;,&amp;quot;3/31/19&amp;quot;,&amp;quot;4/28/19&amp;quot;),
+  # #                  labels = c(&amp;quot;January&amp;quot;, &amp;quot;February&amp;quot;, &amp;quot;March&amp;quot;, &amp;quot;April&amp;quot;, &amp;quot;May&amp;quot;)) +
+  # # theme(plot.margin = margin(5.5, 100, 5.5, 5.5)) +
+  labs(x=element_blank(),
+       y=&amp;quot;Percent of Media Mentions&amp;quot;,
+       title=&amp;quot;Media Mentions of Candidates Over Time&amp;quot;) + 
+  scale_color_discrete(name=&amp;quot;Candidate&amp;quot;, 
+                       limits = c(&amp;quot;Joe Biden&amp;quot;, &amp;quot;Bernie Sanders&amp;quot;, &amp;quot;Elizabeth Warren&amp;quot;, 
+                                  &amp;quot;Kamala Harris&amp;quot;, &amp;quot;Beto O&amp;#39;Rourke&amp;quot;, &amp;quot;Cory Booker&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/media-mentions/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Evidently, much of Joe Biden’s popularity in the media can be explained by a few large spikes in weekly media mentions. We can explore the distribution of weekly media mentions using a visualization known as a &lt;a href=&#34;https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html&#34;&gt;density ridge plot&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
+  group_by(name) %&amp;gt;% 
+  filter(mean(pct_of_all_candidate_clips) &amp;gt; 0.1) %&amp;gt;% 
+  ungroup() %&amp;gt;% 
+ggplot(aes(x = pct_of_all_candidate_clips*100, y = reorder(name,pct_of_all_candidate_clips))) +
+  geom_density_ridges(aes(point_colour=name), 
+                      show.legend = FALSE, 
+                      alpha = .2, 
+                      point_alpha = 1, 
+                      jittered_points = TRUE) +
+  labs(x = &amp;quot;Percent of Media Mentions&amp;quot;,
+       y=element_blank(),
+       title=&amp;quot;Media Mentions of Each Candidate&amp;quot;,
+       subtitle=&amp;quot;With density ridges depicting average mentions on a weekly basis&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/media-mentions/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This plot illustrates that most candidates enjoy the same levels of media coverage from one week to another. Joe Biden, however, often has weeks in which he receives much more attention than usual, as evidenced by his small peaks throughout the plot. Bernie Sanders, Kamala Harris, and Beto O’Rourke also experienced a few jumps in attention, likely when they announced their candidacy for the presidency.&lt;/p&gt;
+&lt;p&gt;This raises an interesting question: when did candidates experience the most drastic changes in media attention? For example, were there any weeks in which a candidate who normally enjoys nearly no media attention began to get a lot of it?&lt;/p&gt;
+&lt;p&gt;We can answer this question by calculating the difference between one week’s coverage and the prior week’s coverage (using the &lt;a href=&#34;https://www.rdocumentation.org/packages/stats/versions/3.6.0/topics/lag&#34;&gt;lag&lt;/a&gt; function).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
+  group_by(name) %&amp;gt;% 
+  mutate(change = (pct_of_all_candidate_clips-(dplyr::lag(pct_of_all_candidate_clips, n=1, default=NA)))) %&amp;gt;% 
+  filter(change &amp;gt;.2 | change &amp;lt; -.2) %&amp;gt;% 
+  ggplot(aes(x=reorder(as.factor(date),change),y=change*100, fill=name)) +
+  geom_col() +
+  scale_fill_discrete(name=&amp;quot;Candidate&amp;quot;) +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
+  labs(x=element_blank(),
+       y=&amp;quot;Percent Change&amp;quot;,
+       title=&amp;quot;Largest Differences in Weekly Media Mentions&amp;quot;,
+       subtitle=&amp;quot;Subtracting a given week&amp;#39;s % mentions from the week prior&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/media-mentions/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Unsurprisingly, the bars tend to mirror one another. If a candidate enjoys a steep increase in media attention one week, they are likely to see a correlated drop in the following week (if that week were really a spike in attention). The plot suggests that Joe Biden’s announcement (on April 25th) led to the most dramatic change in media attention in the 2020 cycle so far. Bernie Sanders also witnessed a spike in attention in the week following his announcement on February 19th. The same is true for the other candidates included in this plot.&lt;/p&gt;
+&lt;p&gt;Finally, I am interested in who is “winning” the race for media attention. Although a previous plot has shown media attention over time, this data can be somewhat hard to digest and interpret as so many candidates crowd the lower bound of the data (as they receive little media attention compared to Joe Biden).&lt;/p&gt;
+&lt;p&gt;By constructing a &lt;a href=&#34;https://learnr.wordpress.com/2009/05/06/ggplot2-bump-chart/&#34;&gt;bump chart&lt;/a&gt;, I am able to depict the rank of each candidate in terms of their media attention in a given week. This type of visualization assigns each candidate a categorical rank and makes their progress throughout the campaign easier to visualize.&lt;/p&gt;
+&lt;p&gt;As an added benefit, this plot was difficult to construct and so it was rewarding to finally finish.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create extended color palette for 22 candidates
+nb.cols &amp;lt;- 22
+mycolors &amp;lt;- colorRampPalette(brewer.pal(8, &amp;quot;RdYlBu&amp;quot;))(nb.cols)
+show.top.n &amp;lt;- 10
+
+# give each candidate a ranking for each week
+data &amp;lt;- data %&amp;gt;% 
+  group_by(date) %&amp;gt;% 
+  arrange(date, desc(pct_of_all_candidate_clips), name) %&amp;gt;%  
+  mutate(rank = row_number()) %&amp;gt;% 
+  ungroup()
+
+# filter most recent data so as to make the plot more digestible
+recentdata &amp;lt;- data %&amp;gt;% 
+  mutate(date = as.Date(date, &amp;quot;%m/%d/%y&amp;quot;)) %&amp;gt;% 
+  filter(date &amp;gt; &amp;quot;2019-03-01&amp;quot;)
+
+# for axis labels, create ranking at the start and end of the analysis
+finranking &amp;lt;- recentdata %&amp;gt;% 
+  filter(date==&amp;quot;2019-05-19&amp;quot;) %&amp;gt;% 
+  select(date,name,rank) 
+
+startranking &amp;lt;- recentdata %&amp;gt;% 
+  filter(date==&amp;quot;2019-03-03&amp;quot;) %&amp;gt;% 
+  select(date,name,rank) 
+
+# and plot!
+recentdata %&amp;gt;% 
+  ggplot(aes(x=date, y=rank, group=name, label=name)) +
+  geom_line(aes(color=name, alpha = 1), size = 2) +
+  geom_point(aes(color = name, alpha = 1), size = 4) +
+    geom_point(color = &amp;quot;#FFFFFF&amp;quot;, size = 1) +
+  scale_fill_manual(values = mycolors) +
+  scale_y_reverse(breaks = 1:show.top.n) +
+  scale_x_date(expand = c(0,29)) +
+  coord_cartesian(ylim = c(1,show.top.n)) +
+  geom_text(data = subset(startranking), size=3, 
+            aes(x = date, hjust = 1.2)) +
+  geom_text(data = subset(finranking), size=3, 
+            aes(x = date, hjust = -.2)) +
+  # scale_color_brewer(palette = &amp;quot;Paired&amp;quot;) +
+  theme(line = element_blank(), rect = element_blank(), axis.text = element_blank(), 
+        axis.title = element_blank(),
+        axis.ticks.length = unit(0, &amp;quot;pt&amp;quot;), axis.ticks.length.x = NULL, 
+        axis.ticks.length.x.top = NULL, axis.ticks.length.x.bottom = NULL, 
+        axis.ticks.length.y = NULL, axis.ticks.length.y.left = NULL, 
+        axis.ticks.length.y.right = NULL, legend.box = NULL, legend.position = &amp;quot;none&amp;quot;) +
+  labs(x = element_blank(),
+       y = &amp;quot;Rank&amp;quot;,
+       title = &amp;quot;The Race for Media Attention&amp;quot;,
+       subtitle = &amp;quot;Candidates ranked by weekly media mentions&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/media-mentions/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Let’s focus on the meteoric rise of Pete Buttigieg:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;petedata &amp;lt;- recentdata %&amp;gt;% 
+  mutate(pete = ifelse(name == &amp;quot;Pete Buttigieg&amp;quot;, 1, 0))
+
+petedata %&amp;gt;% 
+  ggplot(aes(x=date, y=rank, group=name, label=name)) +
+  # pete&amp;#39;s line
+  geom_line(aes(color = &amp;quot;#1089FF&amp;quot;),
+                data = subset (petedata, pete == 1), 
+            size = 2, show.legend = FALSE) +
+  # everyone else&amp;#39;s line
+  geom_line(aes(alpha = 1), 
+            data = subset(petedata, pete != 1),
+            size = .5, show.legend = FALSE) +
+  geom_point(aes(fill = &amp;quot;grey80&amp;quot;, alpha = 1), 
+             data = subset(petedata, pete == 1), size = 4) +
+  geom_point(aes(alpha = 1), 
+             data = subset(petedata, pete != 1), size = 2) +
+  geom_point(color = &amp;quot;#FFFFFF&amp;quot;, size = 1) +
+  # scale_fill_manual(values = mycolors) +
+  scale_y_reverse(breaks = 1:show.top.n) +
+  scale_x_date(expand = c(0,29)) +
+  coord_cartesian(ylim = c(show.top.n, 1)) +
+  geom_text(data = subset(startranking), size=3, 
+            aes(x = date, hjust = 1.2)) +
+  geom_text(data = subset(finranking), size=3, 
+            aes(x = date, hjust = -.2)) +
+  # scale_fill_brewer(palette = &amp;quot;Dark2&amp;quot;) +
+  theme(line = element_blank(), rect = element_blank(), axis.text = element_blank(), 
+        axis.title = element_blank(),
+        axis.ticks.length = unit(0, &amp;quot;pt&amp;quot;), axis.ticks.length.x = NULL, 
+        axis.ticks.length.x.top = NULL, axis.ticks.length.x.bottom = NULL, 
+        axis.ticks.length.y = NULL, axis.ticks.length.y.left = NULL, 
+        axis.ticks.length.y.right = NULL, legend.box = NULL, legend.position = &amp;quot;none&amp;quot;) +
+  labs(x = element_blank(),
+       y = &amp;quot;Rank&amp;quot;,
+       title = &amp;quot;Out of Nowhere&amp;quot;,
+       subtitle = &amp;quot;Pete Buttigieg&amp;#39;s Rapid Rise in Media Mentions&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/media-mentions/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Some takeaways:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Bernie Sanders and Joe Biden consistently receive the most attention from the media.&lt;/li&gt;
+&lt;li&gt;The most stark increase in media mentions can be seen in the rise of Pete Buttigieg, who began not even in the top 10 but now receives the third most media mentions of any candidate.&lt;/li&gt;
+&lt;li&gt;Cory Booker and John Hickenlooper have all but disappeared from the media, while most other candidates remain in a place similar to where they began.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div id=&#34;next-steps&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Next Steps&lt;/h2&gt;
+&lt;p&gt;Future work could capitalize upon this analysis by looking at the &lt;em&gt;content&lt;/em&gt; of media coverage of candidates. In similar &lt;a href=&#34;https://www.connorrothschild.com/single-post/2019/05/21/following-the-race&#34;&gt;work&lt;/a&gt;, I have performed preliminary sentiment analysis on the Tweets of presidential candidates. Other researchers have &lt;a href=&#34;http://www.storybench.org/watching-the-watchdog-analyzing-initial-coverage-of-2020-candidates/&#34;&gt;shown&lt;/a&gt; that media coverage of female presidential candidates tends to be more negative than coverage of male candidates. Continuing this work with a larger dataset could reveal interesting insights about the relationship between media, politics, and sexism.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

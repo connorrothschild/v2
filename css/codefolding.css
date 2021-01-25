@@ -1,0 +1,28 @@
+/* Code folding */
+
+/* Each code block button */
+.code-folding-btn {
+    margin-bottom: 10px !important;
+    float: right !important;
+}
+
+.row {
+    display: flex;
+}
+
+.col-md-12 {
+    margin: 0 0 0 auto;
+}
+
+/* Main show/hide button */
+#code-folding-buttons {
+    float: right;
+}
+
+#code-folding-buttons.dropdown {
+    padding: 5px 0;
+    margin: 2px 0 0;
+    font-size: 14px;
+}
+
+/* End code folding */

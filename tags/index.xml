@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags | Connor Rothschild</title>
+    <link>https://connorrothschild.com/tags/</link>
+      <atom:link href="https://connorrothschild.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <description>Tags</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2021</copyright><lastBuildDate>Wed, 28 Oct 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://connorrothschild.com/img/social.png</url>
+      <title>Tags</title>
+      <link>https://connorrothschild.com/tags/</link>
+    </image>
+    
+  </channel>
+</rss>

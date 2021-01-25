@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>JavaScript | Connor Rothschild</title>
+    <link>https://connorrothschild.com/tag/javascript/</link>
+      <atom:link href="https://connorrothschild.com/tag/javascript/index.xml" rel="self" type="application/rss+xml" />
+    <description>JavaScript</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2021</copyright><lastBuildDate>Thu, 05 Mar 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://connorrothschild.com/img/social.png</url>
+      <title>JavaScript</title>
+      <link>https://connorrothschild.com/tag/javascript/</link>
+    </image>
+    
+    <item>
+      <title>Are You Smarter Than a Criminal Justice Algorithm?</title>
+      <link>https://connorrothschild.com/project/are-you-smarter-than-compas/</link>
+      <pubDate>Thu, 05 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>https://connorrothschild.com/project/are-you-smarter-than-compas/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Let Me Guess What You&#39;re Doing Right Now</title>
+      <link>https://connorrothschild.com/project/what-are-you-doing/</link>
+      <pubDate>Sat, 08 Feb 2020 00:00:00 +0000</pubDate>
+      <guid>https://connorrothschild.com/project/what-are-you-doing/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>How Many People Have Had COVID-19?</title>
+      <link>https://connorrothschild.com/project/how-many-people/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://connorrothschild.com/project/how-many-people/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>How Much Does Your State Spend on the Police?</title>
+      <link>https://connorrothschild.com/project/state-police-spending/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://connorrothschild.com/project/state-police-spending/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Quarantunes</title>
+      <link>https://connorrothschild.com/project/quarantunes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://connorrothschild.com/project/quarantunes/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
