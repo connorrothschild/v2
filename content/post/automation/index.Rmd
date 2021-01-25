@@ -28,7 +28,7 @@ library(cr)
 conflicted::conflict_prefer("filter", "dplyr")
 
 options(scipen=999)
-set_cr_theme(font = "lato")
+set_cr_theme(font = "IBM Plex Sans")
 ```
 
 ### Load datasets: 

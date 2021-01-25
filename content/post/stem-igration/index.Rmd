@@ -24,7 +24,7 @@ library(knitr)
 library(cr)
 conflicted::conflict_prefer("filter", "dplyr")
 
-set_cr_theme(font = "lato")
+set_cr_theme(font = "IBM Plex Sans")
 ```
 
 ### The Data
