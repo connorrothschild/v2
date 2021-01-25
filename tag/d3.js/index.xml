@@ -715,12 +715,15 @@ function ready(error, us, overdoses) {
       <pubDate>Mon, 16 Dec 2019 00:00:00 +0000</pubDate>
       <guid>https://connorrothschild.github.io/v2/post/who-mentions-who-in-the-office/</guid>
       <description>
-&lt;script src=&#34;https://connorrothschild.github.io/v2/rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;https://connorrothschild.github.io/v2/rmarkdown-libs/d3/d3.min.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;https://connorrothschild.github.io/v2/rmarkdown-libs/d3-tip/index.js&#34;&gt;&lt;/script&gt;
-&lt;link href=&#34;https://connorrothschild.github.io/v2/rmarkdown-libs/chorddiag/chorddiag.css&#34; rel=&#34;stylesheet&#34; /&gt;
-&lt;script src=&#34;https://connorrothschild.github.io/v2/rmarkdown-libs/chorddiag/chorddiag.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;https://connorrothschild.github.io/v2/rmarkdown-libs/chorddiag-binding/chorddiag.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/anchor-sections/anchor-sections.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/anchor-sections/anchor-sections.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/d3/d3.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/d3-tip/index.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/chorddiag/chorddiag.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/chorddiag/chorddiag.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/chorddiag-binding/chorddiag.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;This project explores the relationships between different characters in the classic TV show &lt;strong&gt;The Office&lt;/strong&gt;. Using transcript data newly released in &lt;a href=&#34;https://technistema.com/&#34;&gt;Bradley H. Lindblad&lt;/a&gt;’s &lt;a href=&#34;https://cran.r-project.org/web/packages/schrute/vignettes/theoffice.html&#34;&gt;&lt;code&gt;schrute&lt;/code&gt; package&lt;/a&gt;, I’d like to see &lt;em&gt;who mentions who in the Office&lt;/em&gt;. Is one character more popular than the others?&lt;/p&gt;
@@ -732,7 +735,21 @@ set_cr_theme()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;transcripts &amp;lt;- schrute::theoffice
 
 knitr::kable(transcripts[1:3,])&lt;/code&gt;&lt;/pre&gt;
-&lt;table&gt;
+&lt;table style=&#34;width:100%;&#34;&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;1%&#34; /&gt;
+&lt;col width=&#34;2%&#34; /&gt;
+&lt;col width=&#34;2%&#34; /&gt;
+&lt;col width=&#34;4%&#34; /&gt;
+&lt;col width=&#34;3%&#34; /&gt;
+&lt;col width=&#34;14%&#34; /&gt;
+&lt;col width=&#34;3%&#34; /&gt;
+&lt;col width=&#34;27%&#34; /&gt;
+&lt;col width=&#34;27%&#34; /&gt;
+&lt;col width=&#34;3%&#34; /&gt;
+&lt;col width=&#34;3%&#34; /&gt;
+&lt;col width=&#34;3%&#34; /&gt;
+&lt;/colgroup&gt;
 &lt;thead&gt;
 &lt;tr class=&#34;header&#34;&gt;
 &lt;th align=&#34;right&#34;&gt;index&lt;/th&gt;
@@ -799,7 +816,21 @@ knitr::kable(transcripts[1:3,])&lt;/code&gt;&lt;/pre&gt;
   tidytext::unnest_tokens(word, text)
 
 knitr::kable(transcripts_tokenized[1:3,])&lt;/code&gt;&lt;/pre&gt;
-&lt;table&gt;
+&lt;table style=&#34;width:100%;&#34;&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;2%&#34; /&gt;
+&lt;col width=&#34;3%&#34; /&gt;
+&lt;col width=&#34;3%&#34; /&gt;
+&lt;col width=&#34;5%&#34; /&gt;
+&lt;col width=&#34;5%&#34; /&gt;
+&lt;col width=&#34;20%&#34; /&gt;
+&lt;col width=&#34;4%&#34; /&gt;
+&lt;col width=&#34;36%&#34; /&gt;
+&lt;col width=&#34;5%&#34; /&gt;
+&lt;col width=&#34;5%&#34; /&gt;
+&lt;col width=&#34;5%&#34; /&gt;
+&lt;col width=&#34;2%&#34; /&gt;
+&lt;/colgroup&gt;
 &lt;thead&gt;
 &lt;tr class=&#34;header&#34;&gt;
 &lt;th align=&#34;right&#34;&gt;index&lt;/th&gt;
@@ -928,7 +959,7 @@ knitr::kable(keep_characters)&lt;/code&gt;&lt;/pre&gt;
        subtitle = &amp;quot;Counts of &amp;#39;Jim&amp;#39; in The Office Transcripts&amp;quot;,
        x = element_blank(),
        y = &amp;quot;Mentions&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/v2/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The takeaway here is that Dwight mentions Jim the most, followed by Michael. No surprise there! What I find interesting is that only three characters &lt;em&gt;really&lt;/em&gt; talk about/to Jim. After Dwight, Michael, and Pam (and Jim referencing himself, apparently), the mention rate for Jim’s name drops from over 200 to only 60 mentions. It seems as if the writers of the Office intentionally made Jim a subject of conversation among only a few characters!&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;replicate-for-the-rest-of-the-cast&#34; class=&#34;section level3&#34;&gt;
@@ -1007,7 +1038,7 @@ knitr::kable(keep_characters)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Using that data, we can create a chord diagram quite easily, using a single command from the &lt;code&gt;circlize&lt;/code&gt; library. &lt;a href=&#34;https://jokergoo.github.io/circlize_book/book/the-chorddiagram-function.html&#34;&gt;This chapter is helpful&lt;/a&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(circlize)
 chordDiagram(circlize_data, grid.col = c(&amp;quot;#B997C7&amp;quot;, &amp;quot;#824D99&amp;quot;, &amp;quot;#4E78C4&amp;quot;, &amp;quot;#57A2AC&amp;quot;, &amp;quot;#7EB875&amp;quot;, &amp;quot;#D0B541&amp;quot;, &amp;quot;#E67F33&amp;quot;, &amp;quot;#CE2220&amp;quot;, &amp;quot;#521A13&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/v2/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;div id=&#34;make-it-interactive&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Make It Interactive&lt;/h3&gt;
 &lt;p&gt;With nine people, some of the data can get easily concealed (how often did Angela mention Michael’s name?). One way to fix this is to make the visualization interactive, so that a user can hover over chords to see relationships between characters.&lt;/p&gt;

@@ -18,8 +18,9 @@
       <pubDate>Tue, 10 Dec 2019 00:00:00 +0000</pubDate>
       <guid>https://connorrothschild.github.io/v2/post/tidy-tuesday-replication/</guid>
       <description>
-&lt;link href=&#34;https://connorrothschild.github.io/v2/rmarkdown-libs/anchor-sections/anchor-sections.css&#34; rel=&#34;stylesheet&#34; /&gt;
-&lt;script src=&#34;https://connorrothschild.github.io/v2/rmarkdown-libs/anchor-sections/anchor-sections.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/anchor-sections/anchor-sections.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/anchor-sections/anchor-sections.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;This weeks’s installment of &lt;a href=&#34;https://t.co/sElb4fcv3u?amp=1&#34;&gt;Tidy Tuesday&lt;/a&gt; is all about replicating professional plots in R.
@@ -303,8 +304,9 @@ hoverlabel = list(bgcolor = &amp;#39;white&amp;#39;, color = &amp;#39;black&amp;
       <pubDate>Tue, 08 Oct 2019 00:00:00 +0000</pubDate>
       <guid>https://connorrothschild.github.io/v2/post/tidy-tuesday-powerlifting/</guid>
       <description>
-&lt;link href=&#34;https://connorrothschild.github.io/v2/rmarkdown-libs/anchor-sections/anchor-sections.css&#34; rel=&#34;stylesheet&#34; /&gt;
-&lt;script src=&#34;https://connorrothschild.github.io/v2/rmarkdown-libs/anchor-sections/anchor-sections.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/anchor-sections/anchor-sections.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/anchor-sections/anchor-sections.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
@@ -314,8 +316,8 @@ library(gifski)
 library(gganimate)
 library(cr)
 # 
-# set_cr_theme(font = &amp;quot;lato&amp;quot;)
-theme_set(theme_minimal())&lt;/code&gt;&lt;/pre&gt;
+set_cr_theme(font = &amp;quot;IBM Plex Sans&amp;quot;)
+# theme_set(theme_minimal())&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;load-and-clean-data&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Load and Clean Data&lt;/h2&gt;
 &lt;p&gt;First, read in the data from &lt;a href=&#34;https://openpowerlifting.org/data&#34; class=&#34;uri&#34;&gt;https://openpowerlifting.org/data&lt;/a&gt;:&lt;/p&gt;
@@ -392,7 +394,7 @@ max_lifts_final &amp;lt;- max_lifts %&amp;gt;%
   geom_text(aes(label=diff, y=lift, x=450), fontface=&amp;quot;bold&amp;quot;, size=4) +
   geom_text(aes(x=450, y=3, label=&amp;quot;Difference&amp;quot;),
             color=&amp;quot;grey20&amp;quot;, size=4, vjust=-3, fontface=&amp;quot;bold&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Finally, we animate, using Thomas Pedersen’s wonderful &lt;a href=&#34;https://github.com/thomasp85/gganimate&#34;&gt;gganimate package&lt;/a&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animation &amp;lt;- max_lifts_final %&amp;gt;% 
   ggplot() + 
@@ -422,7 +424,7 @@ a_gif &amp;lt;- animate(animation,
                  renderer = gifski_renderer(&amp;quot;outputs/animation.gif&amp;quot;))
 
 a_gif&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-9-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-9-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;p&gt;I’d like to include another GIF: a line chart of differences over time&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animation2 &amp;lt;- max_lifts_final %&amp;gt;% 
   ungroup %&amp;gt;% 
@@ -450,7 +452,7 @@ b_gif &amp;lt;- animate(animation2,
         renderer = gifski_renderer(&amp;quot;outputs/animation2.gif&amp;quot;))
 
 b_gif&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-10-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-10-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;p&gt;Next, combine them using &lt;code&gt;magick&lt;/code&gt; (thanks to &lt;a href=&#34;https://github.com/thomasp85/gganimate/wiki/Animation-Composition&#34;&gt;this post&lt;/a&gt;):&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(magick)
 a_mgif &amp;lt;- image_read(a_gif)
@@ -463,7 +465,7 @@ for(i in 2:250){
 }
 
 new_gif&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-11-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-11-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>

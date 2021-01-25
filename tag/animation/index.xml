@@ -400,8 +400,9 @@ column(1)
       <pubDate>Tue, 08 Oct 2019 00:00:00 +0000</pubDate>
       <guid>https://connorrothschild.github.io/v2/post/tidy-tuesday-powerlifting/</guid>
       <description>
-&lt;link href=&#34;https://connorrothschild.github.io/v2/rmarkdown-libs/anchor-sections/anchor-sections.css&#34; rel=&#34;stylesheet&#34; /&gt;
-&lt;script src=&#34;https://connorrothschild.github.io/v2/rmarkdown-libs/anchor-sections/anchor-sections.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/anchor-sections/anchor-sections.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/anchor-sections/anchor-sections.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
@@ -411,8 +412,8 @@ library(gifski)
 library(gganimate)
 library(cr)
 # 
-# set_cr_theme(font = &amp;quot;lato&amp;quot;)
-theme_set(theme_minimal())&lt;/code&gt;&lt;/pre&gt;
+set_cr_theme(font = &amp;quot;IBM Plex Sans&amp;quot;)
+# theme_set(theme_minimal())&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;load-and-clean-data&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Load and Clean Data&lt;/h2&gt;
 &lt;p&gt;First, read in the data from &lt;a href=&#34;https://openpowerlifting.org/data&#34; class=&#34;uri&#34;&gt;https://openpowerlifting.org/data&lt;/a&gt;:&lt;/p&gt;
@@ -489,7 +490,7 @@ max_lifts_final &amp;lt;- max_lifts %&amp;gt;%
   geom_text(aes(label=diff, y=lift, x=450), fontface=&amp;quot;bold&amp;quot;, size=4) +
   geom_text(aes(x=450, y=3, label=&amp;quot;Difference&amp;quot;),
             color=&amp;quot;grey20&amp;quot;, size=4, vjust=-3, fontface=&amp;quot;bold&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Finally, we animate, using Thomas Pedersen’s wonderful &lt;a href=&#34;https://github.com/thomasp85/gganimate&#34;&gt;gganimate package&lt;/a&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animation &amp;lt;- max_lifts_final %&amp;gt;% 
   ggplot() + 
@@ -519,7 +520,7 @@ a_gif &amp;lt;- animate(animation,
                  renderer = gifski_renderer(&amp;quot;outputs/animation.gif&amp;quot;))
 
 a_gif&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-9-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-9-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;p&gt;I’d like to include another GIF: a line chart of differences over time&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;animation2 &amp;lt;- max_lifts_final %&amp;gt;% 
   ungroup %&amp;gt;% 
@@ -547,7 +548,7 @@ b_gif &amp;lt;- animate(animation2,
         renderer = gifski_renderer(&amp;quot;outputs/animation2.gif&amp;quot;))
 
 b_gif&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-10-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-10-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;p&gt;Next, combine them using &lt;code&gt;magick&lt;/code&gt; (thanks to &lt;a href=&#34;https://github.com/thomasp85/gganimate/wiki/Animation-Composition&#34;&gt;this post&lt;/a&gt;):&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(magick)
 a_mgif &amp;lt;- image_read(a_gif)
@@ -560,7 +561,7 @@ for(i in 2:250){
 }
 
 new_gif&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-11-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/v2/post/tidy-tuesday-powerlifting/index_files/figure-html/unnamed-chunk-11-1.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -571,6 +572,9 @@ new_gif&lt;/code&gt;&lt;/pre&gt;
       <pubDate>Wed, 24 Jul 2019 00:00:00 +0000</pubDate>
       <guid>https://connorrothschild.github.io/v2/post/tx-vaccination-rates-rayshader/</guid>
       <description>
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/anchor-sections/anchor-sections.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/anchor-sections/anchor-sections.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;A brief exploration of Texas vaccination rates among kindergartners. Also an attempt to use &lt;code&gt;rayshader&lt;/code&gt; for the first time.&lt;/p&gt;
@@ -596,7 +600,20 @@ set_tpl_theme(font = &amp;quot;lato&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tx_vac &amp;lt;- read_excel(&amp;quot;data/2018-2019 School Vaccination Coverage Levels - Kindergarten (XLS) .xlsx&amp;quot;, skip = 2)
 
 kable(head(tx_vac))&lt;/code&gt;&lt;/pre&gt;
-&lt;table&gt;
+&lt;table style=&#34;width:100%;&#34;&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;8%&#34; /&gt;
+&lt;col width=&#34;8%&#34; /&gt;
+&lt;col width=&#34;16%&#34; /&gt;
+&lt;col width=&#34;23%&#34; /&gt;
+&lt;col width=&#34;3%&#34; /&gt;
+&lt;col width=&#34;8%&#34; /&gt;
+&lt;col width=&#34;6%&#34; /&gt;
+&lt;col width=&#34;6%&#34; /&gt;
+&lt;col width=&#34;5%&#34; /&gt;
+&lt;col width=&#34;5%&#34; /&gt;
+&lt;col width=&#34;5%&#34; /&gt;
+&lt;/colgroup&gt;
 &lt;thead&gt;
 &lt;tr class=&#34;header&#34;&gt;
 &lt;th align=&#34;right&#34;&gt;Facility Number&lt;/th&gt;
@@ -767,7 +784,7 @@ merged &amp;lt;- left_join(tx_county, grouped, by = &amp;quot;subregion&amp;quot
         subtitle = &amp;quot;Among Kindergartners&amp;quot;) + 
   tpltheme::scale_fill_continuous()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Here’s what the plot looks like before animation:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/post/tx-vaccination-rates-rayshader/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/v2/post/tx-vaccination-rates-rayshader/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;rayshader&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Rayshader&lt;/h3&gt;
@@ -1050,6 +1067,9 @@ animate(babyanimation, fps = 25, nframes = 500, width = 800, height = 600)&lt;/c
       <pubDate>Thu, 30 May 2019 00:00:00 +0000</pubDate>
       <guid>https://connorrothschild.github.io/v2/post/media-mentions/</guid>
       <description>
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/anchor-sections/anchor-sections.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://connorrothschild.github.io/v2/v2/rmarkdown-libs/anchor-sections/anchor-sections.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;In this post, I explore which presidential candidates are discussed most frequently in the American news media.&lt;/p&gt;
@@ -1074,7 +1094,7 @@ library(devtools)
 library(knitr)
 library(cr)
 
-set_cr_theme(font = &amp;quot;lato&amp;quot;)
+set_cr_theme(font = &amp;quot;IBM Plex Sans&amp;quot;)
 
 data &amp;lt;- read.csv(&amp;quot;data/mentions.csv&amp;quot;, header = T)
   #read.csv((&amp;quot;https://raw.githubusercontent.com/fivethirtyeight/data/master/media-mentions-2020/cable_weekly.csv&amp;quot;), header=T)
@@ -1153,7 +1173,7 @@ data &amp;lt;- data %&amp;gt;%
   labs(x=element_blank(),
        y=&amp;quot;Percent of Media Mentions&amp;quot;,
        title=&amp;quot;Average Proportion of Media Coverage on a Weekly Basis&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/post/media-mentions/index_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/v2/post/media-mentions/index_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Somewhat unsurprisingly. Joe Biden and Bernie Sanders lead the pack in media attention. Joe Biden tends to receive significantly more media attention than the average candidate (a weekly average of 0.9% of overall media content compared to 0.14% for the average candidate).&lt;/p&gt;
 &lt;p&gt;How has that coverage changed over time?&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
@@ -1186,7 +1206,7 @@ data &amp;lt;- data %&amp;gt;%
   scale_color_discrete(name=&amp;quot;Candidate&amp;quot;, 
                        limits = c(&amp;quot;Joe Biden&amp;quot;, &amp;quot;Bernie Sanders&amp;quot;, &amp;quot;Elizabeth Warren&amp;quot;, 
                                   &amp;quot;Kamala Harris&amp;quot;, &amp;quot;Beto O&amp;#39;Rourke&amp;quot;, &amp;quot;Cory Booker&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/post/media-mentions/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/v2/post/media-mentions/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Evidently, much of Joe Biden’s popularity in the media can be explained by a few large spikes in weekly media mentions. We can explore the distribution of weekly media mentions using a visualization known as a &lt;a href=&#34;https://cran.r-project.org/web/packages/ggridges/vignettes/introduction.html&#34;&gt;density ridge plot&lt;/a&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
   group_by(name) %&amp;gt;% 
@@ -1202,7 +1222,7 @@ ggplot(aes(x = pct_of_all_candidate_clips*100, y = reorder(name,pct_of_all_candi
        y=element_blank(),
        title=&amp;quot;Media Mentions of Each Candidate&amp;quot;,
        subtitle=&amp;quot;With density ridges depicting average mentions on a weekly basis&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/post/media-mentions/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/v2/post/media-mentions/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This plot illustrates that most candidates enjoy the same levels of media coverage from one week to another. Joe Biden, however, often has weeks in which he receives much more attention than usual, as evidenced by his small peaks throughout the plot. Bernie Sanders, Kamala Harris, and Beto O’Rourke also experienced a few jumps in attention, likely when they announced their candidacy for the presidency.&lt;/p&gt;
 &lt;p&gt;This raises an interesting question: when did candidates experience the most drastic changes in media attention? For example, were there any weeks in which a candidate who normally enjoys nearly no media attention began to get a lot of it?&lt;/p&gt;
 &lt;p&gt;We can answer this question by calculating the difference between one week’s coverage and the prior week’s coverage (using the &lt;a href=&#34;https://www.rdocumentation.org/packages/stats/versions/3.6.0/topics/lag&#34;&gt;lag&lt;/a&gt; function).&lt;/p&gt;
@@ -1218,7 +1238,7 @@ ggplot(aes(x = pct_of_all_candidate_clips*100, y = reorder(name,pct_of_all_candi
        y=&amp;quot;Percent Change&amp;quot;,
        title=&amp;quot;Largest Differences in Weekly Media Mentions&amp;quot;,
        subtitle=&amp;quot;Subtracting a given week&amp;#39;s % mentions from the week prior&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/post/media-mentions/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/v2/post/media-mentions/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Unsurprisingly, the bars tend to mirror one another. If a candidate enjoys a steep increase in media attention one week, they are likely to see a correlated drop in the following week (if that week were really a spike in attention). The plot suggests that Joe Biden’s announcement (on April 25th) led to the most dramatic change in media attention in the 2020 cycle so far. Bernie Sanders also witnessed a spike in attention in the week following his announcement on February 19th. The same is true for the other candidates included in this plot.&lt;/p&gt;
 &lt;p&gt;Finally, I am interested in who is “winning” the race for media attention. Although a previous plot has shown media attention over time, this data can be somewhat hard to digest and interpret as so many candidates crowd the lower bound of the data (as they receive little media attention compared to Joe Biden).&lt;/p&gt;
 &lt;p&gt;By constructing a &lt;a href=&#34;https://learnr.wordpress.com/2009/05/06/ggplot2-bump-chart/&#34;&gt;bump chart&lt;/a&gt;, I am able to depict the rank of each candidate in terms of their media attention in a given week. This type of visualization assigns each candidate a categorical rank and makes their progress throughout the campaign easier to visualize.&lt;/p&gt;
@@ -1274,7 +1294,7 @@ recentdata %&amp;gt;%
        y = &amp;quot;Rank&amp;quot;,
        title = &amp;quot;The Race for Media Attention&amp;quot;,
        subtitle = &amp;quot;Candidates ranked by weekly media mentions&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/post/media-mentions/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/v2/post/media-mentions/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Let’s focus on the meteoric rise of Pete Buttigieg:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;petedata &amp;lt;- recentdata %&amp;gt;% 
   mutate(pete = ifelse(name == &amp;quot;Pete Buttigieg&amp;quot;, 1, 0))
@@ -1313,7 +1333,7 @@ petedata %&amp;gt;%
        y = &amp;quot;Rank&amp;quot;,
        title = &amp;quot;Out of Nowhere&amp;quot;,
        subtitle = &amp;quot;Pete Buttigieg&amp;#39;s Rapid Rise in Media Mentions&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/post/media-mentions/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.github.io/v2/v2/post/media-mentions/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Some takeaways:&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
 &lt;li&gt;Bernie Sanders and Joe Biden consistently receive the most attention from the media.&lt;/li&gt;

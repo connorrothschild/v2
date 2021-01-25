@@ -244,7 +244,7 @@
       
         <meta property="article:published_time" content="2019-12-16T00:00:00&#43;00:00">
       
-      <meta property="article:modified_time" content="2020-06-01T11:13:28-05:00">
+      <meta property="article:modified_time" content="2021-01-25T07:54:22-06:00">
     
   
     
@@ -277,7 +277,7 @@
   ],
   
   "datePublished": "2019-12-16T00:00:00Z",
-  "dateModified": "2020-06-01T11:13:28-05:00",
+  "dateModified": "2021-01-25T07:54:22-06:00",
   
   "author": {
     "@type": "Person",
@@ -623,7 +623,7 @@
           Last updated on
       
     
-    Jun 1, 2020
+    Jan 25, 2021
   </span>
   
 
@@ -686,12 +686,15 @@
           <div class="article-container">
             <div class="article-style">
               
-<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
-<script src="/rmarkdown-libs/d3/d3.min.js"></script>
-<script src="/rmarkdown-libs/d3-tip/index.js"></script>
-<link href="/rmarkdown-libs/chorddiag/chorddiag.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/chorddiag/chorddiag.js"></script>
-<script src="/rmarkdown-libs/chorddiag-binding/chorddiag.js"></script>
+<script src="/v2/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<link href="/v2/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/v2/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+<script src="/v2/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/v2/rmarkdown-libs/d3/d3.min.js"></script>
+<script src="/v2/rmarkdown-libs/d3-tip/index.js"></script>
+<link href="/v2/rmarkdown-libs/chorddiag/chorddiag.css" rel="stylesheet" />
+<script src="/v2/rmarkdown-libs/chorddiag/chorddiag.js"></script>
+<script src="/v2/rmarkdown-libs/chorddiag-binding/chorddiag.js"></script>
 
 
 <p>This project explores the relationships between different characters in the classic TV show <strong>The Office</strong>. Using transcript data newly released in <a href="https://technistema.com/">Bradley H. Lindblad</a>’s <a href="https://cran.r-project.org/web/packages/schrute/vignettes/theoffice.html"><code>schrute</code> package</a>, I’d like to see <em>who mentions who in the Office</em>. Is one character more popular than the others?</p>
@@ -703,7 +706,21 @@ set_cr_theme()</code></pre>
 <pre class="r"><code>transcripts &lt;- schrute::theoffice
 
 knitr::kable(transcripts[1:3,])</code></pre>
-<table>
+<table style="width:100%;">
+<colgroup>
+<col width="1%" />
+<col width="2%" />
+<col width="2%" />
+<col width="4%" />
+<col width="3%" />
+<col width="14%" />
+<col width="3%" />
+<col width="27%" />
+<col width="27%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="right">index</th>
@@ -770,7 +787,21 @@ knitr::kable(transcripts[1:3,])</code></pre>
   tidytext::unnest_tokens(word, text)
 
 knitr::kable(transcripts_tokenized[1:3,])</code></pre>
-<table>
+<table style="width:100%;">
+<colgroup>
+<col width="2%" />
+<col width="3%" />
+<col width="3%" />
+<col width="5%" />
+<col width="5%" />
+<col width="20%" />
+<col width="4%" />
+<col width="36%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="2%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="right">index</th>
@@ -899,7 +930,7 @@ knitr::kable(keep_characters)</code></pre>
        subtitle = &quot;Counts of &#39;Jim&#39; in The Office Transcripts&quot;,
        x = element_blank(),
        y = &quot;Mentions&quot;)</code></pre>
-<p><img src="/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="/v2/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>The takeaway here is that Dwight mentions Jim the most, followed by Michael. No surprise there! What I find interesting is that only three characters <em>really</em> talk about/to Jim. After Dwight, Michael, and Pam (and Jim referencing himself, apparently), the mention rate for Jim’s name drops from over 200 to only 60 mentions. It seems as if the writers of the Office intentionally made Jim a subject of conversation among only a few characters!</p>
 </div>
 <div id="replicate-for-the-rest-of-the-cast" class="section level3">
@@ -978,7 +1009,7 @@ knitr::kable(keep_characters)</code></pre>
 <p>Using that data, we can create a chord diagram quite easily, using a single command from the <code>circlize</code> library. <a href="https://jokergoo.github.io/circlize_book/book/the-chorddiagram-function.html">This chapter is helpful</a>.</p>
 <pre class="r"><code>library(circlize)
 chordDiagram(circlize_data, grid.col = c(&quot;#B997C7&quot;, &quot;#824D99&quot;, &quot;#4E78C4&quot;, &quot;#57A2AC&quot;, &quot;#7EB875&quot;, &quot;#D0B541&quot;, &quot;#E67F33&quot;, &quot;#CE2220&quot;, &quot;#521A13&quot;))</code></pre>
-<p><img src="/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="/v2/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <div id="make-it-interactive" class="section level3">
 <h3>Make It Interactive</h3>
 <p>With nine people, some of the data can get easily concealed (how often did Angela mention Michael’s name?). One way to fix this is to make the visualization interactive, so that a user can hover over chords to see relationships between characters.</p>
