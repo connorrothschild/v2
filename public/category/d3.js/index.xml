@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>D3.js | Connor Rothschild</title>
-    <link>/category/d3.js/</link>
-      <atom:link href="/category/d3.js/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://connorrothschild.com/category/d3.js/</link>
+      <atom:link href="https://connorrothschild.com/category/d3.js/index.xml" rel="self" type="application/rss+xml" />
     <description>D3.js</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2021</copyright><lastBuildDate>Sat, 04 Jan 2020 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>/img/social.png</url>
+      <url>https://connorrothschild.com/img/social.png</url>
       <title>D3.js</title>
-      <link>/category/d3.js/</link>
+      <link>https://connorrothschild.com/category/d3.js/</link>
     </image>
     
     <item>
       <title>How (and Why) to Add a Chart to Your D3.js Tooltip</title>
-      <link>/post/adding-a-chart-to-your-d3-tooltip/</link>
+      <link>https://connorrothschild.com/post/adding-a-chart-to-your-d3-tooltip/</link>
       <pubDate>Sat, 04 Jan 2020 00:00:00 +0000</pubDate>
-      <guid>/post/adding-a-chart-to-your-d3-tooltip/</guid>
+      <guid>https://connorrothschild.com/post/adding-a-chart-to-your-d3-tooltip/</guid>
       <description>&lt;p&gt;I think tooltips are one of the most underrated parts of a visualization. When users are initially confused by a visualization, they often hover over a data point of interest to get more information.&lt;/p&gt;
 &lt;p&gt;Unfortunately, many tooltips fail to really illuminate much about our data. They often recapitulate what is already being presented without clarifying any of the confusing parts of the data. Most frequently, I see (and even create 😦) tooltips which present the most basic information (in a map, a tooltip would present the state name and the value of interest), and nothing else!&lt;/p&gt;
 &lt;p&gt;Of course, there&amp;rsquo;s nothing &lt;em&gt;wrong&lt;/em&gt; with these kinds of tooltips. But they are truly doing the bare minimum, and, as a result, they&amp;rsquo;re missing out on the full potential of tooltips. &lt;strong&gt;If users are actively seeking more information by hovering over data, we ought to reward them with the most helpful and interesting information we can.&lt;/strong&gt;&lt;/p&gt;
@@ -711,16 +711,16 @@ function ready(error, us, overdoses) {
     
     <item>
       <title>Who Mentions Who in the Office?</title>
-      <link>/post/who-mentions-who-in-the-office/</link>
+      <link>https://connorrothschild.com/post/who-mentions-who-in-the-office/</link>
       <pubDate>Mon, 16 Dec 2019 00:00:00 +0000</pubDate>
-      <guid>/post/who-mentions-who-in-the-office/</guid>
+      <guid>https://connorrothschild.com/post/who-mentions-who-in-the-office/</guid>
       <description>
-&lt;script src=&#34;/rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;/rmarkdown-libs/d3/d3.min.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;/rmarkdown-libs/d3-tip/index.js&#34;&gt;&lt;/script&gt;
-&lt;link href=&#34;/rmarkdown-libs/chorddiag/chorddiag.css&#34; rel=&#34;stylesheet&#34; /&gt;
-&lt;script src=&#34;/rmarkdown-libs/chorddiag/chorddiag.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;/rmarkdown-libs/chorddiag-binding/chorddiag.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/d3/d3.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/d3-tip/index.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://connorrothschild.com/rmarkdown-libs/chorddiag/chorddiag.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/chorddiag/chorddiag.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://connorrothschild.com/rmarkdown-libs/chorddiag-binding/chorddiag.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;This project explores the relationships between different characters in the classic TV show &lt;strong&gt;The Office&lt;/strong&gt;. Using transcript data newly released in &lt;a href=&#34;https://technistema.com/&#34;&gt;Bradley H. Lindblad&lt;/a&gt;’s &lt;a href=&#34;https://cran.r-project.org/web/packages/schrute/vignettes/theoffice.html&#34;&gt;&lt;code&gt;schrute&lt;/code&gt; package&lt;/a&gt;, I’d like to see &lt;em&gt;who mentions who in the Office&lt;/em&gt;. Is one character more popular than the others?&lt;/p&gt;
@@ -928,7 +928,7 @@ knitr::kable(keep_characters)&lt;/code&gt;&lt;/pre&gt;
        subtitle = &amp;quot;Counts of &amp;#39;Jim&amp;#39; in The Office Transcripts&amp;quot;,
        x = element_blank(),
        y = &amp;quot;Mentions&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The takeaway here is that Dwight mentions Jim the most, followed by Michael. No surprise there! What I find interesting is that only three characters &lt;em&gt;really&lt;/em&gt; talk about/to Jim. After Dwight, Michael, and Pam (and Jim referencing himself, apparently), the mention rate for Jim’s name drops from over 200 to only 60 mentions. It seems as if the writers of the Office intentionally made Jim a subject of conversation among only a few characters!&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;replicate-for-the-rest-of-the-cast&#34; class=&#34;section level3&#34;&gt;
@@ -1007,7 +1007,7 @@ knitr::kable(keep_characters)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Using that data, we can create a chord diagram quite easily, using a single command from the &lt;code&gt;circlize&lt;/code&gt; library. &lt;a href=&#34;https://jokergoo.github.io/circlize_book/book/the-chorddiagram-function.html&#34;&gt;This chapter is helpful&lt;/a&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(circlize)
 chordDiagram(circlize_data, grid.col = c(&amp;quot;#B997C7&amp;quot;, &amp;quot;#824D99&amp;quot;, &amp;quot;#4E78C4&amp;quot;, &amp;quot;#57A2AC&amp;quot;, &amp;quot;#7EB875&amp;quot;, &amp;quot;#D0B541&amp;quot;, &amp;quot;#E67F33&amp;quot;, &amp;quot;#CE2220&amp;quot;, &amp;quot;#521A13&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;div id=&#34;make-it-interactive&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Make It Interactive&lt;/h3&gt;
 &lt;p&gt;With nine people, some of the data can get easily concealed (how often did Angela mention Michael’s name?). One way to fix this is to make the visualization interactive, so that a user can hover over chords to see relationships between characters.&lt;/p&gt;

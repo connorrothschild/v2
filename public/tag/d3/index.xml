@@ -2,61 +2,61 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>D3 | Connor Rothschild</title>
-    <link>/tag/d3/</link>
-      <atom:link href="/tag/d3/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://connorrothschild.com/tag/d3/</link>
+      <atom:link href="https://connorrothschild.com/tag/d3/index.xml" rel="self" type="application/rss+xml" />
     <description>D3</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2021</copyright><lastBuildDate>Wed, 22 Apr 2020 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>/img/social.png</url>
+      <url>https://connorrothschild.com/img/social.png</url>
       <title>D3</title>
-      <link>/tag/d3/</link>
+      <link>https://connorrothschild.com/tag/d3/</link>
     </image>
     
     <item>
       <title>Mapping Police Violence</title>
-      <link>/project/mapping-police-violence/</link>
+      <link>https://connorrothschild.com/project/mapping-police-violence/</link>
       <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
-      <guid>/project/mapping-police-violence/</guid>
+      <guid>https://connorrothschild.com/project/mapping-police-violence/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Mobility and Predictors of Movement During COVID-19</title>
-      <link>/project/coronavirus-houston-response-projects/</link>
+      <link>https://connorrothschild.com/project/coronavirus-houston-response-projects/</link>
       <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
-      <guid>/project/coronavirus-houston-response-projects/</guid>
+      <guid>https://connorrothschild.com/project/coronavirus-houston-response-projects/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Multiple Views: Recorded COVID-19 Cases, by County</title>
-      <link>/project/multiple-views-covid-19/</link>
+      <link>https://connorrothschild.com/project/multiple-views-covid-19/</link>
       <pubDate>Sat, 28 Mar 2020 00:00:00 +0000</pubDate>
-      <guid>/project/multiple-views-covid-19/</guid>
+      <guid>https://connorrothschild.com/project/multiple-views-covid-19/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Kanye West&#39;s Rebirth: How Being Reborn has Changed Kanye&#39;s Music</title>
-      <link>/project/born-again-kanye/</link>
+      <link>https://connorrothschild.com/project/born-again-kanye/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/project/born-again-kanye/</guid>
+      <guid>https://connorrothschild.com/project/born-again-kanye/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Mask Wearing in Your County</title>
-      <link>/project/mask-wearing/</link>
+      <link>https://connorrothschild.com/project/mask-wearing/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/project/mask-wearing/</guid>
+      <guid>https://connorrothschild.com/project/mask-wearing/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Police Killings in the United States, 2013-2018.</title>
-      <link>/project/police-killings-waffle/</link>
+      <link>https://connorrothschild.com/project/police-killings-waffle/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/project/police-killings-waffle/</guid>
+      <guid>https://connorrothschild.com/project/police-killings-waffle/</guid>
       <description></description>
     </item>
     

@@ -2,29 +2,29 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Mapbox | Connor Rothschild</title>
-    <link>/tag/mapbox/</link>
-      <atom:link href="/tag/mapbox/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://connorrothschild.com/tag/mapbox/</link>
+      <atom:link href="https://connorrothschild.com/tag/mapbox/index.xml" rel="self" type="application/rss+xml" />
     <description>Mapbox</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2021</copyright>
     <image>
-      <url>/img/social.png</url>
+      <url>https://connorrothschild.com/img/social.png</url>
       <title>Mapbox</title>
-      <link>/tag/mapbox/</link>
+      <link>https://connorrothschild.com/tag/mapbox/</link>
     </image>
     
     <item>
       <title>Mapping Houston Homicides</title>
-      <link>/project/map-houston-homicides/</link>
+      <link>https://connorrothschild.com/project/map-houston-homicides/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/project/map-houston-homicides/</guid>
+      <guid>https://connorrothschild.com/project/map-houston-homicides/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Mapping Missing Migrants</title>
-      <link>/project/map-missing-migrants/</link>
+      <link>https://connorrothschild.com/project/map-missing-migrants/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/project/map-missing-migrants/</guid>
+      <guid>https://connorrothschild.com/project/map-missing-migrants/</guid>
       <description></description>
     </item>
     

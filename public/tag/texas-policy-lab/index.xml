@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Texas Policy Lab | Connor Rothschild</title>
-    <link>/tag/texas-policy-lab/</link>
-      <atom:link href="/tag/texas-policy-lab/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://connorrothschild.com/tag/texas-policy-lab/</link>
+      <atom:link href="https://connorrothschild.com/tag/texas-policy-lab/index.xml" rel="self" type="application/rss+xml" />
     <description>Texas Policy Lab</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2021</copyright><lastBuildDate>Tue, 23 Jul 2019 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>/img/social.png</url>
+      <url>https://connorrothschild.com/img/social.png</url>
       <title>Texas Policy Lab</title>
-      <link>/tag/texas-policy-lab/</link>
+      <link>https://connorrothschild.com/tag/texas-policy-lab/</link>
     </image>
     
     <item>
       <title>My First Package! Introducing &#39;tpltheme&#39;</title>
-      <link>/post/introducing-tpltheme/</link>
+      <link>https://connorrothschild.com/post/introducing-tpltheme/</link>
       <pubDate>Tue, 23 Jul 2019 00:00:00 +0000</pubDate>
-      <guid>/post/introducing-tpltheme/</guid>
+      <guid>https://connorrothschild.com/post/introducing-tpltheme/</guid>
       <description>
 
 
@@ -49,7 +49,7 @@ ggplot(iris, aes(x=Species, y=Sepal.Width, fill=Species)) +
     geom_bar(stat=&amp;quot;summary&amp;quot;, fun.y=&amp;quot;mean&amp;quot;, show.legend = FALSE) +
     scale_y_continuous(expand = expand_scale(mult = c(0, 0.001))) +
     labs(x=&amp;quot;Species&amp;quot;, y=&amp;quot;Mean Sepal Width (cm)&amp;quot;, fill=&amp;quot;Species&amp;quot;, title=&amp;quot;Iris Dataset&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;div id=&#34;fonts&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Fonts&lt;/h3&gt;
 &lt;p&gt;The user is able to specify whether they want to use &lt;em&gt;Lato&lt;/em&gt; or &lt;em&gt;Adobe Caslon Pro&lt;/em&gt; in their figures.&lt;/p&gt;
@@ -62,7 +62,7 @@ tpl_font_install()&lt;/code&gt;&lt;/pre&gt;
 ggplot(iris, aes(x=jitter(Sepal.Width), y=jitter(Sepal.Length), col=Species, size = Petal.Length)) +
     geom_point() +
     labs(x=&amp;quot;Sepal Width (cm)&amp;quot;, y=&amp;quot;Sepal Length (cm)&amp;quot;, col=&amp;quot;Species&amp;quot;, size = &amp;quot;Petal Length&amp;quot;, title=&amp;quot;Iris Dataset&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;By specifying &lt;code&gt;style = &amp;quot;Texas&amp;quot;&lt;/code&gt; within &lt;code&gt;set_tpl_theme&lt;/code&gt;, the user may also create Texas-specific plots.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tx_vac &amp;lt;- readr::read_csv(&amp;quot;https://raw.githubusercontent.com/connorrothschild/tpltheme/master/data/tx_vac_example.csv&amp;quot;)
 set_tpl_theme(style = &amp;quot;Texas&amp;quot;, font = &amp;quot;adobe&amp;quot;)
@@ -75,7 +75,7 @@ ggplot(data = tx_vac, mapping = aes(x = long, y = lat, group = group, fill = avg
        subtitle = &amp;quot;Among Kindergarteners&amp;quot;,
        fill = &amp;quot;Percent\nVaccinated&amp;quot;,
        caption = &amp;quot;Source: Texas DSHS&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;And it also works for categorical variables:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set_tpl_theme(style = &amp;quot;Texas&amp;quot;, font = &amp;quot;lato&amp;quot;)
 
@@ -90,14 +90,14 @@ tx_vac %&amp;gt;%
        subtitle = &amp;quot;Among Kindergarteners&amp;quot;,
        fill = &amp;quot;Vaccination Rating&amp;quot;,
        caption = &amp;quot;Source: Texas DSHS&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;If the number of colors exceeds the number of colors in the TPL palette (9), the function &lt;code&gt;tpl_color_pal()&lt;/code&gt; will drop the TPL color palette and return the greatest number of unique colors possible within the RColorBrewer’s “Paired” palette (for more information on the use of RColorBrewer palettes, see &lt;a href=&#34;https://bookdown.org/rdpeng/exdata/plotting-and-color-in-r.html#using-the-rcolorbrewer-palettes&#34;&gt;this chapter&lt;/a&gt;).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tx_vac %&amp;gt;% 
   ggplot(mapping = aes(x = long, y = lat, group = group, fill = subregion)) +
   coord_fixed(1.3) +
   geom_polygon(color = &amp;quot;black&amp;quot;, show.legend = FALSE) +
   labs(title = &amp;quot;Texas Counties&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# default to print afterwards
 set_tpl_theme(style = &amp;quot;print&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -113,7 +113,7 @@ set_tpl_theme(style = &amp;quot;print&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
     labs(x=&amp;quot;Species&amp;quot;, y=&amp;quot;Mean Sepal Width (cm)&amp;quot;, fill=&amp;quot;Species&amp;quot;, title=&amp;quot;Iris Dataset&amp;quot;)
 
 add_tpl_logo(plot, position = &amp;quot;top right&amp;quot;, scale = 1.5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;100%&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;logo-text&#34; class=&#34;section level4&#34;&gt;
 &lt;h4&gt;Logo Text&lt;/h4&gt;
@@ -123,14 +123,14 @@ add_tpl_logo(plot, position = &amp;quot;top right&amp;quot;, scale = 1.5)&lt;/co
     labs(x=&amp;quot;Sepal Width (cm)&amp;quot;, y=&amp;quot;Sepal Length (cm)&amp;quot;, col=&amp;quot;Species&amp;quot;, size = &amp;quot;Petal Length&amp;quot;, title=&amp;quot;Iris Dataset&amp;quot;)
     
 add_tpl_logo_text(plot)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The user may also need to specify &lt;code&gt;align&lt;/code&gt;, which moves the plot horizontally across the bottom of the page.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot &amp;lt;- ggplot(iris, aes(x=Species, y=Sepal.Width, fill=Species)) +
     geom_boxplot(show.legend = FALSE) +
     labs(x=&amp;quot;Species&amp;quot;, y=&amp;quot;Sepal Width (cm)&amp;quot;, fill=&amp;quot;Species&amp;quot;, title=&amp;quot;Iris Dataset&amp;quot;, subtitle =&amp;quot;When specifying align = 1&amp;quot;)
     
 add_tpl_logo_text(plot, align = 1)    &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;additional-functions&#34; class=&#34;section level3&#34;&gt;
@@ -143,7 +143,7 @@ add_tpl_logo_text(plot, align = 1)    &lt;/code&gt;&lt;/pre&gt;
     geom_point() +
     labs(x=&amp;quot;Sepal Width (cm)&amp;quot;, y=&amp;quot;Sepal Length (cm)&amp;quot;, col=&amp;quot;Species&amp;quot;, size = &amp;quot;Petal Length&amp;quot;, title=&amp;quot;Iris Dataset&amp;quot;) +
     drop_axis(axis = &amp;quot;y&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;colors&#34; class=&#34;section level3&#34;&gt;
@@ -156,7 +156,7 @@ p2 &amp;lt;- view_palette(palette = palette_tpl_diverging) + ggtitle(&amp;quot;D
 p3 &amp;lt;- view_palette(palette = palette_tpl_sequential) + ggtitle(&amp;quot;Sequential&amp;quot;)
 
 gridExtra::grid.arrange(p1, p2, p3, nrow = 1)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;These palettes were created using &lt;a href=&#34;http://colorbrewer2.org&#34; class=&#34;uri&#34;&gt;http://colorbrewer2.org&lt;/a&gt; and &lt;a href=&#34;http://coloors.co&#34; class=&#34;uri&#34;&gt;http://coloors.co&lt;/a&gt; and are colorblind friendly.&lt;/p&gt;
 &lt;p&gt;The diverging and sequential color palettes are from &lt;a href=&#34;http://colorbrewer2.org&#34; class=&#34;uri&#34;&gt;http://colorbrewer2.org&lt;/a&gt; and the categorical palette is composed of a variety of colors from &lt;a href=&#34;https://coolors.co/&#34; class=&#34;uri&#34;&gt;https://coolors.co/&lt;/a&gt; and the TPL website.&lt;/p&gt;
 &lt;p&gt;In action, the color palette looks like this:&lt;/p&gt;
@@ -182,7 +182,7 @@ reversed &amp;lt;- normal +
   scale_fill_discrete(reverse = TRUE)
 
 gridExtra::grid.arrange(normal, reversed)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The user may specify the color palette in the &lt;code&gt;scale_fill_*&lt;/code&gt; or &lt;code&gt;scale_color_*&lt;/code&gt; functions in a ggplot call. Specifically, the user can specify the &lt;code&gt;palette&lt;/code&gt; (categorical, diverging, sequential) and whether the palette should be reversed.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set_tpl_theme(style = &amp;quot;print&amp;quot;, font = &amp;quot;lato&amp;quot;)
 normal &amp;lt;- ggplot(diamonds) +
@@ -200,7 +200,7 @@ reversed &amp;lt;- normal +
   scale_fill_discrete(reverse = TRUE)
 
 gridExtra::grid.arrange(normal, reversed, nrow = 1)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- gapminder::gapminder %&amp;gt;% 
   dplyr::filter(gapminder::gapminder$country %in% c(&amp;quot;France&amp;quot;, &amp;quot;Germany&amp;quot;, &amp;quot;Ireland&amp;quot;, &amp;quot;Italy&amp;quot;, &amp;quot;Japan&amp;quot;, &amp;quot;Norway&amp;quot;, &amp;quot;Mexico&amp;quot;, &amp;quot;United States&amp;quot;)) %&amp;gt;%
   dplyr::mutate(year = as.Date(paste(year, &amp;quot;-01-01&amp;quot;, sep = &amp;quot;&amp;quot;, format=&amp;#39;%Y-%b-%d&amp;#39;)))
@@ -215,7 +215,7 @@ ggplot(data = data, aes(x = year, y = gdpPercap, fill = country)) +
        y = &amp;quot;GDP Per Capita&amp;quot;,
        fill = &amp;quot;Country&amp;quot;) + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;restore-defaults&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Restore Defaults&lt;/h3&gt;
@@ -225,11 +225,11 @@ ggplot(data = data, aes(x = year, y = gdpPercap, fill = country)) +
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(iris, aes(x=jitter(Sepal.Width), y=jitter(Sepal.Length), col=Species, size = Petal.Length)) +
     geom_point() +
     labs(x=&amp;quot;Sepal Width (cm)&amp;quot;, y=&amp;quot;Sepal Length (cm)&amp;quot;, col=&amp;quot;Species&amp;quot;, size = &amp;quot;Petal Length&amp;quot;, title=&amp;quot;Iris Dataset&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;To restore the TPL theme, simply call &lt;code&gt;set_tpl_theme()&lt;/code&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set_tpl_theme()
 last_plot()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://connorrothschild.com/post/introducing-tpltheme/index_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
