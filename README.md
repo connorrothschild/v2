@@ -1,8 +1,6 @@
-# My Personal Site
+# **[ARCHIVED]** My Personal Site
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/fc98ef2f-ceba-4684-abd5-ba749ed8d708/deploy-status)](https://app.netlify.com/sites/flamboyant-meitner-43489f/deploys)
-
-My personal website, built using the R package [`blogdown`](https://bookdown.org/yihui/blogdown/), the [Hugo Academic](https://themes.gohugo.io/academic/) theme, and [Netlify](https://www.netlify.com/).
+My personal website (v2), built using the R package [`blogdown`](https://bookdown.org/yihui/blogdown/) and the [Hugo Academic](https://themes.gohugo.io/academic/) theme.
 
 Some things unique to my site:
 * The homepage is animated using some special CSS properties ([see the blog post](https://connorrothschild.com/post/animate-hugo-academic)).
