@@ -2,173 +2,173 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>For Fun | Connor Rothschild</title>
-    <link>https://connorrothschild.github.io/v2/tag/for-fun/</link>
-      <atom:link href="https://connorrothschild.github.io/v2/tag/for-fun/index.xml" rel="self" type="application/rss+xml" />
+    <link>/v2/tag/for-fun/</link>
+      <atom:link href="/v2/tag/for-fun/index.xml" rel="self" type="application/rss+xml" />
     <description>For Fun</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2021</copyright><lastBuildDate>Tue, 19 May 2020 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>https://connorrothschild.github.io/v2/img/social.png</url>
+      <url>/v2/img/social.png</url>
       <title>For Fun</title>
-      <link>https://connorrothschild.github.io/v2/tag/for-fun/</link>
+      <link>/v2/tag/for-fun/</link>
     </image>
     
     <item>
       <title>Recreating a Table by the Economist Using Reactable</title>
-      <link>https://connorrothschild.github.io/v2/project/economist-table-replication/</link>
+      <link>/v2/project/economist-table-replication/</link>
       <pubDate>Tue, 19 May 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/economist-table-replication/</guid>
+      <guid>/v2/project/economist-table-replication/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Multiple Views: Recorded COVID-19 Cases, by County</title>
-      <link>https://connorrothschild.github.io/v2/project/multiple-views-covid-19/</link>
+      <link>/v2/project/multiple-views-covid-19/</link>
       <pubDate>Sat, 28 Mar 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/multiple-views-covid-19/</guid>
+      <guid>/v2/project/multiple-views-covid-19/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Are You Smarter Than a Criminal Justice Algorithm?</title>
-      <link>https://connorrothschild.github.io/v2/project/are-you-smarter-than-compas/</link>
+      <link>/v2/project/are-you-smarter-than-compas/</link>
       <pubDate>Thu, 05 Mar 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/are-you-smarter-than-compas/</guid>
+      <guid>/v2/project/are-you-smarter-than-compas/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Let Me Guess What You&#39;re Doing Right Now</title>
-      <link>https://connorrothschild.github.io/v2/project/what-are-you-doing/</link>
+      <link>/v2/project/what-are-you-doing/</link>
       <pubDate>Sat, 08 Feb 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/what-are-you-doing/</guid>
+      <guid>/v2/project/what-are-you-doing/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Trends in Refugee Acceptance, 2002 to 2019</title>
-      <link>https://connorrothschild.github.io/v2/project/refugee-trends/</link>
+      <link>/v2/project/refugee-trends/</link>
       <pubDate>Sat, 01 Feb 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/refugee-trends/</guid>
+      <guid>/v2/project/refugee-trends/</guid>
       <description></description>
     </item>
     
     <item>
       <title>How Many People Have Had COVID-19?</title>
-      <link>https://connorrothschild.github.io/v2/project/how-many-people/</link>
+      <link>/v2/project/how-many-people/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/how-many-people/</guid>
+      <guid>/v2/project/how-many-people/</guid>
       <description></description>
     </item>
     
     <item>
       <title>How Much Does Your State Spend on the Police?</title>
-      <link>https://connorrothschild.github.io/v2/project/state-police-spending/</link>
+      <link>/v2/project/state-police-spending/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/state-police-spending/</guid>
+      <guid>/v2/project/state-police-spending/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Kanye West&#39;s Rebirth: How Being Reborn has Changed Kanye&#39;s Music</title>
-      <link>https://connorrothschild.github.io/v2/project/born-again-kanye/</link>
+      <link>/v2/project/born-again-kanye/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/born-again-kanye/</guid>
+      <guid>/v2/project/born-again-kanye/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Mapping Houston Homicides</title>
-      <link>https://connorrothschild.github.io/v2/project/map-houston-homicides/</link>
+      <link>/v2/project/map-houston-homicides/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/map-houston-homicides/</guid>
+      <guid>/v2/project/map-houston-homicides/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Mapping Missing Migrants</title>
-      <link>https://connorrothschild.github.io/v2/project/map-missing-migrants/</link>
+      <link>/v2/project/map-missing-migrants/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/map-missing-migrants/</guid>
+      <guid>/v2/project/map-missing-migrants/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Mapping Opioid-Involved Overdose Deaths</title>
-      <link>https://connorrothschild.github.io/v2/project/map-opioids/</link>
+      <link>/v2/project/map-opioids/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/map-opioids/</guid>
+      <guid>/v2/project/map-opioids/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Mask Wearing in Your County</title>
-      <link>https://connorrothschild.github.io/v2/project/mask-wearing/</link>
+      <link>/v2/project/mask-wearing/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/mask-wearing/</guid>
+      <guid>/v2/project/mask-wearing/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Police Killings in the United States, 2013-2018.</title>
-      <link>https://connorrothschild.github.io/v2/project/police-killings-waffle/</link>
+      <link>/v2/project/police-killings-waffle/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/police-killings-waffle/</guid>
+      <guid>/v2/project/police-killings-waffle/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Quarantunes</title>
-      <link>https://connorrothschild.github.io/v2/project/quarantunes/</link>
+      <link>/v2/project/quarantunes/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/quarantunes/</guid>
+      <guid>/v2/project/quarantunes/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Replicating Plots in R (Tidy Tuesday)</title>
-      <link>https://connorrothschild.github.io/v2/project/tt-replication/</link>
+      <link>/v2/project/tt-replication/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/tt-replication/</guid>
+      <guid>/v2/project/tt-replication/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Scrollytelling in R: Automation and Its Impact on Jobs</title>
-      <link>https://connorrothschild.github.io/v2/project/r-scrollytell/</link>
+      <link>/v2/project/r-scrollytell/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/r-scrollytell/</guid>
+      <guid>/v2/project/r-scrollytell/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Spikes in Firearm Background Checks During COVID-19</title>
-      <link>https://connorrothschild.github.io/v2/project/firearm-background-checks/</link>
+      <link>/v2/project/firearm-background-checks/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/firearm-background-checks/</guid>
+      <guid>/v2/project/firearm-background-checks/</guid>
       <description></description>
     </item>
     
     <item>
       <title>The Birth, Death, and Rebirth of Kanye West</title>
-      <link>https://connorrothschild.github.io/v2/project/death-rebirth-kanye/</link>
+      <link>/v2/project/death-rebirth-kanye/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/death-rebirth-kanye/</guid>
+      <guid>/v2/project/death-rebirth-kanye/</guid>
       <description></description>
     </item>
     
     <item>
       <title>The Race for Media Attention</title>
-      <link>https://connorrothschild.github.io/v2/project/race-for-media-attention/</link>
+      <link>/v2/project/race-for-media-attention/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/race-for-media-attention/</guid>
+      <guid>/v2/project/race-for-media-attention/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Who is the Most Popular Character in The Office?</title>
-      <link>https://connorrothschild.github.io/v2/project/the-office/</link>
+      <link>/v2/project/the-office/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/project/the-office/</guid>
+      <guid>/v2/project/the-office/</guid>
       <description></description>
     </item>
     

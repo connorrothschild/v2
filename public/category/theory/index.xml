@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Theory | Connor Rothschild</title>
-    <link>https://connorrothschild.github.io/v2/category/theory/</link>
-      <atom:link href="https://connorrothschild.github.io/v2/category/theory/index.xml" rel="self" type="application/rss+xml" />
+    <link>/v2/category/theory/</link>
+      <atom:link href="/v2/category/theory/index.xml" rel="self" type="application/rss+xml" />
     <description>Theory</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2021</copyright><lastBuildDate>Fri, 10 Jan 2020 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>https://connorrothschild.github.io/v2/img/social.png</url>
+      <url>/v2/img/social.png</url>
       <title>Theory</title>
-      <link>https://connorrothschild.github.io/v2/category/theory/</link>
+      <link>/v2/category/theory/</link>
     </image>
     
     <item>
       <title>Color in Data Visualization: Less How, More Why</title>
-      <link>https://connorrothschild.github.io/v2/post/color-in-data-vis/</link>
+      <link>/v2/post/color-in-data-vis/</link>
       <pubDate>Fri, 10 Jan 2020 00:00:00 +0000</pubDate>
-      <guid>https://connorrothschild.github.io/v2/post/color-in-data-vis/</guid>
+      <guid>/v2/post/color-in-data-vis/</guid>
       <description>&lt;p&gt;If our use of color in visualizations follows the 
 &lt;a href=&#34;https://en.wikipedia.org/wiki/Five_Ws&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Five Ws (and one H)&lt;/a&gt;, we&amp;rsquo;re spending too much time on &lt;em&gt;how&lt;/em&gt;, and not enough time on &lt;em&gt;why&lt;/em&gt;. Color is too often seen as a tool to make pretty pictures, when it should be used to inform our audiences.&lt;/p&gt;
 &lt;p&gt;For one example, look at this &amp;ldquo;Color Emotion Guide&amp;rdquo; from marketing site 
