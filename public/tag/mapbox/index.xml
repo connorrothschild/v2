@@ -2,29 +2,29 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Mapbox | Connor Rothschild</title>
-    <link>https://v2.connorrothschild.github.io/tag/mapbox/</link>
-      <atom:link href="https://v2.connorrothschild.github.io/tag/mapbox/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://v2.connorrothschild.com/tag/mapbox/</link>
+      <atom:link href="https://v2.connorrothschild.com/tag/mapbox/index.xml" rel="self" type="application/rss+xml" />
     <description>Mapbox</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2021</copyright>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2025</copyright>
     <image>
-      <url>https://v2.connorrothschild.github.io/img/social.png</url>
+      <url>https://v2.connorrothschild.com/img/social.png</url>
       <title>Mapbox</title>
-      <link>https://v2.connorrothschild.github.io/tag/mapbox/</link>
+      <link>https://v2.connorrothschild.com/tag/mapbox/</link>
     </image>
     
     <item>
       <title>Mapping Houston Homicides</title>
-      <link>https://v2.connorrothschild.github.io/project/map-houston-homicides/</link>
+      <link>https://v2.connorrothschild.com/project/map-houston-homicides/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://v2.connorrothschild.github.io/project/map-houston-homicides/</guid>
+      <guid>https://v2.connorrothschild.com/project/map-houston-homicides/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Mapping Missing Migrants</title>
-      <link>https://v2.connorrothschild.github.io/project/map-missing-migrants/</link>
+      <link>https://v2.connorrothschild.com/project/map-missing-migrants/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://v2.connorrothschild.github.io/project/map-missing-migrants/</guid>
+      <guid>https://v2.connorrothschild.com/project/map-missing-migrants/</guid>
       <description></description>
     </item>
     
