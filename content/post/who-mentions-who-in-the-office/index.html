@@ -10,15 +10,15 @@ tags: ["r", "visualization", "D3.js", "interactive"]
 summary: "Who is the most popular character in the Office?"
 ---
 
-<script src="/v2/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/v2/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
-<script src="/v2/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
-<script src="/v2/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
-<script src="/v2/rmarkdown-libs/d3/d3.min.js"></script>
-<script src="/v2/rmarkdown-libs/d3-tip/index.js"></script>
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/rmarkdown-libs/d3/d3.min.js"></script>
+<script src="/rmarkdown-libs/d3-tip/index.js"></script>
 <link href="/v2/rmarkdown-libs/chorddiag/chorddiag.css" rel="stylesheet" />
-<script src="/v2/rmarkdown-libs/chorddiag/chorddiag.js"></script>
-<script src="/v2/rmarkdown-libs/chorddiag-binding/chorddiag.js"></script>
+<script src="/rmarkdown-libs/chorddiag/chorddiag.js"></script>
+<script src="/rmarkdown-libs/chorddiag-binding/chorddiag.js"></script>
 
 
 <p>This project explores the relationships between different characters in the classic TV show <strong>The Office</strong>. Using transcript data newly released in <a href="https://technistema.com/">Bradley H. Lindblad</a>’s <a href="https://cran.r-project.org/web/packages/schrute/vignettes/theoffice.html"><code>schrute</code> package</a>, I’d like to see <em>who mentions who in the Office</em>. Is one character more popular than the others?</p>
@@ -254,7 +254,7 @@ knitr::kable(keep_characters)</code></pre>
        subtitle = &quot;Counts of &#39;Jim&#39; in The Office Transcripts&quot;,
        x = element_blank(),
        y = &quot;Mentions&quot;)</code></pre>
-<p><img src="/v2/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>The takeaway here is that Dwight mentions Jim the most, followed by Michael. No surprise there! What I find interesting is that only three characters <em>really</em> talk about/to Jim. After Dwight, Michael, and Pam (and Jim referencing himself, apparently), the mention rate for Jim’s name drops from over 200 to only 60 mentions. It seems as if the writers of the Office intentionally made Jim a subject of conversation among only a few characters!</p>
 </div>
 <div id="replicate-for-the-rest-of-the-cast" class="section level3">
@@ -333,7 +333,7 @@ knitr::kable(keep_characters)</code></pre>
 <p>Using that data, we can create a chord diagram quite easily, using a single command from the <code>circlize</code> library. <a href="https://jokergoo.github.io/circlize_book/book/the-chorddiagram-function.html">This chapter is helpful</a>.</p>
 <pre class="r"><code>library(circlize)
 chordDiagram(circlize_data, grid.col = c(&quot;#B997C7&quot;, &quot;#824D99&quot;, &quot;#4E78C4&quot;, &quot;#57A2AC&quot;, &quot;#7EB875&quot;, &quot;#D0B541&quot;, &quot;#E67F33&quot;, &quot;#CE2220&quot;, &quot;#521A13&quot;))</code></pre>
-<p><img src="/v2/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="/post/who-mentions-who-in-the-office/index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <div id="make-it-interactive" class="section level3">
 <h3>Make It Interactive</h3>
 <p>With nine people, some of the data can get easily concealed (how often did Angela mention Michael’s name?). One way to fix this is to make the visualization interactive, so that a user can hover over chords to see relationships between characters.</p>

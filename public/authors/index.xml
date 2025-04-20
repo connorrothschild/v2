@@ -2,14 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Authors | Connor Rothschild</title>
-    <link>/v2/authors/</link>
-      <atom:link href="/v2/authors/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://v2.connorrothschild.github.io/authors/</link>
+      <atom:link href="https://v2.connorrothschild.github.io/authors/index.xml" rel="self" type="application/rss+xml" />
     <description>Authors</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2021</copyright><lastBuildDate>Wed, 28 Oct 2020 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>/v2/img/social.png</url>
+      <url>https://v2.connorrothschild.github.io/img/social.png</url>
       <title>Authors</title>
-      <link>/v2/authors/</link>
+      <link>https://v2.connorrothschild.github.io/authors/</link>
     </image>
     
   </channel>

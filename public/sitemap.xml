@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/authors/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/categories/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/covid-posts/</loc>
+    <lastmod>2021-01-25T00:32:49-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/dataset/</loc>
+    <lastmod>2021-01-25T00:32:49-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/r/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/category/r/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/author/rees-morrison/</loc>
+    <lastmod>2021-01-25T00:32:49-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/shiny/</loc>
+    <lastmod>2021-01-25T00:32:49-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tags/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/covid-on-campus/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/illustrator/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/reactable/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/small-multiples/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/visualization/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/css/</loc>
+    <lastmod>2020-07-26T12:42:43-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/html/</loc>
+    <lastmod>2020-07-26T12:42:43-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/animate-hugo-academic/</loc>
+    <lastmod>2020-07-26T12:42:43-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/covid-gun-spikes/</loc>
+    <lastmod>2021-01-25T00:32:49-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/for-fun/</loc>
+    <lastmod>2020-12-07T20:21:34-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/</loc>
+    <lastmod>2020-12-07T20:21:34-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/economist-table-replication/</loc>
+    <lastmod>2020-09-18T20:15:26-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/interactive/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/economist-table-replication-using-reactable/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/replication/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/d3/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/for-work/</loc>
+    <lastmod>2020-09-18T20:15:26-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/mapping-police-violence/</loc>
+    <lastmod>2020-09-18T20:15:26-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/coronavirus-houston-response-projects/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/multiple-views-covid-19/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/dumbbell-plots/</loc>
+    <lastmod>2020-07-14T23:12:09-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/are-you-smarter-than-compas/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/javascript/</loc>
+    <lastmod>2020-12-07T20:21:34-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/what-are-you-doing/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/refugee-trends/</loc>
+    <lastmod>2020-07-14T23:12:09-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/refugee-trends/</loc>
+    <lastmod>2020-07-14T22:59:01-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/color/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/color-in-data-vis/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/category/data-viz/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/category/theory/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/theory/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/d3.js/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/category/d3.js/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/adding-a-chart-to-your-d3-tooltip/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/tooltips/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/who-mentions-who-in-the-office/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/tidy-tuesday/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/tidy-tuesday-replication/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/map-springfield/</loc>
+    <lastmod>2021-01-25T00:32:49-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/animation/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/automation-scrollytell/</loc>
+    <lastmod>2021-01-25T00:32:49-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/scrollytelling/</loc>
+    <lastmod>2021-01-25T00:32:49-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/gganimate/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/tidy-tuesday-powerlifting/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/games-and-guns/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/building-my-first-shiny-app/</loc>
+    <lastmod>2021-01-25T00:32:49-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/rayshader/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/tx-vaccination-rates-rayshader/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/introducing-tpltheme/</loc>
+    <lastmod>2021-01-25T00:32:49-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/package/</loc>
+    <lastmod>2021-01-25T00:32:49-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/texas-policy-lab/</loc>
+    <lastmod>2021-01-25T00:32:49-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/bible-babies/</loc>
+    <lastmod>2021-01-25T00:32:49-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/media-mentions/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/stem-igration/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/automation/</loc>
+    <lastmod>2021-01-25T07:54:22-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/post/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/author/connor-rothschild/</loc>
+    <lastmod>2020-06-01T17:05:05-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/how-many-people/</loc>
+    <lastmod>2020-12-07T20:21:34-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/state-police-spending/</loc>
+    <lastmod>2020-06-11T12:26:05-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/born-again-kanye/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/tag/mapbox/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/map-houston-homicides/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/map-missing-migrants/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/map-opioids/</loc>
+    <lastmod>2020-07-12T12:16:13-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/mask-wearing/</loc>
+    <lastmod>2020-09-18T20:15:26-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/police-killings-waffle/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/publication_types/</loc>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/quarantunes/</loc>
+    <lastmod>2020-11-19T06:35:19-06:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/tt-replication/</loc>
+    <lastmod>2020-09-18T20:15:26-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/r-scrollytell/</loc>
+    <lastmod>2020-09-18T20:15:26-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/firearm-background-checks/</loc>
+    <lastmod>2020-09-18T20:15:26-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/death-rebirth-kanye/</loc>
+    <lastmod>2020-09-18T20:15:26-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/race-for-media-attention/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://v2.connorrothschild.github.io/project/the-office/</loc>
+    <lastmod>2020-06-01T11:13:28-05:00</lastmod>
+  </url>
+  
+</urlset>

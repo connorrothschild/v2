@@ -10,15 +10,15 @@ tags: ["r", "visualization", "illustrator", "small multiples"]
 summary: "Visualizing the precipitous rise in gun sales during COVID-19"
 ---
 
-<script src="/v2/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 <link href="/v2/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
-<script src="/v2/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
-<script src="/v2/rmarkdown-libs/core-js/shim.min.js"></script>
-<script src="/v2/rmarkdown-libs/react/react.min.js"></script>
-<script src="/v2/rmarkdown-libs/react/react-dom.min.js"></script>
-<script src="/v2/rmarkdown-libs/reactwidget/react-tools.js"></script>
-<script src="/v2/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
-<script src="/v2/rmarkdown-libs/reactable-binding/reactable.js"></script>
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+<script src="/rmarkdown-libs/core-js/shim.min.js"></script>
+<script src="/rmarkdown-libs/react/react.min.js"></script>
+<script src="/rmarkdown-libs/react/react-dom.min.js"></script>
+<script src="/rmarkdown-libs/reactwidget/react-tools.js"></script>
+<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/rmarkdown-libs/reactable-binding/reactable.js"></script>
 
 
 {{% figure src="featured.png" alt="A small multiples map showing spikes in firearm background checks in 2020, compared to 1999-2019" lightbox="true" %}}
@@ -95,7 +95,7 @@ data %&gt;%
                        accuracy = 1
                      )) +
   drop_axis(&quot;y&quot;)</code></pre>
-<p><img src="/v2/post/covid-gun-spikes/index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="/post/covid-gun-spikes/index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>And we can better understand the magnitude of these shifts by visualizing year-to-year changes:</p>
 <pre class="r"><code>data %&gt;%
   mutate(month = lubridate::month(month)) %&gt;% 
@@ -114,7 +114,7 @@ data %&gt;%
   labs(x = element_blank(), y = element_blank(),
        title = &quot;Year-on-year changes in firearm background checks, 1999-2020&quot;,
        subtitle = &quot;January through June&quot;)</code></pre>
-<p><img src="/v2/post/covid-gun-spikes/index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="/post/covid-gun-spikes/index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>Visualized another way, we can explore the temporal change <strong>within each year</strong> for every year between 1999 and 2020, with 2020 <span style="color:red">highlighted in red.</span></p>
 <pre class="r"><code>data %&gt;% 
   mutate(month = lubridate::month(month)) %&gt;%
@@ -134,7 +134,7 @@ data %&gt;%
        subtitle = &quot;January to June&quot;) +
   drop_axis() +
   theme(plot.title = ggtext::element_markdown())</code></pre>
-<p><img src="/v2/post/covid-gun-spikes/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="/post/covid-gun-spikes/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>The FBI database also includes background check data for each U.S. state. This data allows us to compare trends <em>across</em> states and over time (using <code>geofacet</code>):</p>
 <pre class="r"><code>data %&gt;%
   mutate(month = lubridate::month(month)) %&gt;%

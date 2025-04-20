@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>HTML | Connor Rothschild</title>
-    <link>/v2/tag/html/</link>
-      <atom:link href="/v2/tag/html/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://v2.connorrothschild.github.io/tag/html/</link>
+      <atom:link href="https://v2.connorrothschild.github.io/tag/html/index.xml" rel="self" type="application/rss+xml" />
     <description>HTML</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2021</copyright><lastBuildDate>Sat, 25 Jul 2020 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>/v2/img/social.png</url>
+      <url>https://v2.connorrothschild.github.io/img/social.png</url>
       <title>HTML</title>
-      <link>/v2/tag/html/</link>
+      <link>https://v2.connorrothschild.github.io/tag/html/</link>
     </image>
     
     <item>
       <title>Three Simple Steps to Bring Impressive Animations to your Hugo Academic Site Using Blogdown</title>
-      <link>/v2/post/animate-hugo-academic/</link>
+      <link>https://v2.connorrothschild.github.io/post/animate-hugo-academic/</link>
       <pubDate>Sat, 25 Jul 2020 00:00:00 +0000</pubDate>
-      <guid>/v2/post/animate-hugo-academic/</guid>
+      <guid>https://v2.connorrothschild.github.io/post/animate-hugo-academic/</guid>
       <description>
 
 
