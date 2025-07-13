@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories | Connor Rothschild</title>
+    <link>https://v2.connorrothschild.com/categories/</link>
+      <atom:link href="https://v2.connorrothschild.com/categories/index.xml" rel="self" type="application/rss+xml" />
+    <description>Categories</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© Connor Rothschild, 2025</copyright><lastBuildDate>Wed, 28 Oct 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://v2.connorrothschild.com/img/social.png</url>
+      <title>Categories</title>
+      <link>https://v2.connorrothschild.com/categories/</link>
+    </image>
+    
+  </channel>
+</rss>
